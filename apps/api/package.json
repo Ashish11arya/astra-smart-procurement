@@ -4,12 +4,12 @@
   "description": "ASTRA Backend API - NestJS modular core",
   "private": true,
   "scripts": {
-    "build": "npm run build --workspace=@astra/shared && nest build",
+    "build": "npm run build --workspace=@astra/shared && npx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "npx prisma db push --accept-data-loss && node dist/main",
     "lint": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
