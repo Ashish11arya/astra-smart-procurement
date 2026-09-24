@@ -4,7 +4,7 @@
   "description": "ASTRA Backend API - NestJS modular core",
   "private": true,
   "scripts": {
-    "build": "nest build",
+    "build": "npm run build --workspace=@astra/shared && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
