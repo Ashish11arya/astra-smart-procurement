@@ -1,0 +1,77 @@
+services:
+  # Primary persistent relational database
+  postgres:
+    image: postgres:17-alpine
+    container_name: astra-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: astra_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d astra_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Fast/temporary state, live queue state, and ETA cache
+  redis:
+    image: redis:7-alpine
+    container_name: astra-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend API service (NestJS)
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: astra-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/astra_dev?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-astra_docker_dev_secret_32_characters_minimum}
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Frontend web application (Next.js)
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: astra-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      NEXT_PUBLIC_WS_URL: http://localhost:3001
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  redis_data:

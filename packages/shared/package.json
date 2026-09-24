@@ -1,0 +1,17 @@
+{
+  "name": "@astra/shared",
+  "version": "0.1.0",
+  "description": "Shared contracts, enums, and types for ASTRA platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2"
+  }
+}

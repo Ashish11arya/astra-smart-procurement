@@ -1,0 +1,31 @@
+﻿export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+}
+
+export enum FarmerCategory {
+  GENERAL = 'GENERAL',
+  OBC = 'OBC',
+  SC = 'SC',
+  ST = 'ST',
+}
+
+export enum LandOwnershipType {
+  OWNER = 'OWNER',
+  TENANT = 'TENANT',
+  SHARECROPPER = 'SHARECROPPER',
+}
+
+export enum FarmerState {
+  NOT_REGISTERED = 'NOT_REGISTERED',
+  DRAFT = 'DRAFT',
+  SUBMITTED = 'SUBMITTED',
+  VERIFICATION_PENDING = 'VERIFICATION_PENDING',
+  VERIFIED = 'VERIFIED',
+  REJECTED = 'REJECTED',
+  RETURNED_FOR_CORRECTION = 'RETURNED_FOR_CORRECTION',
+  // Backward-compatibility aliases
+  UNDER_VERIFICATION = 'UNDER_VERIFICATION',
+  ACTION_REQUIRED = 'ACTION_REQUIRED',
+}

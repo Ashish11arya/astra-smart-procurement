@@ -1,0 +1,30 @@
+{
+  "name": "astra-smart-procurement",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ASTRA — Smart Farmer Procurement Coordination Platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:shared": "npm run build --workspace=@astra/shared",
+    "build:api": "npm run build --workspace=@astra/api",
+    "build:web": "npm run build --workspace=@astra/web",
+    "dev:api": "npm run dev --workspace=@astra/api",
+    "dev:web": "npm run dev --workspace=@astra/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate --workspace=@astra/api",
+    "prisma:migrate": "npm run prisma:migrate --workspace=@astra/api"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "html5-qrcode": "^2.3.8",
+    "qrcode.react": "^4.2.0"
+  }
+}

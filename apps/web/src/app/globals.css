@@ -1,0 +1,304 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0B1020;
+  --foreground: #F8FAFC;
+  --card-bg: #151C2F;
+  --card-elevated: #1B2438;
+  --card-surface-2: #242E42;
+  --card-border: #334155;
+  --card-border-subtle: #242E42;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-disabled: #64748B;
+  
+  /* Role accents */
+  --accent-farmer: #6366F1;
+  --accent-verification: #8B5CF6;
+  --accent-centre: #F59E0B;
+  --accent-checkin: #0EA5E9;
+  --accent-weighment: #F97316;
+  --accent-quality: #06B6D4;
+  --accent-procurement: #10B981;
+  --accent-payment: #06B6D4;
+  --accent-authority: #6366F1;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Production-Grade Dark Enterprise Card Utility */
+.gov-card,
+.glass-card {
+  background: #151C2F;
+  border: 1px solid #334155;
+  border-radius: 0.875rem;
+  color: #F8FAFC;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.gov-card-interactive,
+.glass-card-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gov-card-interactive:hover,
+.glass-card-hover:hover {
+  border-color: #475569;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 4px 8px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* Standard Dark Inputs */
+input, select, textarea {
+  color-scheme: dark;
+}
+
+/* Custom Sleek Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B1020;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Accessible focus ring */
+*:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 2px;
+}
+
+/* Sleek Operational Queue Scroll Area */
+.operations-queue-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #0B1020;
+  overscroll-behavior: contain;
+}
+
+.operations-queue-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.operations-queue-scroll::-webkit-scrollbar-track {
+  background: #0F172A;
+  border-radius: 9999px;
+  margin: 2px 0;
+}
+
+.operations-queue-scroll::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+  border: 1px solid #1E293B;
+}
+
+.operations-queue-scroll::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Sleek Operational Table Scroll Area */
+.operations-table-scroll {
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #0B1020;
+  overscroll-behavior: contain;
+}
+
+.operations-table-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.operations-table-scroll::-webkit-scrollbar-track {
+  background: #0F172A;
+  border-radius: 9999px;
+  margin: 2px;
+}
+
+.operations-table-scroll::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+  border: 1px solid #1E293B;
+}
+
+.operations-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+
+
+/* ==========================================================================
+   ASTRA PRINT STYLESHEET — DEDICATED CLEAN A4 PRINTABLE BOOKING PASS & VOUCHER
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* When printing a modal (voucher or booking pass), completely hide ALL background page content */
+  body.has-print-modal > *:not(#astra-print-portal),
+  body:has(#astra-print-portal) > *:not(#astra-print-portal) {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Reset print portal to flow naturally as a top-level printable document */
+  body.has-print-modal #astra-print-portal,
+  body:has(#astra-print-portal) #astra-print-portal {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  body.has-print-modal #astra-print-portal div,
+  body:has(#astra-print-portal) #astra-print-portal div {
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  /* Force hide all screen chrome, navigations, sticky headers, footers, buttons */
+  header,
+  footer,
+  nav,
+  aside,
+  button,
+  [data-print-hide],
+  .print\:hidden {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Force display print documents */
+  .print\:block {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Prevent page-break inside print documents */
+  #astra-printable-voucher,
+  #astra-printable-pass {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Remove any dark backdrops or shadows in print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   ASTRA QR SCANNER RESPONSIVE STYLING
+   ========================================================================== */
+#qr-reader {
+  width: 100% !important;
+  border: none !important;
+  background-color: #000000 !important;
+}
+
+#qr-reader video {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 320px !important;
+  object-fit: cover !important;
+  border-radius: 1rem !important;
+  display: block !important;
+}
+
+#qr-reader__scan_region {
+  background: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#qr-reader__dashboard {
+  display: none !important;
+}
+
+#qr-reader__camera_selection {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #334155 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem !important;
+  font-size: 0.75rem !important;
+}
+
+/* ==========================================================================
+   LEAFLET DARK OVERLAYS & POPUPS
+   ========================================================================== */
+.leaflet-popup-content-wrapper {
+  background: #151C2F !important;
+  color: #F8FAFC !important;
+  border: 1px solid #334155 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-popup-tip {
+  background: #151C2F !important;
+  border: 1px solid #334155 !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: #94A3B8 !important;
+  padding: 6px 8px !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #F8FAFC !important;
+}
+

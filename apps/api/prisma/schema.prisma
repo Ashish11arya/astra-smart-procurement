@@ -1,0 +1,474 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  FARMER
+  PROCUREMENT_CENTRE_OFFICER
+  CHECK_IN_OFFICER
+  WEIGHMENT_OFFICER
+  WEIGHMENT_SUPERVISOR
+  QUALITY_OFFICER
+  PROCUREMENT_OFFICER
+  PAYMENT_OFFICER
+  FARMER_VERIFICATION_AUTHORITY
+  GOVERNMENT_ADMIN
+  // Backward compatibility aliases
+  CHECK_IN
+  WEIGHMENT
+  QUALITY
+  PROCUREMENT
+  PAYMENT
+}
+
+enum RegistrationStatus {
+  DRAFT
+  SUBMITTED
+  VERIFICATION_PENDING
+  VERIFIED
+  REJECTED
+  RETURNED_FOR_CORRECTION
+  UNDER_VERIFICATION
+  ACTION_REQUIRED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum FarmerCategory {
+  GENERAL
+  OBC
+  SC
+  ST
+}
+
+enum LandOwnershipType {
+  OWNER
+  TENANT
+  SHARECROPPER
+}
+
+enum CentreVerificationStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+enum CentreOperationalStatus {
+  OPEN
+  CLOSED
+  TEMPORARILY_UNAVAILABLE
+  MAINTENANCE
+}
+
+enum CounterStatus {
+  AVAILABLE
+  BUSY
+  OFFLINE
+  MAINTENANCE
+}
+
+enum BookingSession {
+  MORNING
+  AFTERNOON
+}
+
+enum BookingStatus {
+  PENDING
+  BOOKED
+  CANCELLED
+  NO_SHOW
+  CHECKED_IN
+  WEIGHMENT
+  QUALITY_ASSESSMENT
+  PROCUREMENT
+  PAYMENT
+  COMPLETED
+}
+
+enum WeighmentStatus {
+  WAITING
+  DEVICE_CONNECTED
+  READING_RECEIVED
+  RECORDED
+  CORRECTION_PENDING
+  CORRECTION_APPROVED
+  CORRECTION_REJECTED
+}
+
+enum QualityGrade {
+  GRADE_A
+  GRADE_B
+  GRADE_C
+  REJECTED
+}
+
+enum ProcurementDecision {
+  ACCEPTED
+  REJECTED
+  PARTIAL_ACCEPTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SETTLED
+  FAILED
+}
+
+model SystemHealth {
+  id        String   @id @default(uuid())
+  probeKey  String   @unique
+  checkedAt DateTime @default(now())
+  status    String   @default("ok")
+}
+
+model User {
+  id                   String                      @id @default(uuid())
+  mobile               String                      @unique
+  role                 UserRole                    @default(FARMER)
+  isActive             Boolean                     @default(true)
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+
+  farmer               Farmer?
+  personnelAssignments CentrePersonnelAssignment[]
+
+  @@index([mobile])
+}
+
+model Farmer {
+  id                 String          @id @default(uuid())
+  userId             String          @unique
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  farmerCode         String          @unique
+  fullName           String
+  fatherOrSpouseName String?
+  gender             Gender?
+  category           FarmerCategory?
+  mobile             String
+  isVerified         Boolean         @default(false)
+  village            String?
+  district           String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  registrations      FarmerRegistration[]
+  verification       FarmerVerification?
+  bookings           ProcurementBooking[]
+
+  @@index([mobile])
+  @@index([farmerCode])
+}
+
+model FarmerRegistration {
+  id                  String             @id @default(uuid())
+  registrationNumber  String             @unique
+  farmerId            String
+  farmer              Farmer             @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  status              RegistrationStatus @default(DRAFT)
+  submittedAt         DateTime?
+  verifiedAt          DateTime?
+  verifiedBy          String?
+  rejectedAt          DateTime?
+  rejectedBy          String?
+  returnedAt          DateTime?
+  returnedBy          String?
+  reason              String?
+  actionRequiredNotes String?
+  rejectionReason     String?
+  personalDetails     Json?
+  addressDetails      Json?
+  bankDetails         Json?
+  documents           Json?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  landParcels         LandParcel[]
+
+  @@index([farmerId])
+  @@index([registrationNumber])
+  @@index([status])
+}
+
+model FarmerVerification {
+  id                  String             @id @default(uuid())
+  farmerId            String             @unique
+  farmer              Farmer             @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  status              RegistrationStatus @default(VERIFICATION_PENDING)
+  submittedAt         DateTime           @default(now())
+  verifiedAt          DateTime?
+  verifiedBy          String?
+  rejectedAt          DateTime?
+  rejectedBy          String?
+  returnedAt          DateTime?
+  returnedBy          String?
+  reason              String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@index([status])
+  @@index([farmerId])
+}
+
+model LandParcel {
+  id             String             @id @default(uuid())
+  registrationId String
+  registration   FarmerRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  district       String
+  block          String
+  panchayat      String
+  village        String
+  khasraNumber   String
+  areaAcres      Float
+  ownershipType  LandOwnershipType  @default(OWNER)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([registrationId])
+}
+
+model State {
+  id        String              @id @default(uuid())
+  name      String
+  code      String              @unique
+  isActive  Boolean             @default(true)
+  districts District[]
+  centres   ProcurementCentre[]
+}
+
+model District {
+  id        String              @id @default(uuid())
+  stateId   String
+  state     State               @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  name      String
+  code      String              @unique
+  isActive  Boolean             @default(true)
+  centres   ProcurementCentre[]
+
+  @@index([stateId])
+}
+
+model ProcurementCentre {
+  id                         String                    @id @default(uuid())
+  centreCode                 String                    @unique
+  name                       String
+  stateId                    String
+  state                      State                     @relation(fields: [stateId], references: [id])
+  districtId                 String
+  district                   District                  @relation(fields: [districtId], references: [id])
+  block                      String?
+  address                    String
+  latitude                   Float
+  longitude                  Float
+  agency                     String                    @default("Food & Civil Supplies Corporation")
+  operatingDays              String                    @default("Monday - Saturday")
+  operatingHoursStart        String                    @default("08:00")
+  operatingHoursEnd          String                    @default("17:00")
+  morningCapacityQuintals    Float                     @default(300.0)
+  afternoonCapacityQuintals  Float                     @default(250.0)
+  maxHourlyCapacityQuintals  Float                     @default(60.0)
+  slotDurationMinutes        Int                       @default(15)
+  maxQuantityPerBooking      Float                     @default(150.0)
+  centreDailyFarmerLimit     Float                     @default(50.0)
+  minBookingQuantityQuintals Float                     @default(10.0)
+  verificationStatus         CentreVerificationStatus  @default(PENDING_VERIFICATION)
+  operationalStatus          CentreOperationalStatus   @default(OPEN)
+  contactPhone               String?
+  contactEmail               String?
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
+
+  counters                   CentreCounter[]
+  personnel                  CentrePersonnelAssignment[]
+  bookings                   ProcurementBooking[]
+  capacityAudits             CentreCapacityAudit[]
+  auditLogs                  AuditLog[]
+
+  @@index([stateId])
+  @@index([districtId])
+  @@index([verificationStatus, operationalStatus])
+}
+
+model CentreCounter {
+  id            String            @id @default(uuid())
+  centreId      String
+  centre        ProcurementCentre @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  counterNumber Int
+  counterName   String
+  status        CounterStatus     @default(AVAILABLE)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([centreId])
+}
+
+model CentrePersonnelAssignment {
+  id         String            @id @default(uuid())
+  userId     String
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  centreId   String
+  centre     ProcurementCentre @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  role       UserRole
+  department String
+  isActive   Boolean           @default(true)
+  assignedAt DateTime          @default(now())
+
+  @@unique([userId, centreId])
+  @@index([userId])
+  @@index([centreId])
+}
+
+model ProcurementBooking {
+  id                         String                    @id @default(uuid())
+  bookingNumber              String                    @unique
+  farmerId                   String
+  farmer                     Farmer                    @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  centreId                   String
+  centre                     ProcurementCentre         @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  bookingDate                DateTime
+  session                    BookingSession
+  windowStartTime            String
+  windowEndTime              String
+  expectedQuantityQuintals   Float
+  maxAllowedQuantityQuintals Float                     @default(150.0)
+  expectedDurationMinutes    Int                       @default(25)
+  vehicleNumber              String?
+  vehicleType                String?
+  driverName                 String?
+  status                     BookingStatus             @default(BOOKED)
+  checkInTime                DateTime?
+  idempotencyKey             String?                   @unique
+  cancellationReason         String?
+  governmentLimitAtBooking   Float?
+  centreLimitAtBooking       Float?
+  applicableLimitAtBooking   Float?
+  minimumBookingAtBooking    Float?
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
+
+  weighment                  WeighmentRecord?
+  quality                    QualityAssessmentRecord?
+  procurement                ProcurementDecisionRecord?
+  payment                    PaymentSettlementRecord?
+  auditLogs                  AuditLog[]
+
+  @@index([centreId, bookingDate, session])
+  @@index([farmerId])
+  @@index([bookingNumber])
+  @@index([status])
+}
+
+model WeighmentRecord {
+  id                     String             @id @default(uuid())
+  bookingId              String             @unique
+  booking                ProcurementBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  deviceCode             String             @default("Scale-01")
+  originalHardwareWeight Float
+  approvedFinalWeight    Float?
+  status                 WeighmentStatus    @default(RECORDED)
+  correctionReason       String?
+  officerRemarks         String?
+  requestedBy            String?
+  requestedAt            DateTime?
+  approvedBy             String?
+  approvedAt             DateTime?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  @@index([bookingId])
+  @@index([status])
+}
+
+model QualityAssessmentRecord {
+  id                   String             @id @default(uuid())
+  bookingId            String             @unique
+  booking              ProcurementBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  moisturePercent      Float
+  foreignMatterPercent Float
+  damagedGrainPercent  Float
+  grade                QualityGrade       @default(GRADE_A)
+  remarks              String?
+  assessedBy           String
+  assessedAt           DateTime           @default(now())
+
+  @@index([bookingId])
+}
+
+model ProcurementDecisionRecord {
+  id                       String              @id @default(uuid())
+  bookingId                String              @unique
+  booking                  ProcurementBooking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  decision                 ProcurementDecision @default(ACCEPTED)
+  acceptedQuantityQuintals Float
+  ratePerQuintal           Float               @default(2325.0)
+  totalAmount              Float
+  remarks                  String?
+  decidedBy                String
+  decidedAt                DateTime            @default(now())
+
+  @@index([bookingId])
+}
+
+model PaymentSettlementRecord {
+  id                 String             @id @default(uuid())
+  bookingId          String             @unique
+  booking            ProcurementBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  paymentStatus      PaymentStatus      @default(PENDING)
+  transactionRef     String?
+  bankAccountMasked  String?
+  amount             Float
+  settledBy          String?
+  settledAt          DateTime?
+
+  @@index([bookingId])
+}
+
+model AuditLog {
+  id            String              @id @default(uuid())
+  eventType     String
+  bookingId     String?
+  booking       ProcurementBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  centreId      String?
+  centre        ProcurementCentre?  @relation(fields: [centreId], references: [id], onDelete: SetNull)
+  actorId       String
+  actorRole     String
+  previousState Json?
+  newState      Json?
+  reason        String?
+  createdAt     DateTime            @default(now())
+
+  @@index([bookingId])
+  @@index([centreId])
+  @@index([actorId])
+  @@index([eventType])
+}
+
+model CentreCapacityAudit {
+  id            String            @id @default(uuid())
+  centreId      String
+  centre        ProcurementCentre @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  changedBy     String
+  changedAt     DateTime          @default(now())
+  fieldChanged  String
+  oldValue      Float
+  newValue      Float
+  crop          String            @default("Paddy")
+  season        String            @default("Kharif 2026")
+  effectiveDate DateTime          @default(now())
+  reason        String?
+
+  @@index([centreId])
+  @@index([changedAt])
+}
+
