@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run build --workspace=@astra/shared && npx prisma generate && npx prisma db push --accept-data-loss && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
-    "start": "nest start",
+    "start": "npx prisma db push --accept-data-loss && node dist/main",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "npx prisma db push --accept-data-loss && node dist/main",
