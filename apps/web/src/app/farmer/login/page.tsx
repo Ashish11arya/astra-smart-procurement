@@ -303,7 +303,7 @@ export default function FarmerLoginPage() {
               </button>
 
               <div className="pt-4 text-center">
-                <span className="text-[#315968] text-[15px] font-[500] mr-2">Don't have a farmer account?</span>
+                <span className="text-[#315968] text-[15px] font-[500] mr-2">Don&apos;t have a farmer account?</span>
                 <Link
                   href="/farmer/register"
                   className="inline-flex items-center text-[15px] font-bold text-[#0BAA72] hover:text-[#099664] transition"
@@ -533,7 +533,7 @@ export default function FarmerLoginPage() {
                     </div>
                     <h3 className="font-[800] text-[#0F172A] text-[18px]">No Record Found</h3>
                     <p className="text-[15px] text-[#475569] font-[500] leading-snug">
-                      We couldn't find a farmer account associated with this mobile number.
+                      We couldn&apos;t find a farmer account associated with this mobile number.
                     </p>
                   </div>
 

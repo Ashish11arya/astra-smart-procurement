@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { LanguageProvider } from '../i18n/LanguageContext';
 import { AuthProvider } from '../context/AuthContext';
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body className="antialiased bg-[#0B1020] text-[#F8FAFC] min-h-screen flex flex-col selection:bg-indigo-900 selection:text-indigo-100" suppressHydrationWarning>
         <LanguageProvider>
           <AuthProvider>
-            <Header />
+            <Suspense fallback={null}>
+              <Header />
+            </Suspense>
             <div className="flex-1 flex flex-col pb-20 md:pb-0">{children}</div>
             <Footer />
             <BottomNav />
