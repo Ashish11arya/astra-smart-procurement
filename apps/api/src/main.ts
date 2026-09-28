@@ -3,20 +3,8 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
-import { execSync } from 'child_process';
-
 async function bootstrap() {
   const logger = new Logger('AstraBootstrap');
-  
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      logger.log('Running prisma db push...');
-      execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
-      logger.log('Prisma db push successful.');
-    } catch (error) {
-      logger.error('Prisma db push failed:', error);
-    }
-  }
 
   const app = await NestFactory.create(AppModule);
 
