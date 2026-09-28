@@ -624,13 +624,13 @@ function FarmerRegistrationContent() {
       <main className="min-h-screen overflow-x-hidden w-full relative flex items-center justify-center p-4">
         {/* Background with explicit opacity matching exactly the reference image */}
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/farmer-registration-bg.png')",
+            backgroundImage: "url('/farmer-registration-bg-landscape.jpg')",
             opacity: 0.9,
           }}
         />
-        <div className="absolute inset-0 z-0 bg-black/10" />
+        <div className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-black/10" />
 
         <div className="relative z-10 w-full max-w-2xl mx-auto my-8">
           <div className="bg-[#151C2F] rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in">
@@ -711,13 +711,13 @@ function FarmerRegistrationContent() {
     <main className="min-h-screen overflow-x-hidden w-full relative flex items-center justify-center p-4">
       {/* Background with explicit opacity matching exactly the reference image */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/farmer-registration-bg.png')",
+          backgroundImage: "url('/farmer-registration-bg-landscape.jpg')",
           opacity: 0.9,
         }}
       />
-      <div className="absolute inset-0 z-0 bg-black/10" />
+      <div className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-black/10" />
 
       <div className="relative z-10 w-full max-w-[800px] mx-auto text-[#062D3D] my-8">
         {/* Wizard Header & Progress Bar */}

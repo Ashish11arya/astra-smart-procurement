@@ -453,7 +453,7 @@ function FarmerBookingContent() {
     };
 
     return (
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <div className="w-full min-w-0 max-w-2xl mx-auto px-4 py-8 space-y-6">
         <DigitalBookingPass booking={passData} lang={lang} />
       </div>
     );
@@ -462,7 +462,7 @@ function FarmerBookingContent() {
   // 2. NO CENTRE SELECTED FALLBACK
   if (!centreId) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-4">
+      <div className="w-full min-w-0 max-w-xl mx-auto px-4 py-16 text-center space-y-4">
         <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-8 space-y-4 shadow-xl">
           <div className="w-16 h-16 bg-emerald-950/60 border border-emerald-700/60 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-sm">
             <Building2 className="w-8 h-8" />
@@ -496,7 +496,7 @@ function FarmerBookingContent() {
 
   if (!isFarmerVerified) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
+      <div className="w-full min-w-0 max-w-2xl mx-auto px-4 py-12 space-y-6">
         <div className="bg-[#151C2F] rounded-2xl border border-amber-500/40 p-6 sm:p-8 shadow-xl space-y-6 text-center">
           <div className="w-16 h-16 bg-amber-950/60 border border-amber-700/60 rounded-2xl flex items-center justify-center mx-auto text-amber-400 shadow-sm">
             <Lock className="w-9 h-9" />
@@ -564,7 +564,7 @@ function FarmerBookingContent() {
   // Loading Skeleton
   if (loadingCentre) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-16 text-center text-[#94A3B8] text-sm space-y-3">
+      <div className="w-full min-w-0 max-w-4xl mx-auto px-4 py-16 text-center text-[#94A3B8] text-sm space-y-3">
         <div className="inline-block w-9 h-9 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="font-medium text-[#CBD5E1]">
           {lang === 'hi' ? 'केंद्र विवरण और 7-दिवसीय क्षमता लोड हो रही है...' : 'Loading centre details and real-time 7-day capacity...'}
@@ -611,7 +611,7 @@ function FarmerBookingContent() {
   const qtyPercentage = Math.min(100, Math.round((parsedQty / centreHeadDailyLimit) * 100));
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="w-full min-w-0 max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Top Navigation Strip */}
       <div className="flex items-center justify-between">
         <Link
@@ -1344,7 +1344,7 @@ export default function FarmerBookingPage() {
   return (
     <React.Suspense
       fallback={
-        <div className="max-w-4xl mx-auto px-4 py-16 text-center text-[#94A3B8] font-semibold text-sm">
+        <div className="w-full min-w-0 max-w-4xl mx-auto px-4 py-16 text-center text-[#94A3B8] font-semibold text-sm">
           Loading Booking Window...
         </div>
       }

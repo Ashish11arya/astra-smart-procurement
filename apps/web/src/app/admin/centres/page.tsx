@@ -1,7 +1,7 @@
 'use client';
 import { useAuth } from '@/context/AuthContext';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -99,7 +99,7 @@ export default function AdminCentresPage() {
   const [personnelDept, setPersonnelDept] = useState('Depot Management');
   const [assigning, setAssigning] = useState(false);
 
-  const loadAll = async () => {
+  const loadAll = useCallback(async () => {
     setLoading(true);
     try {
       const [centresRes, statesRes] = await Promise.all([
@@ -108,8 +108,8 @@ export default function AdminCentresPage() {
       ]);
       setCentres(centresRes || []);
       setStates(statesRes || []);
-      if (statesRes && statesRes.length > 0 && !formStateId) {
-        setFormStateId(statesRes[0].id);
+      if (statesRes && statesRes.length > 0) {
+        setFormStateId((prev) => prev || statesRes[0].id);
       }
       setError(null);
     } catch (err: any) {
@@ -117,7 +117,7 @@ export default function AdminCentresPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const loadAuditLogs = async () => {
     try {
@@ -130,7 +130,7 @@ export default function AdminCentresPage() {
 
   useEffect(() => {
     loadAll();
-  }, []);
+  }, [loadAll]);
 
   useEffect(() => {
     if (activeTab === 'audit') {
@@ -253,7 +253,7 @@ export default function AdminCentresPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8 text-slate-100">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8 text-slate-100">
       {/* Top Directorate Command Header */}
       <div className="glass-card rounded-3xl border border-slate-800/80 bg-slate-900/50 backdrop-blur-xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
         <div className="flex items-center space-x-4">
@@ -453,7 +453,7 @@ export default function AdminCentresPage() {
             </div>
 
             {/* Depot Cards Grid */}
-            <div className="max-h-[600px] overflow-y-auto operations-queue-scroll pr-1">
+            <div className="operations-queue-scroll pr-1">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredCentres.map((c) => (
                 <div
@@ -562,7 +562,7 @@ export default function AdminCentresPage() {
 
         {/* TAB 2: REGISTER NEW CENTRE */}
         {activeTab === 'register' && (
-          <div className="max-w-2xl mx-auto bg-slate-900/70 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="w-full min-w-0 max-w-2xl mx-auto bg-slate-900/70 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl space-y-6">
             <div className="border-b border-slate-800 pb-4">
               <h2 className="text-base font-bold text-white">Register New Procurement Depot</h2>
               <p className="text-xs text-slate-400 mt-1">
@@ -684,7 +684,7 @@ export default function AdminCentresPage() {
 
         {/* TAB 3: DEPARTMENT PERSONNEL ASSIGNMENT */}
         {activeTab === 'personnel' && (
-          <div className="max-w-xl mx-auto bg-slate-900/70 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="w-full min-w-0 max-w-xl mx-auto bg-slate-900/70 backdrop-blur-xl rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl space-y-6">
             <div className="border-b border-slate-800 pb-4">
               <h2 className="text-base font-bold text-white">Assign Department Staff</h2>
               <p className="text-xs text-slate-400 mt-1">
@@ -770,7 +770,7 @@ export default function AdminCentresPage() {
               <span className="text-xs text-slate-400 font-mono">{auditLogs.length} events recorded</span>
             </div>
 
-            <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+            <div className="operations-queue-scroll overflow-x-auto">
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="sticky top-0 z-10 bg-slate-900 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800 shadow-sm">
                   <tr>

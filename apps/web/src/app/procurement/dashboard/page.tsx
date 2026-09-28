@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FileCheck2,
@@ -101,7 +101,12 @@ function ProcurementDashboardContent() {
   const [remarks, setRemarks] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const loadQueue = async (dateOverride?: string) => {
+  const selectedBookingRef = useRef(selectedBooking);
+  useEffect(() => {
+    selectedBookingRef.current = selectedBooking;
+  }, [selectedBooking]);
+
+  const loadQueue = useCallback(async (dateOverride?: string) => {
     setLoading(true);
     try {
       const dateToFetch = dateOverride !== undefined ? dateOverride : selectedDate;
@@ -120,7 +125,8 @@ function ProcurementDashboardContent() {
 
       const pendingItems = normalizedQueue.filter((i) => i.status === 'PROCUREMENT');
       if (pendingItems.length > 0) {
-        if (!selectedBooking || !pendingItems.some((i) => i.id === selectedBooking.id)) {
+        const currentSelected = selectedBookingRef.current;
+        if (!currentSelected || !pendingItems.some((i) => i.id === currentSelected.id)) {
           setSelectedBooking(pendingItems[0]);
           setPurchasedQuantity((pendingItems[0].actualWeightQuintals ?? pendingItems[0].finalWeightQuintals)?.toString() || '0');
         }
@@ -134,11 +140,11 @@ function ProcurementDashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate]);
 
   useEffect(() => {
     loadQueue(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, loadQueue]);
 
   const activeQueue = useMemo(() => {
     return queue.filter((item) => item.status === 'PROCUREMENT');
@@ -241,16 +247,16 @@ function ProcurementDashboardContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
       {/* Top Header */}
-      <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
             <FileCheck2 className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 Procurement
               </h1>
               <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono uppercase tracking-wider">
@@ -283,7 +289,7 @@ function ProcurementDashboardContent() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#334155] pb-3 text-xs font-semibold">
+      <div className="flex items-center gap-2 border-b border-[#334155] pb-3 text-xs font-semibold overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setActiveTab('queue')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
@@ -344,7 +350,7 @@ function ProcurementDashboardContent() {
                 <p className="text-[11px] text-slate-500 max-w-xs mx-auto">All quality-tested grain lots have been procured and vouchers issued.</p>
               </div>
             ) : (
-              <div className="space-y-3 overflow-y-auto pr-1 operations-queue-scroll max-h-[580px] min-h-0">
+              <div className="space-y-3 pr-1 operations-queue-scroll min-h-0">
                 {activeQueue.map((item) => {
                   const isSelected = selectedBooking?.id === item.id;
                   return (
@@ -522,7 +528,7 @@ function ProcurementDashboardContent() {
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-2xl font-black text-emerald-400 font-mono tracking-tight">
+                      <span className="text-3xl sm:text-4xl font-bold text-emerald-400 tabular-nums tracking-tight">
                         ₹{netPayable.toLocaleString('en-IN')}
                       </span>
                       <span className="text-[10px] text-emerald-400 block font-semibold uppercase">Direct DBT Transfer</span>
@@ -629,7 +635,7 @@ function ProcurementDashboardContent() {
               </div>
             </div>
 
-            <div className="relative min-w-[240px]">
+            <div className="relative w-full sm:min-w-[240px] sm:w-auto">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
@@ -642,7 +648,7 @@ function ProcurementDashboardContent() {
           </div>
 
           {/* Table */}
-          <div className="bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
+          <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
             <div className="p-4 sm:p-5 border-b border-[#334155] flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-white">Daily Issued Purchase Vouchers ({processedHistory.length})</h3>
@@ -659,8 +665,8 @@ function ProcurementDashboardContent() {
                 <p className="text-[11px] text-slate-500">No purchase vouchers were issued for {selectedDate}.</p>
               </div>
             ) : (
-              <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse">
+              <div className="operations-queue-scroll overflow-x-auto">
+                <table className="w-full text-xs text-left border-collapse tabular-nums">
                   <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 font-mono uppercase tracking-wider text-[10px] border-b border-[#334155]">
                     <tr>
                       <th className="py-3 px-4">Booking Number</th>

@@ -490,7 +490,7 @@ export default function VerificationApplicationDetailPage() {
             </div>
 
             {auditLogs && auditLogs.length > 0 ? (
-              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+              <div className="space-y-3 pr-1">
                 {auditLogs.map((log: any, idx: number) => (
                   <div
                     key={log.id || idx}

@@ -162,7 +162,7 @@ export default function FarmerVisitsPage() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#014532]">
+    <div className="w-full min-w-0 max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#014532]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-emerald-100">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#014532] tracking-tight">
@@ -269,7 +269,7 @@ export default function FarmerVisitsPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4 pr-1 rounded-xl">
+        <div className="space-y-4 pr-1 rounded-xl farmer-queue-scroll">
           {filteredVisits.map((visit) => {
             const isBooked = visit.status === 'BOOKED';
             return (

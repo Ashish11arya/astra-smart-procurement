@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   CreditCard,
@@ -72,7 +72,12 @@ function PaymentDashboardContent() {
   const [bankAccountMasked, setBankAccountMasked] = useState('XXXX-XXXX-4819');
   const [submitting, setSubmitting] = useState(false);
 
-  const loadQueue = async (dateOverride?: string) => {
+  const selectedBookingRef = useRef(selectedBooking);
+  useEffect(() => {
+    selectedBookingRef.current = selectedBooking;
+  }, [selectedBooking]);
+
+  const loadQueue = useCallback(async (dateOverride?: string) => {
     setLoading(true);
     try {
       const dateToFetch = dateOverride !== undefined ? dateOverride : selectedDate;
@@ -90,7 +95,8 @@ function PaymentDashboardContent() {
 
       const pendingItems = normalizedQueue.filter((i) => i.status === 'PAYMENT');
       if (pendingItems.length > 0) {
-        if (!selectedBooking || !pendingItems.some((i) => i.id === selectedBooking.id)) {
+        const currentSelected = selectedBookingRef.current;
+        if (!currentSelected || !pendingItems.some((i) => i.id === currentSelected.id)) {
           setSelectedBooking(pendingItems[0]);
           setTransactionRef(`DBT-${Date.now().toString().slice(-8)}`);
         }
@@ -104,11 +110,11 @@ function PaymentDashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate]);
 
   useEffect(() => {
     loadQueue(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, loadQueue]);
 
   const activeQueue = useMemo(() => {
     return queue.filter((item) => item.status === 'PAYMENT');
@@ -167,7 +173,7 @@ function PaymentDashboardContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#F8FAFC]">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#F8FAFC]">
       {/* Top Header - Compact & Operational */}
       <div className="rounded-xl border border-[#334155] bg-[#151C2F] p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center space-x-3.5">
@@ -270,7 +276,7 @@ function PaymentDashboardContent() {
                 <p className="text-xs text-[#94A3B8]">All certified procurement vouchers for today have been processed.</p>
               </div>
             ) : (
-              <div className="space-y-2.5 overflow-y-auto pr-1 pb-1 operations-queue-scroll max-h-[580px]">
+              <div className="space-y-2.5 pr-1 pb-1 operations-queue-scroll">
                 {activeQueue.map((item) => {
                   const isSelected = selectedBooking?.id === item.id;
                   return (
@@ -485,7 +491,7 @@ function PaymentDashboardContent() {
                 <p className="text-xs text-[#94A3B8]">No DBT payments were recorded for {selectedDate}.</p>
               </div>
             ) : (
-              <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+              <div className="operations-queue-scroll overflow-x-auto">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 z-10 bg-[#0F172A] text-[#94A3B8] font-mono uppercase tracking-wider border-b border-[#334155]">
                     <tr>

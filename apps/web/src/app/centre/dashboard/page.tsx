@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Building2,
@@ -154,7 +154,7 @@ function CentreDashboardContent() {
     }
   }, [searchParams]);
 
-  const loadDashboard = async (dateOverride?: string) => {
+  const loadDashboard = useCallback(async (dateOverride?: string) => {
     setLoading(true);
     try {
       const d = dateOverride !== undefined ? dateOverride : selectedDate;
@@ -167,9 +167,9 @@ function CentreDashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate]);
 
-  const loadForecast = async () => {
+  const loadForecast = useCallback(async () => {
     setForecastLoading(true);
     try {
       const res: any = await apiRequest('/centre-officer/forecast');
@@ -179,9 +179,9 @@ function CentreDashboardContent() {
     } finally {
       setForecastLoading(false);
     }
-  };
+  }, []);
 
-  const loadCapacityConfig = async () => {
+  const loadCapacityConfig = useCallback(async () => {
     setCapacityLoading(true);
     setCapacityError(null);
     try {
@@ -198,11 +198,11 @@ function CentreDashboardContent() {
     } finally {
       setCapacityLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadDashboard(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, loadDashboard]);
 
   useEffect(() => {
     if (currentView === 'forecast') {
@@ -210,7 +210,7 @@ function CentreDashboardContent() {
     } else if (currentView === 'capacity') {
       loadCapacityConfig();
     }
-  }, [currentView]);
+  }, [currentView, loadForecast, loadCapacityConfig]);
 
   const handleSaveCapacity = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,7 +297,7 @@ function CentreDashboardContent() {
 
   if (loading && !data) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-slate-400 space-y-3">
+      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 py-20 text-center text-slate-400 space-y-3">
         <RefreshCw className="w-8 h-8 text-amber-400 animate-spin mx-auto" />
         <p className="text-sm font-semibold">Loading Centre Head Monitoring Terminal...</p>
       </div>
@@ -310,7 +310,7 @@ function CentreDashboardContent() {
   const avgTimes = data?.averageProcessingTimes;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#F8FAFC]">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#F8FAFC]">
       {/* Centre Head Header */}
       <div className="rounded-xl border border-[#334155] bg-[#151C2F] p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center space-x-3.5">
@@ -651,7 +651,7 @@ function CentreDashboardContent() {
                 <p className="text-xs text-slate-500">Try adjusting the date, status, or search query.</p>
               </div>
             ) : (
-              <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+              <div className="operations-queue-scroll overflow-x-auto">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 z-10 bg-slate-950 text-slate-400 font-mono uppercase tracking-wider border-b border-slate-800 shadow-sm">
                     <tr>
@@ -820,7 +820,7 @@ function CentreDashboardContent() {
             </span>
           </div>
 
-          <div className="max-h-[520px] overflow-y-auto operations-queue-scroll pr-1">
+          <div className="operations-queue-scroll pr-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {counters.map((c) => (
                 <div key={c.id} className="rounded-xl border border-[#334155] bg-[#151C2F] p-4 space-y-3.5 shadow-sm">

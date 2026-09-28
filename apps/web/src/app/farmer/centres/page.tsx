@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -84,12 +84,13 @@ export default function CentresDiscoveryPage() {
   const [locating, setLocating] = useState<boolean>(false);
   const [locationDenied, setLocationDenied] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Load States
   useEffect(() => {
     apiRequest<StateItem[]>('/centres/states')
       .then((data) => setStates(data || []))
-      .catch((err) => console.error('Failed to load states:', err));
+      .catch((err) => console.warn('Failed to load states:', err.message));
   }, []);
 
   // Load Districts when state changes
@@ -97,7 +98,7 @@ export default function CentresDiscoveryPage() {
     if (selectedStateId) {
       apiRequest<DistrictItem[]>(`/centres/districts?stateId=${selectedStateId}`)
         .then((data) => setDistricts(data || []))
-        .catch((err) => console.error('Failed to load districts:', err));
+        .catch((err) => console.warn('Failed to load districts:', err.message));
     } else {
       setDistricts([]);
       setSelectedDistrictId('');
@@ -105,13 +106,19 @@ export default function CentresDiscoveryPage() {
   }, [selectedStateId]);
 
   // Fetch verified centres
-  const loadCentres = async () => {
+  const searchTermRef = useRef(searchTerm);
+  useEffect(() => {
+    searchTermRef.current = searchTerm;
+  }, [searchTerm]);
+
+  const loadCentres = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (selectedStateId) params.append('stateId', selectedStateId);
       if (selectedDistrictId) params.append('districtId', selectedDistrictId);
-      if (searchTerm) params.append('search', searchTerm);
+      if (searchTermRef.current) params.append('search', searchTermRef.current);
       if (userLocation) {
         params.append('lat', userLocation.lat.toString());
         params.append('lon', userLocation.lon.toString());
@@ -122,16 +129,17 @@ export default function CentresDiscoveryPage() {
       if (res && res.length > 0 && !selectedCentreId) {
         setSelectedCentreId(res[0].id);
       }
-    } catch (err) {
-      console.error('Failed to load centres:', err);
+    } catch (err: any) {
+      console.warn('Failed to load centres:', err.message);
+      setError(err.message || 'Failed to connect to server');
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedStateId, selectedDistrictId, userLocation, selectedCentreId]);
 
   useEffect(() => {
     loadCentres();
-  }, [selectedStateId, selectedDistrictId, userLocation]);
+  }, [selectedStateId, selectedDistrictId, userLocation, loadCentres]);
 
   // Handle Location Permission
   const handleGetLocation = () => {
@@ -160,7 +168,7 @@ export default function CentresDiscoveryPage() {
 
   return (
     <div className="bg-white min-h-screen w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-emerald-100">
         <div>
@@ -296,6 +304,18 @@ export default function CentresDiscoveryPage() {
               <div className="inline-block w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
               <p>Loading verified procurement depots...</p>
             </div>
+          ) : error ? (
+            <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-red-200 p-8 text-center space-y-2">
+              <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
+              <p className="font-bold text-red-700 text-base">Connection Error</p>
+              <p className="text-sm text-red-600/90">{error}</p>
+              <button 
+                onClick={loadCentres} 
+                className="mt-4 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-sm font-semibold border border-red-200 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
           ) : centres.length === 0 ? (
             <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border border-dashed border-emerald-100 p-8 text-center space-y-2">
               <Building2 className="w-8 h-8 text-emerald-700/80 mx-auto" />
@@ -303,90 +323,92 @@ export default function CentresDiscoveryPage() {
               <p className="text-sm text-emerald-800/80">Try selecting another district or clearing your search query.</p>
             </div>
           ) : (
-            centres.map((centre) => {
-              const isSelected = centre.id === selectedCentreId;
-              return (
-                <div
-                  key={centre.id}
-                  onClick={() => setSelectedCentreId(centre.id)}
-                  className={`p-5 rounded-2xl transition duration-150 cursor-pointer shadow-lg relative border ${
-                    isSelected
-                      ? 'border-emerald-500 ring-1 ring-emerald-500/30 bg-white/95 backdrop-blur-sm shadow-xl'
-                      : 'border-emerald-100 bg-white/95 backdrop-blur-sm shadow-xl hover:border-slate-500'
-                  }`}
-                >
-                  <div className="flex flex-col sm:flex-row gap-4 w-full">
-                    
-                    {/* Middle: Details */}
-                    <div className="flex-1 flex flex-col justify-center space-y-2.5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-full text-xs font-bold tracking-wider flex items-center gap-1">
-                          <ShieldCheck className="w-3.5 h-3.5" /> VERIFIED DEPOT
-                        </span>
-                        <span className="text-xs font-mono font-bold text-emerald-900/60 uppercase">
-                          {centre.centreCode}
-                        </span>
-                      </div>
-
-                      <div className="space-y-0.5">
-                        <h3 className="font-extrabold text-[#014532] text-lg sm:text-xl leading-snug">
-                          {centre.name}
-                        </h3>
-                        <p className="text-sm text-emerald-900/70 flex items-start gap-1 mt-1">
-                          <MapPin className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
-                          <span>{centre.address}</span>
-                        </p>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-emerald-900/80 pt-1">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-4 h-4 text-emerald-700" />
-                          <div className="flex flex-col">
-                            <span className="font-semibold">{centre.operatingDays}</span>
-                            <span className="text-emerald-900/60">{centre.operatingHoursStart} - {centre.operatingHoursEnd}</span>
-                          </div>
+            <div className="space-y-4 pr-1 farmer-queue-scroll">
+              {centres.map((centre) => {
+                const isSelected = centre.id === selectedCentreId;
+                return (
+                  <div
+                    key={centre.id}
+                    onClick={() => setSelectedCentreId(centre.id)}
+                    className={`p-5 rounded-2xl transition duration-150 cursor-pointer shadow-lg relative border ${
+                      isSelected
+                        ? 'border-emerald-500 ring-1 ring-emerald-500/30 bg-white/95 backdrop-blur-sm shadow-xl'
+                        : 'border-emerald-100 bg-white/95 backdrop-blur-sm shadow-xl hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="flex flex-col sm:flex-row gap-4 w-full">
+                      
+                      {/* Middle: Details */}
+                      <div className="flex-1 flex flex-col justify-center space-y-2.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-full text-xs font-bold tracking-wider flex items-center gap-1">
+                            <ShieldCheck className="w-3.5 h-3.5" /> VERIFIED DEPOT
+                          </span>
+                          <span className="text-xs font-mono font-bold text-emerald-900/60 uppercase">
+                            {centre.centreCode}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <Building2 className="w-4 h-4 text-emerald-700" />
-                          <div className="flex flex-col">
-                            <span className="text-emerald-900/60">Capacity</span>
-                            <span className="font-semibold text-[#014532]">{centre.morningCapacityQuintals + centre.afternoonCapacityQuintals} q/day</span>
-                          </div>
+
+                        <div className="space-y-0.5">
+                          <h3 className="font-extrabold text-[#014532] text-lg sm:text-xl leading-snug">
+                            {centre.name}
+                          </h3>
+                          <p className="text-sm text-emerald-900/70 flex items-start gap-1 mt-1">
+                            <MapPin className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
+                            <span>{centre.address}</span>
+                          </p>
                         </div>
-                        {centre.distanceKm !== undefined && (
+
+                        <div className="flex flex-wrap items-center gap-4 text-xs text-emerald-900/80 pt-1">
                           <div className="flex items-center gap-1.5">
-                            <Navigation className="w-4 h-4 text-emerald-700" />
+                            <Calendar className="w-4 h-4 text-emerald-700" />
                             <div className="flex flex-col">
-                              <span className="text-emerald-900/60">Distance</span>
-                              <span className="font-semibold text-[#014532]">{centre.distanceKm} km</span>
+                              <span className="font-semibold">{centre.operatingDays}</span>
+                              <span className="text-emerald-900/60">{centre.operatingHoursStart} - {centre.operatingHoursEnd}</span>
                             </div>
                           </div>
-                        )}
+                          <div className="flex items-center gap-1.5">
+                            <Building2 className="w-4 h-4 text-emerald-700" />
+                            <div className="flex flex-col">
+                              <span className="text-emerald-900/60">Capacity</span>
+                              <span className="font-semibold text-[#014532]">{centre.morningCapacityQuintals + centre.afternoonCapacityQuintals} q/day</span>
+                            </div>
+                          </div>
+                          {centre.distanceKm !== undefined && (
+                            <div className="flex items-center gap-1.5">
+                              <Navigation className="w-4 h-4 text-emerald-700" />
+                              <div className="flex flex-col">
+                                <span className="text-emerald-900/60">Distance</span>
+                                <span className="font-semibold text-[#014532]">{centre.distanceKm} km</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right: Actions */}
+                      <div className="shrink-0 flex flex-col sm:items-end justify-center gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-emerald-100">
+                        <Link
+                          href={`/farmer/book?centreId=${centre.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-[#00966a] hover:bg-[#007f59] text-white rounded-lg text-sm font-bold shadow-md transition"
+                        >
+                          <span>{lang === 'hi' ? 'स्लॉट बुक करें' : 'Book Arrival Slot'}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                        <Link
+                          href={`/farmer/book?centreId=${centre.id}`}
+                          className="text-sm font-bold text-[#00966a] hover:text-[#007f59] transition inline-flex items-center gap-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {lang === 'hi' ? 'विवरण देखें →' : 'View Details →'}
+                        </Link>
                       </div>
                     </div>
-
-                    {/* Right: Actions */}
-                    <div className="shrink-0 flex flex-col sm:items-end justify-center gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-emerald-100">
-                      <Link
-                        href={`/farmer/book?centreId=${centre.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-[#00966a] hover:bg-[#007f59] text-white rounded-lg text-sm font-bold shadow-md transition"
-                      >
-                        <span>{lang === 'hi' ? 'स्लॉट बुक करें' : 'Book Arrival Slot'}</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href={`/farmer/book?centreId=${centre.id}`}
-                        className="text-sm font-bold text-[#00966a] hover:text-[#007f59] transition inline-flex items-center gap-1"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {lang === 'hi' ? 'विवरण देखें →' : 'View Details →'}
-                      </Link>
-                    </div>
                   </div>
-                </div>
-              );
-            })
+                );
+              })}
+            </div>
           )}
         </div>
 

@@ -340,7 +340,7 @@ function CheckinDashboardContent() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-slate-400 text-xs space-y-3">
+      <div className="w-full min-w-0 max-w-5xl mx-auto px-4 py-16 text-center text-slate-400 text-xs space-y-3">
         <RefreshCw className="w-6 h-6 text-sky-400 animate-spin mx-auto" />
         <p>Initializing Gate & Arrival Desk Terminal...</p>
       </div>
@@ -349,7 +349,7 @@ function CheckinDashboardContent() {
 
   if (error) {
     return (
-      <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
+      <div className="w-full min-w-0 max-w-md mx-auto px-4 py-16 text-center space-y-4">
         <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 mx-auto flex items-center justify-center">
           <AlertCircle className="w-6 h-6" />
         </div>
@@ -369,7 +369,7 @@ function CheckinDashboardContent() {
   const pendingCount = arrivals.filter((a) => a.status === 'BOOKED' || a.status === 'PENDING').length;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="w-full min-w-0 max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Hidden container for image file scanning */}
       <div id="qr-reader-temp" className="hidden" />
 
@@ -448,7 +448,7 @@ function CheckinDashboardContent() {
           </div>
 
           {/* Queue Details Card */}
-          <div className="max-w-md mx-auto bg-[#0B1020] border border-[#334155] rounded-xl p-4 text-left space-y-3">
+          <div className="w-full min-w-0 max-w-md mx-auto bg-[#0B1020] border border-[#334155] rounded-xl p-4 text-left space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-[#334155]">
               <span className="text-xs text-slate-400">Farmer Name</span>
               <span className="font-semibold text-white text-xs">
@@ -632,7 +632,7 @@ function CheckinDashboardContent() {
       {!validatedBooking && !confirmedResult && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           {/* CAMERA SCANNER AREA (7 Cols) */}
-          <div className="lg:col-span-7 bg-[#151C2F] border border-[#334155] rounded-2xl p-5 space-y-4 shadow-lg">
+          <div className="min-w-0 w-full lg:col-span-7 bg-[#151C2F] border border-[#334155] rounded-2xl p-5 space-y-4 shadow-lg">
             <div className="flex items-center justify-between pb-3 border-b border-[#334155]">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400">
@@ -780,7 +780,7 @@ function CheckinDashboardContent() {
           </div>
 
           {/* MANUAL FALLBACK ENTRY (5 Cols) */}
-          <div className="lg:col-span-5 bg-[#151C2F] border border-[#334155] rounded-2xl p-5 space-y-5 shadow-lg flex flex-col justify-between">
+          <div className="min-w-0 w-full lg:col-span-5 bg-[#151C2F] border border-[#334155] rounded-2xl p-5 space-y-5 shadow-lg flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-2.5 pb-3 border-b border-[#334155]">
                 <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400">
@@ -863,7 +863,7 @@ function CheckinDashboardContent() {
       {/* ============================================================ */}
       {/* AREA 1: TODAY'S SCHEDULED ARRIVALS (Awaiting Arrival)        */}
       {/* ============================================================ */}
-      <div className="bg-[#151C2F] border border-[#334155] rounded-2xl overflow-hidden shadow-lg">
+      <div className="min-w-0 w-full bg-[#151C2F] border border-[#334155] rounded-2xl overflow-hidden shadow-lg">
         <div className="p-4 sm:p-5 border-b border-[#334155] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <h3 className="font-bold text-white text-sm">Today&apos;s Scheduled Arrivals</h3>
@@ -883,7 +883,7 @@ function CheckinDashboardContent() {
             <p className="text-[11px]">All scheduled farmers for today have completed gate arrival or no further slots are booked.</p>
           </div>
         ) : (
-          <div className="max-h-[500px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+          <div className="operations-queue-scroll overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 uppercase tracking-wider text-[10px] border-b border-[#334155]">
                 <tr>
@@ -955,7 +955,7 @@ function CheckinDashboardContent() {
       {/* ============================================================ */}
       {/* AREA 2: PHYSICAL ARRIVAL QUEUE (Admitted produce at Depot)   */}
       {/* ============================================================ */}
-      <div className="bg-[#151C2F] border border-[#334155] rounded-2xl overflow-hidden shadow-lg">
+      <div className="min-w-0 w-full bg-[#151C2F] border border-[#334155] rounded-2xl overflow-hidden shadow-lg">
         <div className="p-4 sm:p-5 border-b border-[#334155] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">
@@ -978,7 +978,7 @@ function CheckinDashboardContent() {
             <p className="text-[11px]">Farmers will enter this queue once their QR code is scanned and checked in at the gate.</p>
           </div>
         ) : (
-          <div className="max-h-[500px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+          <div className="operations-queue-scroll overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 uppercase tracking-wider text-[10px] border-b border-[#334155]">
                 <tr>

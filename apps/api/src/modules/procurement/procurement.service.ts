@@ -191,10 +191,11 @@ export class ProcurementService {
       },
     });
 
-    // Advance status to PAYMENT
+    // Advance status to PAYMENT or CANCELLED
+    const nextStatus = dto.decision === ProcurementDecision.REJECTED ? BookingStatus.CANCELLED : BookingStatus.PAYMENT;
     await this.prisma.procurementBooking.update({
       where: { id: bookingId },
-      data: { status: BookingStatus.PAYMENT },
+      data: { status: nextStatus },
     });
 
     // Audit log

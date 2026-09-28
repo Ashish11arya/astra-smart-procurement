@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Sparkles,
@@ -82,7 +82,12 @@ function QualityDashboardContent() {
   const [remarks, setRemarks] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const loadQueue = async (dateOverride?: string) => {
+  const selectedBookingRef = useRef(selectedBooking);
+  useEffect(() => {
+    selectedBookingRef.current = selectedBooking;
+  }, [selectedBooking]);
+
+  const loadQueue = useCallback(async (dateOverride?: string) => {
     setLoading(true);
     try {
       const dateToFetch = dateOverride !== undefined ? dateOverride : selectedDate;
@@ -102,7 +107,8 @@ function QualityDashboardContent() {
       // Auto-select first active item if none selected or previous item no longer pending
       const pendingItems = normalizedQueue.filter((i) => i.status === 'QUALITY_ASSESSMENT');
       if (pendingItems.length > 0) {
-        if (!selectedBooking || !pendingItems.some((i) => i.id === selectedBooking.id)) {
+        const currentSelected = selectedBookingRef.current;
+        if (!currentSelected || !pendingItems.some((i) => i.id === currentSelected.id)) {
           setSelectedBooking(pendingItems[0]);
         }
       } else {
@@ -115,11 +121,11 @@ function QualityDashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate]);
 
   useEffect(() => {
     loadQueue(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, loadQueue]);
 
   // Active items awaiting quality assessment
   const activeQueue = useMemo(() => {
@@ -185,9 +191,9 @@ function QualityDashboardContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
       {/* Top Operations Action Header */}
-      <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400 flex-shrink-0">
             <Sparkles className="w-6 h-6" />
@@ -227,7 +233,7 @@ function QualityDashboardContent() {
       </div>
 
       {/* Main Tabs: Active Queue vs Daily Processed History */}
-      <div className="flex items-center gap-2 border-b border-[#334155] pb-3 text-xs font-semibold">
+      <div className="flex items-center gap-2 border-b border-[#334155] pb-3 text-xs font-semibold overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setActiveTab('queue')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
@@ -290,7 +296,7 @@ function QualityDashboardContent() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-3 overflow-y-auto pr-1 operations-queue-scroll max-h-[580px] min-h-0">
+              <div className="space-y-3 pr-1 operations-queue-scroll min-h-0">
                 {activeQueue.map((item) => {
                   const isSelected = selectedBooking?.id === item.id;
                   return (
@@ -551,7 +557,7 @@ function QualityDashboardContent() {
               </div>
             </div>
 
-            <div className="relative min-w-[240px]">
+            <div className="relative w-full sm:min-w-[240px] sm:w-auto">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
@@ -564,7 +570,7 @@ function QualityDashboardContent() {
           </div>
 
           {/* Processed History Table */}
-          <div className="bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
+          <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
             <div className="p-4 sm:p-5 border-b border-[#334155] flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-white">Daily Certified Lots ({processedHistory.length})</h3>
@@ -581,7 +587,7 @@ function QualityDashboardContent() {
                 <p className="text-[11px] text-slate-500">No farmer lots were certified for {selectedDate}.</p>
               </div>
             ) : (
-              <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+              <div className="operations-queue-scroll overflow-x-auto">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 font-mono uppercase tracking-wider text-[10px] border-b border-[#334155]">
                     <tr>

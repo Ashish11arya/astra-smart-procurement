@@ -16,7 +16,7 @@ export default function CentreDetailPage({ params }: { params: Promise<{ id: str
   }, [resolvedParams?.id, router]);
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-16 text-center text-slate-500 text-sm">
+    <div className="w-full min-w-0 max-w-xl mx-auto px-4 py-16 text-center text-slate-500 text-sm">
       Redirecting to unified procurement booking...
     </div>
   );

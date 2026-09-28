@@ -33,6 +33,7 @@ export interface UserSummaryDto {
   id: string;
   mobile: string;
   role: UserRole;
+  name?: string | null;
 }
 
 export interface LandParcelDto {

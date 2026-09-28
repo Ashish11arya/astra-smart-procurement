@@ -283,7 +283,7 @@ function VerificationApplicationsContent() {
 
       {/* 3. Applications Table with Bounded Internal Scroll */}
       <div className="rounded-xl border border-[#334155] bg-[#151C2F] overflow-hidden shadow-xl">
-        <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+        <div className="operations-queue-scroll overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-300 border-collapse">
             <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 font-semibold border-b border-[#334155] uppercase tracking-wider text-[10px] shadow-sm font-mono">
               <tr>

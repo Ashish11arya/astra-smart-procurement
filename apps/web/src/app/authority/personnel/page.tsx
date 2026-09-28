@@ -274,7 +274,7 @@ export default function AuthorityPersonnelPage() {
 
       {/* 3. Personnel Table */}
       <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-        <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+        <div className="operations-queue-scroll overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-300">
             <thead className="sticky top-0 z-10 bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-[10px]">
               <tr>

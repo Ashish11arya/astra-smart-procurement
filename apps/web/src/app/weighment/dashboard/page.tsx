@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -69,9 +69,17 @@ interface PendingCorrection {
 function WeighmentDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get('tab') === 'supervisor' ? 'supervisor' : 'officer';
+  const initialTab = searchParams.get('tab') === 'supervisor' ? 'supervisor' : searchParams.get('tab') === 'history' ? 'history' : 'officer';
 
   const [activeTab, setActiveTab] = useState<'officer' | 'history' | 'supervisor'>(initialTab);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'supervisor' || tab === 'history' || tab === 'officer') {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
   const { logoutPortal } = useAuth();
   const todayStr = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState<string>(todayStr);
@@ -136,7 +144,7 @@ function WeighmentDashboardContent() {
   const [supervisorRemarks, setSupervisorRemarks] = useState('');
   const [deciding, setDeciding] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       if (activeTab === 'supervisor') {
@@ -191,7 +199,7 @@ function WeighmentDashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, selectedDate]);
 
   useEffect(() => {
     loadData();
@@ -201,7 +209,7 @@ function WeighmentDashboardContent() {
       }
     }, 15000);
     return () => clearInterval(interval);
-  }, [activeTab, selectedDate]);
+  }, [activeTab, loadData]);
 
   // Simulate hardware reading
   const handleSimulateHardware = async () => {
@@ -349,9 +357,9 @@ function WeighmentDashboardContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
       {/* Top Operations Action Header */}
-      <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
             <Scale className="w-6 h-6" />
@@ -390,37 +398,40 @@ function WeighmentDashboardContent() {
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="flex border-b border-[#334155] space-x-4 text-xs font-semibold">
+      {/* Tab Navigation (Desktop only) */}
+      <div className="hidden md:flex md:static bg-transparent border-b border-[#334155] pb-0 justify-start space-x-4 text-xs font-semibold">
         <button
           onClick={() => setActiveTab('officer')}
-          className={`pb-3 px-1 border-b-2 transition-all flex items-center space-x-2 ${
+          className={`pb-3 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none ${
             activeTab === 'officer'
               ? 'border-amber-400 text-amber-400 font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
+          aria-label="Weighment Desk"
         >
           <Scale className="w-4 h-4" />
           <span>Weighment Desk ({activeQueue.length} in queue)</span>
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`pb-3 px-1 border-b-2 transition-all flex items-center space-x-2 ${
+          className={`pb-3 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none ${
             activeTab === 'history'
               ? 'border-amber-400 text-amber-400 font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
+          aria-label="Completed Weighments and Daily History"
         >
           <History className="w-4 h-4" />
           <span>Completed Weighments & Daily History ({processedHistory.length})</span>
         </button>
         <button
           onClick={() => setActiveTab('supervisor')}
-          className={`pb-3 px-1 border-b-2 transition-all flex items-center space-x-2 ${
+          className={`pb-3 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none ${
             activeTab === 'supervisor'
               ? 'border-amber-400 text-amber-400 font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
+          aria-label="Supervisor Verification"
         >
           <ShieldCheck className="w-4 h-4" />
           <span>Supervisor Verification ({pendingCorrections.length} pending)</span>
@@ -463,7 +474,7 @@ function WeighmentDashboardContent() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-3 overflow-y-auto pr-1 operations-queue-scroll max-h-[580px] min-h-0">
+              <div className="space-y-3 pr-1 operations-queue-scroll min-h-0">
                 {activeQueue.map((item, idx) => {
                   const isSelected = selectedBooking?.id === item.id;
                   return (
@@ -496,7 +507,7 @@ function WeighmentDashboardContent() {
                         </span>
                       </div>
 
-                      <div className="mt-3 pt-2.5 border-t border-[#334155]/80 grid grid-cols-2 gap-2 text-xs">
+                      <div className="mt-3 pt-2.5 border-t border-[#334155]/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-[10px] text-slate-400 uppercase font-semibold block">Crop</span>
                           <p className="font-semibold text-slate-200">{item.commodityName}</p>
@@ -612,7 +623,7 @@ function WeighmentDashboardContent() {
 
                 {/* Booking Summary */}
                 <div className="p-5 sm:p-6 space-y-5">
-                  <div className="grid grid-cols-3 gap-3 p-3.5 bg-[#0B1020] border border-[#334155] rounded-xl text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-[#0B1020] border border-[#334155] rounded-xl text-xs">
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase font-semibold block">Farmer</span>
                       <p className="font-bold text-white text-xs mt-0.5 truncate">{selectedBooking.farmerName}</p>
@@ -732,7 +743,7 @@ function WeighmentDashboardContent() {
               </div>
             </div>
 
-            <div className="relative min-w-[240px]">
+            <div className="relative w-full sm:min-w-[240px] sm:w-auto">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
@@ -745,7 +756,7 @@ function WeighmentDashboardContent() {
           </div>
 
           {/* Table */}
-          <div className="bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
+          <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
             <div className="p-4 sm:p-5 border-b border-[#334155] flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-white">Daily Weighed Farmer Records ({processedHistory.length})</h3>
@@ -762,7 +773,7 @@ function WeighmentDashboardContent() {
                 <p className="text-[11px] text-slate-500">No farmer produce was weighed at this depot for {selectedDate}.</p>
               </div>
             ) : (
-              <div className="max-h-[580px] overflow-y-auto operations-queue-scroll overflow-x-auto">
+              <div className="operations-queue-scroll overflow-x-auto">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 font-mono uppercase tracking-wider text-[10px] border-b border-[#334155]">
                     <tr>
@@ -853,7 +864,7 @@ function WeighmentDashboardContent() {
               <p className="text-slate-500 text-[11px]">All weight adjustments have been reviewed and decided.</p>
             </div>
           ) : (
-            <div className="max-h-[580px] overflow-y-auto operations-queue-scroll pr-1">
+            <div className="operations-queue-scroll pr-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pendingCorrections.map((item) => (
                   <div
@@ -876,7 +887,7 @@ function WeighmentDashboardContent() {
                     </div>
 
                     {/* Weight Comparison */}
-                    <div className="grid grid-cols-2 gap-3 p-3 bg-[#0B1020] border border-[#334155] rounded-lg text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-[#0B1020] border border-[#334155] rounded-lg text-xs">
                       <div>
                         <span className="text-[10px] text-slate-400 uppercase font-semibold block">
                           Original Scale
@@ -1073,7 +1084,7 @@ function WeighmentDashboardContent() {
                 />
               </div>
 
-              <div className="pt-2 grid grid-cols-2 gap-3">
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   disabled={deciding}
@@ -1111,7 +1122,7 @@ export default function WeighmentDashboardPage() {
     >
       <React.Suspense
         fallback={
-          <div className="max-w-5xl mx-auto px-4 py-12 text-center text-slate-500 text-sm">
+          <div className="w-full min-w-0 max-w-5xl mx-auto px-4 py-12 text-center text-slate-500 text-sm">
             Loading Weighment Desk...
           </div>
         }

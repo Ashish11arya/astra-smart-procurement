@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { RefreshCw, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -28,7 +28,7 @@ export function RouteGuard({
     setMounted(true);
   }, []);
 
-  const getLoginRedirect = () => {
+  const getLoginRedirect = useCallback(() => {
     if (loginRedirect) return loginRedirect;
     if (pathname.startsWith('/farmer')) return '/farmer/login';
     if (pathname.startsWith('/authority')) return '/authority/login';
@@ -45,7 +45,7 @@ export function RouteGuard({
       return '/operations/login';
     }
     return '/';
-  };
+  }, [loginRedirect, pathname]);
 
   useEffect(() => {
     if (!mounted || isLoading) return;
@@ -55,7 +55,7 @@ export function RouteGuard({
       const target = getLoginRedirect();
       router.replace(target);
     }
-  }, [mounted, isLoading, token, user, router, pathname]);
+  }, [mounted, isLoading, token, user, router, getLoginRedirect]);
 
   // Loading state
   if (!mounted || isLoading) {

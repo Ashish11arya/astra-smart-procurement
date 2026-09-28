@@ -89,6 +89,11 @@ export default function PersonnelLoginPage() {
             router.push('/operations/payment');
             break;
           case 'PROCUREMENT_CENTRE_OFFICER':
+            router.push('/operations/centre');
+            break;
+          case 'FARMER_VERIFICATION_AUTHORITY':
+            router.push('/verification/dashboard');
+            break;
           default:
             router.push('/operations/centre');
             break;

@@ -136,6 +136,7 @@ model SystemHealth {
 model User {
   id                   String                      @id @default(uuid())
   mobile               String                      @unique
+  name                 String?
   role                 UserRole                    @default(FARMER)
   isActive             Boolean                     @default(true)
   createdAt            DateTime                    @default(now())

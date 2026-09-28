@@ -10,7 +10,7 @@ export function Footer() {
 
   return (
     <footer data-print-hide className="print:hidden bg-[#003F3B] text-teal-100 text-xs py-10">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="w-full px-4 lg:px-4 xl:px-5 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center bg-white rounded-full p-1 shadow-sm">
             <AstraLogo className="w-8 h-8 text-[#003F3B]" />

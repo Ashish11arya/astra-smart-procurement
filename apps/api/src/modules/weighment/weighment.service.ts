@@ -204,7 +204,7 @@ export class WeighmentService {
       throw new BadRequestException(`Cannot weigh booking with status: ${booking.status}.`);
     }
 
-    if (booking.weighment && booking.weighment.status === WeighmentStatus.RECORDED) {
+    if (booking.weighment && (booking.weighment.status === WeighmentStatus.RECORDED || booking.weighment.status === WeighmentStatus.CORRECTION_PENDING)) {
       throw new BadRequestException('Hardware weighment has already been recorded for this visit.');
     }
 

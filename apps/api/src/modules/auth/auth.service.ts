@@ -104,6 +104,9 @@ export class AuthService {
         case RegistrationStatus.VERIFICATION_PENDING:
           status = FarmerState.UNDER_VERIFICATION;
           break;
+        case RegistrationStatus.RETURNED_FOR_CORRECTION:
+          status = FarmerState.RETURNED_FOR_CORRECTION;
+          break;
         case RegistrationStatus.SUBMITTED:
           status = FarmerState.SUBMITTED;
           break;
@@ -352,7 +355,11 @@ export class AuthService {
             farmerState = FarmerState.ACTION_REQUIRED;
             break;
           case RegistrationStatus.UNDER_VERIFICATION:
+          case RegistrationStatus.VERIFICATION_PENDING:
             farmerState = FarmerState.UNDER_VERIFICATION;
+            break;
+          case RegistrationStatus.RETURNED_FOR_CORRECTION:
+            farmerState = FarmerState.RETURNED_FOR_CORRECTION;
             break;
           case RegistrationStatus.SUBMITTED:
             farmerState = FarmerState.SUBMITTED;
@@ -497,6 +504,7 @@ export class AuthService {
       sub: user.id,
       mobile: user.mobile,
       role: user.role,
+      name: (user as any).name,
     });
 
     const activeAssignment = user.personnelAssignments[0];
@@ -507,6 +515,7 @@ export class AuthService {
         id: user.id,
         mobile: user.mobile,
         role: user.role,
+        name: (user as any).name,
       },
       assignment: activeAssignment
         ? {

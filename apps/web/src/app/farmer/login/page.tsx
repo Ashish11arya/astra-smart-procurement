@@ -133,62 +133,17 @@ export default function FarmerLoginPage() {
   };
 
   return (
-    <main className="flex-1 flex relative w-full bg-white py-10">
-      {/* Subtle overlay to ensure text readability on the left */}
+    <main className="flex-1 flex relative w-full bg-transparent min-h-screen py-10">
+      {/* Background Image */}
+      <div 
+        className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/farmer-login-bg-new.jpg')" }}
+      />
       
-
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-2 lg:py-4 flex flex-col lg:flex-row items-center justify-between gap-10 relative z-10 h-full">
-        
-        {/* LEFT CONTENT */}
-        <div className="hidden lg:flex flex-col max-w-[500px] mt-0 pr-4">
-          <h1 className="text-[#062D3D] text-3xl xl:text-4xl font-bold leading-[1.2] mb-4">
-            Access Government<br />Procurement Services
-          </h1>
-          <p className="text-[#163F50] text-[19px] font-[600] mb-10 max-w-[420px]">
-            Login to manage your paddy procurement, check status and track payments securely.
-          </p>
-
-          <div className="space-y-8">
-            <div className="flex gap-4 items-start">
-              <div className="w-[50px] h-[50px] rounded-[14px] bg-[#DDF5EB] flex items-center justify-center shrink-0">
-                <UserCheck className="w-6 h-6 text-[#006B56]" />
-              </div>
-              <div>
-                <h3 className="text-[#062D3D] text-[18px] font-[800] mb-1">Secure Login</h3>
-                <p className="text-[#163F50] text-[15px] font-[600] leading-[1.4]">
-                  Access your account using<br/>your registered mobile number.
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex gap-4 items-start">
-              <div className="w-[50px] h-[50px] rounded-[14px] bg-[#DDF5EB] flex items-center justify-center shrink-0">
-                <FileText className="w-6 h-6 text-[#006B56]" />
-              </div>
-              <div>
-                <h3 className="text-[#062D3D] text-[18px] font-[800] mb-1">View Procurement Details</h3>
-                <p className="text-[#163F50] text-[15px] font-[600] leading-[1.4]">
-                  Check your paddy procurement<br/>records and payment status.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="w-[50px] h-[50px] rounded-[14px] bg-[#DDF5EB] flex items-center justify-center shrink-0">
-                <Clock className="w-6 h-6 text-[#006B56]" />
-              </div>
-              <div>
-                <h3 className="text-[#062D3D] text-[18px] font-[800] mb-1">Track Status</h3>
-                <p className="text-[#163F50] text-[15px] font-[600] leading-[1.4]">
-                  Get real-time updates on your<br/>procurement and payments.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-2 lg:py-4 flex flex-col lg:flex-row items-center justify-center lg:justify-end gap-10 relative z-10 h-full">
 
         {/* RIGHT CONTENT (LOGIN CARD) */}
-        <div className="w-full max-w-[520px] bg-white rounded-[22px] shadow-2xl p-5 lg:p-6 border border-slate-100 xl:mr-[4%] my-auto flex flex-col">
+        <div className="w-full max-w-[520px] bg-white rounded-[22px] shadow-2xl p-5 lg:p-6 border border-slate-100 lg:mr-[5%] xl:mr-[10%] 2xl:mr-[15%] my-auto flex flex-col">
           
           <div className="text-center mb-4">
             <div className="w-[60px] h-[60px] rounded-full bg-[#DDF5EB] flex items-center justify-center mx-auto mb-4">
