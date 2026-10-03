@@ -87,6 +87,26 @@ export class VerificationController {
   @Get('history')
   async getVerificationHistory(@Query('limit') limitStr?: string) {
     const limit = limitStr ? parseInt(limitStr, 10) : 50;
-    return this.adminService.getAuditLogs(undefined, limit);
+    const rawLogs = await this.adminService.getAuditLogs(undefined, limit);
+    
+    // Filter to show only farmer verification events
+    const verificationLogs = rawLogs.filter(log => log.eventType.startsWith('FARMER_'));
+
+    // Map database AuditLog to the VerificationHistoryItem DTO the frontend expects
+    return verificationLogs.map(log => {
+      const state = (log.newState as Record<string, any>) || {};
+      
+      return {
+        id: log.id,
+        eventType: log.eventType,
+        createdAt: log.createdAt,
+        remarks: log.reason || null,
+        actorId: log.actorId,
+        farmerId: state.farmerId || null,
+        registrationNumber: state.registrationNumber || null,
+        farmerName: state.fullName || null,
+        farmerMobile: state.mobile || null,
+      };
+    });
   }
 }

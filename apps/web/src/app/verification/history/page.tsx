@@ -98,7 +98,7 @@ export default function VerificationHistoryPage() {
   };
 
   return (
-    <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+    <>
       {/* 1. Header Navigation */}
       <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex flex-col gap-3">
@@ -222,6 +222,6 @@ export default function VerificationHistoryPage() {
           </table>
         </div>
       </div>
-    </main>
+    </>
   );
 }

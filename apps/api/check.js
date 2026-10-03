@@ -1,0 +1,1 @@
+async function main() { const req = await fetch('http://localhost:3001/api/v1/booking/capacity?farmerId=6d44663c-1ba3-4b42-912e-c26deb5a6da6'); const text = await req.text(); console.log(text); } main();
