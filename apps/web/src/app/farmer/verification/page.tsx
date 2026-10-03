@@ -104,49 +104,20 @@ export default function FarmerVerificationPage() {
     !isVerified && !isReturned && !isRejected;
 
   return (
-    <main className="flex-1 max-w-4xl mx-auto w-full p-4 sm:p-6 md:p-8 space-y-6">
-      {/* Top Breadcrumb & Action Bar */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/farmer/dashboard"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{locale === 'hi' ? 'डैशबोर्ड पर वापस जाएं' : 'Back to Dashboard'}</span>
-        </Link>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setHelpOpen(true)}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-xs font-semibold text-slate-400 hover:text-white transition"
-          >
-            <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">Helpline</span>
-          </button>
-
-          <button
-            onClick={fetchStatus}
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-xs font-semibold text-slate-200 shadow-sm transition active:scale-95"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${loading ? 'animate-spin' : ''}`} />
-            <span>{loading ? t.loading : locale === 'hi' ? 'ताज़ा करें' : 'Refresh'}</span>
-          </button>
-        </div>
-      </div>
+    <main className="flex-1 w-[94vw] max-w-[1380px] mx-auto pt-6 sm:pt-8 pb-12 font-sans">
 
       {loading ? (
-        <div className="glass-card rounded-3xl p-12 text-center border border-slate-800/80 bg-slate-900/50 space-y-3">
-          <RefreshCw className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
-          <p className="text-sm font-semibold text-slate-300">{t.loading}</p>
+        <div className="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm space-y-3">
+          <RefreshCw className="w-8 h-8 text-[#00695C] animate-spin mx-auto" />
+          <p className="text-sm font-medium text-gray-500">{t.loading}</p>
         </div>
       ) : error ? (
-        <div className="glass-card rounded-3xl p-8 border border-slate-800/80 bg-slate-900/50 text-center space-y-4">
-          <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
-          <h3 className="font-bold text-white">{error}</h3>
+        <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center space-y-4">
+          <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
+          <h3 className="font-bold text-gray-900">{error}</h3>
           <button
             onClick={() => router.push('/farmer/register')}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs shadow-lg shadow-emerald-900/30"
+            className="px-6 py-2.5 rounded-xl bg-[#00695C] hover:bg-[#004D40] text-white font-semibold text-sm shadow-md"
           >
             {t.startRegistration}
           </button>
@@ -157,27 +128,30 @@ export default function FarmerVerificationPage() {
           {/* 1. PRIMARY STATUS BANNER CARD                                */}
           {/* ============================================================ */}
           <div
-            className={`rounded-3xl border p-6 sm:p-8 backdrop-blur-xl shadow-xl transition relative overflow-hidden ${
+            className={`rounded-3xl border p-6 md:p-10 shadow-sm transition relative overflow-hidden ${
               isVerified
-                ? 'bg-emerald-950/30 border-emerald-500/40 shadow-emerald-950/20'
+                ? 'bg-[#E8F8F3] border-[#A7E8D0]'
                 : isReturned
-                ? 'bg-amber-950/30 border-amber-500/40 shadow-amber-950/20'
+                ? 'bg-amber-50 border-amber-200'
                 : isRejected
-                ? 'bg-rose-950/30 border-rose-500/40 shadow-rose-950/20'
-                : 'bg-indigo-950/30 border-indigo-500/30 shadow-indigo-950/20'
+                ? 'bg-red-50 border-red-200'
+                : 'bg-blue-50 border-blue-200'
             }`}
+            style={{
+              backgroundImage: isVerified ? 'linear-gradient(to right bottom, #E8F8F3, #F4FBF9)' : 'none'
+            }}
           >
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10">
+              <div className="flex items-start gap-5">
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border ${
+                  className={`w-16 h-16 rounded-full flex items-center justify-center shrink-0 border-4 bg-white ${
                     isVerified
-                      ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
+                      ? 'border-[#00695C] text-[#00695C]'
                       : isReturned
-                      ? 'bg-amber-500/20 border-amber-500/30 text-amber-400'
+                      ? 'border-amber-500 text-amber-600'
                       : isRejected
-                      ? 'bg-rose-500/20 border-rose-500/30 text-rose-400'
-                      : 'bg-indigo-500/20 border-indigo-500/30 text-indigo-400'
+                      ? 'border-red-500 text-red-600'
+                      : 'border-blue-500 text-blue-600'
                   }`}
                 >
                   {isVerified ? (
@@ -191,36 +165,36 @@ export default function FarmerVerificationPage() {
                   )}
                 </div>
 
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 flex-wrap">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 flex-wrap">
                     <span
-                      className={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${
+                      className={`text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full border ${
                         isVerified
-                          ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+                          ? 'bg-[#E0F2F1] text-[#00695C] border-[#80CBC4]'
                           : isReturned
-                          ? 'bg-amber-950 text-amber-400 border-amber-800'
+                          ? 'bg-amber-100 text-amber-800 border-amber-300'
                           : isRejected
-                          ? 'bg-rose-950 text-rose-400 border-rose-800'
-                          : 'bg-indigo-950 text-indigo-300 border-indigo-800'
+                          ? 'bg-red-100 text-red-800 border-red-300'
+                          : 'bg-blue-100 text-blue-800 border-blue-300'
                       }`}
                     >
                       {isVerified
-                        ? (locale === 'hi' ? 'सत्यापित किसान — खरीद हेतु अधिकृत' : 'Verified Farmer — Eligible for Booking')
+                        ? (locale === 'hi' ? 'सत्यापित किसान — खरीद हेतु अधिकृत' : 'VERIFIED FARMER — ELIGIBLE FOR BOOKING')
                         : isReturned
-                        ? (locale === 'hi' ? 'संशोधन हेतु वापस भेजा गया' : 'Returned for Correction')
+                        ? (locale === 'hi' ? 'संशोधन हेतु वापस भेजा गया' : 'RETURNED FOR CORRECTION')
                         : isRejected
-                        ? (locale === 'hi' ? 'आवेदन अस्वीकृत' : 'Application Rejected')
-                        : (locale === 'hi' ? 'सत्यापन लंबित — प्राधिकरण समीक्षाधीन' : 'Verification Pending — Under Authority Review')}
+                        ? (locale === 'hi' ? 'आवेदन अस्वीकृत' : 'APPLICATION REJECTED')
+                        : (locale === 'hi' ? 'सत्यापन लंबित — प्राधिकरण समीक्षाधीन' : 'VERIFICATION PENDING — UNDER AUTHORITY REVIEW')}
                     </span>
 
                     {/* Mobile Verified Pill */}
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-0.5 rounded-full">
-                      <Check className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#00695C] bg-white border border-[#A7E8D0] px-3 py-1 rounded-full shadow-sm">
+                      <Check className="w-3.5 h-3.5" />
                       <span>{locale === 'hi' ? 'मोबाइल सत्यापित' : 'Mobile Verified'}</span>
                     </span>
                   </div>
 
-                  <h1 className="text-xl sm:text-2xl font-black text-white pt-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B3A]">
                     {isVerified
                       ? (locale === 'hi' ? 'आपका किसान सत्यापन स्वीकृत हो गया है' : 'Authorised Verification Approved')
                       : isReturned
@@ -230,7 +204,7 @@ export default function FarmerVerificationPage() {
                       : (locale === 'hi' ? 'आपका आवेदन प्राधिकरण समीक्षाधीन है' : 'Application Queued for Authority Verification')}
                   </h1>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                  <p className="text-sm sm:text-base text-[#3C5B5A] leading-relaxed max-w-3xl">
                     {isVerified
                       ? (locale === 'hi'
                           ? 'बधाई! आपके भूमि विवरण और बैंक खाते का अधिकृत खरीद अधिकारी द्वारा सत्यापन पूर्ण हो गया है। आप न्यूनतम समर्थन मूल्य (MSP) पर अनाज बेचने हेतु स्लॉट बुक कर सकते हैं।'
@@ -247,196 +221,229 @@ export default function FarmerVerificationPage() {
                           ? 'आपका पंजीकरण आवेदन प्राप्त हो चुका है और क्षेत्रीय खरीद प्राधिकरण के समीक्षा रोस्टर में है। सरकारी नियमों के अनुसार स्लॉट बुकिंग सत्यापन के उपरांत ही सक्षम होगी।'
                           : 'Your application has been registered and is queued for verification by the designated procurement authority. Concurrency locks prevent duplicate processing. Slot booking will unlock once approved.')}
                   </p>
+                  
+                  {/* ACTION BUTTONS STRIP */}
+                  <div className="pt-4 flex flex-wrap items-center gap-4 relative z-20">
+                    {isVerified ? (
+                      <Link
+                        href="/farmer/book"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#00695C] hover:bg-[#004D40] text-white font-bold text-sm shadow-md transition"
+                      >
+                        <CalendarDays className="w-4 h-4" />
+                        <span>{locale === 'hi' ? 'खरीद स्लॉट बुक करें' : 'Book Procurement Slot'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    ) : isReturned ? (
+                      <Link
+                        href="/farmer/register?action=update"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm shadow-md transition"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        <span>{locale === 'hi' ? 'विवरण सुधारें व पुनः सबमिट करें' : 'Update Details & Resubmit'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <button
+                          disabled
+                          className="cursor-not-allowed inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 font-semibold text-sm"
+                          title="Verification pending approval by authority"
+                        >
+                          <Lock className="w-4 h-4" />
+                          <span>{locale === 'hi' ? 'स्लॉट बुकिंग लॉक है (सत्यापन प्रतीक्षित)' : 'Procurement Booking Locked'}</span>
+                        </button>
+                      </div>
+                    )}
+
+                    <Link
+                      href="/farmer/centres"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white border border-[#00695C] text-[#00695C] hover:bg-[#F3FBF8] font-bold text-sm transition"
+                    >
+                      <Building className="w-4 h-4" />
+                      <span>{locale === 'hi' ? 'खरीद केंद्र सूची देखें' : 'View Procurement Centres'}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
 
-              {/* Application Number Box */}
-              <div className="shrink-0 bg-slate-950/80 border border-slate-800 p-3.5 rounded-2xl text-right sm:text-left">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                  {t.regId}
-                </span>
-                <span className="font-mono text-sm sm:text-base font-black text-emerald-400 tracking-tight">
+              {/* Actions & Application Number Box */}
+              <div className="shrink-0 flex flex-col items-end gap-4 z-10 md:w-80">
+                <button
+                  onClick={fetchStatus}
+                  disabled={loading}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#A7E8D0] bg-white hover:bg-[#F3FBF8] text-sm font-semibold text-[#00695C] shadow-sm transition active:scale-95 w-fit"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                  <span>{loading ? t.loading : locale === 'hi' ? 'ताज़ा करें' : 'Refresh'}</span>
+                </button>
+                <div className="bg-white border border-[#A7E8D0] shadow-sm p-6 rounded-2xl w-full flex flex-col items-start space-y-2">
+                  <div className="flex items-center gap-2 text-[#00695C] mb-1">
+                  <div className="w-8 h-8 rounded-full bg-[#E8F8F3] flex items-center justify-center text-[#00695C]">
+                     <FileText className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs uppercase font-semibold text-gray-500 tracking-wider">
+                    {t.regId}
+                  </span>
+                </div>
+                <span className="text-xl font-bold text-[#123B3A] tracking-tight">
                   {regData.registrationNumber}
                 </span>
                 {regData.submittedAt && (
-                  <span className="text-[11px] text-slate-400 block mt-1">
-                    {new Date(regData.submittedAt).toLocaleDateString(
-                      locale === 'hi' ? 'hi-IN' : 'en-IN',
-                      { day: 'numeric', month: 'short', year: 'numeric' }
-                    )}
-                  </span>
+                  <div className="flex items-center gap-1.5 text-gray-500 pt-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span className="text-sm font-medium">
+                      {new Date(regData.submittedAt).toLocaleDateString(
+                        locale === 'hi' ? 'hi-IN' : 'en-IN',
+                        { day: 'numeric', month: 'short', year: 'numeric' }
+                      )}
+                    </span>
+                  </div>
                 )}
+              </div>
               </div>
             </div>
 
             {/* RETURN / REJECTION REASON CALLOUT BOX */}
             {(isReturned || isRejected) && (regData.rejectionReason || regData.actionRequiredNotes) && (
-              <div className="mt-5 p-4 rounded-2xl bg-slate-900/90 border border-rose-500/40 space-y-1.5">
-                <div className="flex items-center gap-2 text-rose-400 font-bold text-xs">
-                  <AlertCircle className="w-4 h-4" />
+              <div className="mt-6 p-5 rounded-xl bg-red-50 border border-red-200 space-y-2 relative z-20">
+                <div className="flex items-center gap-2 text-red-700 font-bold text-sm">
+                  <AlertCircle className="w-5 h-5" />
                   <span>{locale === 'hi' ? 'प्राधिकरण अधिकारी की टिप्पणी:' : 'Authority Officer Remarks:'}</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-200 font-medium pl-6 leading-relaxed">
+                <p className="text-sm text-gray-800 font-medium pl-7 leading-relaxed">
                   &quot;{regData.actionRequiredNotes || regData.rejectionReason}&quot;
                 </p>
               </div>
             )}
-
-            {/* ACTION BUTTONS STRIP */}
-            <div className="mt-6 pt-5 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
-              {isVerified ? (
-                <Link
-                  href="/farmer/book"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-950/40 transition active:scale-[0.99]"
-                >
-                  <CalendarDays className="w-4 h-4" />
-                  <span>{locale === 'hi' ? 'खरीद स्लॉट बुक करें' : 'Book Procurement Slot'}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : isReturned ? (
-                <Link
-                  href="/farmer/register?action=update"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-amber-950/40 transition active:scale-[0.99]"
-                >
-                  <Edit3 className="w-4 h-4" />
-                  <span>{locale === 'hi' ? 'विवरण सुधारें व पुनः सबमिट करें' : 'Update Details & Resubmit'}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : (
-                <div className="flex items-center gap-3 flex-wrap">
-                  <button
-                    disabled
-                    className="cursor-not-allowed inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-800/90 border border-slate-700 text-slate-400 font-semibold text-xs sm:text-sm opacity-60"
-                    title="Verification pending approval by authority"
-                  >
-                    <Lock className="w-4 h-4 text-slate-400" />
-                    <span>{locale === 'hi' ? 'स्लॉट बुकिंग लॉक है (सत्यापन प्रतीक्षित)' : 'Procurement Booking Locked'}</span>
-                  </button>
-                  <span className="text-[11px] text-amber-300/80 bg-amber-950/40 border border-amber-900/50 px-3 py-1.5 rounded-xl">
-                    {locale === 'hi'
-                      ? 'प्राधिकरण अनुमोदन के पश्चात बुकिंग स्वतः सक्रिय हो जाएगी।'
-                      : 'Slot booking will automatically unlock once verified.'}
-                  </span>
-                </div>
-              )}
-
-              <Link
-                href="/farmer/centres"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-emerald-400 transition"
-              >
-                <Building className="w-3.5 h-3.5 text-slate-400" />
-                <span>{locale === 'hi' ? 'खरीद केंद्र सूची देखें' : 'View Procurement Centres'}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
           </div>
 
           {/* ============================================================ */}
           {/* 2. FOUR-STEP VERIFICATION LIFECYCLE TRACKER                  */}
           {/* ============================================================ */}
-          <div className="glass-card rounded-3xl p-6 sm:p-7 border border-slate-800/80 space-y-4">
-            <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>{locale === 'hi' ? 'सत्यापन प्रक्रिया एवं स्थिति' : 'Verification Lifecycle'}</span>
-            </h2>
+          <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 sm:p-8 md:p-10 space-y-8">
+            <div className="flex items-center justify-between pb-2">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#00695C]" />
+                <span>{locale === 'hi' ? 'सत्यापन प्रक्रिया एवं स्थिति' : 'Verification Lifecycle'}</span>
+              </h2>
+              <ChevronUp className="w-5 h-5 text-gray-400" />
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
-              {/* Step 1 */}
-              <div className="p-3.5 rounded-2xl bg-slate-900/70 border border-emerald-500/30 space-y-1">
-                <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
-                  <span>1. Mobile OTP</span>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <div className="relative">
+              {/* Connecting line (Desktop only) */}
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gray-100 -translate-y-1/2 z-0"></div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 xl:gap-8 relative z-10">
+                {/* Step 1 */}
+                <div className="bg-[#F0F9FF] border border-[#BAE6FD] rounded-2xl p-6 flex flex-col space-y-4 shadow-sm">
+                   <div className="flex items-center justify-between">
+                     <div className="w-8 h-8 rounded-full bg-[#E0F2FE] text-[#0284C7] font-bold flex items-center justify-center text-sm">1</div>
+                     <CheckCircle2 className="w-5 h-5 text-[#0284C7]" />
+                   </div>
+                   <div>
+                     <h3 className="font-bold text-[#0369A1] text-sm mb-0.5">Mobile OTP</h3>
+                     <p className="text-xs font-medium text-gray-600">
+                       {user?.mobile ? `+91 ${user.mobile}` : 'Authenticated'}
+                     </p>
+                   </div>
+                   <div className="inline-flex items-center gap-1 bg-[#E0F2FE] text-[#0369A1] px-2.5 py-1 rounded-full text-xs font-semibold w-fit">
+                     <Check className="w-3 h-3" /> Completed
+                   </div>
                 </div>
-                <p className="text-[11px] text-slate-300">
-                  {user?.mobile ? `+91 ${user.mobile}` : 'Authenticated'}
-                </p>
-                <span className="text-[10px] text-emerald-400/90 font-medium">Completed ✓</span>
-              </div>
 
-              {/* Step 2 */}
-              <div className="p-3.5 rounded-2xl bg-slate-900/70 border border-emerald-500/30 space-y-1">
-                <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
-                  <span>2. Registration</span>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                {/* Step 2 */}
+                <div className="bg-[#FAF5FF] border border-[#E9D5FF] rounded-2xl p-6 flex flex-col space-y-4 shadow-sm">
+                   <div className="flex items-center justify-between">
+                     <div className="w-8 h-8 rounded-full bg-[#F3E8FF] text-[#9333EA] font-bold flex items-center justify-center text-sm">2</div>
+                     <CheckCircle2 className="w-5 h-5 text-[#9333EA]" />
+                   </div>
+                   <div>
+                     <h3 className="font-bold text-[#7E22CE] text-sm mb-0.5">Registration</h3>
+                     <p className="text-xs font-medium text-gray-600">Land & bank records</p>
+                   </div>
+                   <div className="inline-flex items-center gap-1 bg-[#F3E8FF] text-[#7E22CE] px-2.5 py-1 rounded-full text-xs font-semibold w-fit">
+                     <Check className="w-3 h-3" /> Submitted
+                   </div>
                 </div>
-                <p className="text-[11px] text-slate-300">Land & bank records</p>
-                <span className="text-[10px] text-emerald-400/90 font-medium">Submitted ✓</span>
-              </div>
 
-              {/* Step 3 */}
-              <div
-                className={`p-3.5 rounded-2xl border space-y-1 ${
-                  isVerified
-                    ? 'bg-slate-900/70 border-emerald-500/30'
-                    : isReturned
-                    ? 'bg-amber-950/20 border-amber-500/40'
-                    : isRejected
-                    ? 'bg-rose-950/20 border-rose-500/40'
-                    : 'bg-indigo-950/30 border-indigo-500/40'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-bold text-white">
-                  <span>3. Authority Review</span>
-                  {isVerified ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  ) : isReturned ? (
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
-                  ) : isRejected ? (
-                    <XCircle className="w-4 h-4 text-rose-400" />
-                  ) : (
-                    <Clock className="w-4 h-4 text-indigo-400 animate-pulse" />
-                  )}
+                {/* Step 3 */}
+                <div className={`rounded-2xl p-6 flex flex-col space-y-4 shadow-sm border ${
+                  isVerified ? 'bg-[#F0FDF4] border-[#BBF7D0]' :
+                  isReturned ? 'bg-amber-50 border-amber-200' :
+                  isRejected ? 'bg-red-50 border-red-200' :
+                  'bg-white border-gray-200 shadow-sm'
+                }`}>
+                   <div className="flex items-center justify-between">
+                     <div className={`w-8 h-8 rounded-full font-bold flex items-center justify-center text-sm ${
+                        isVerified ? 'bg-[#DCFCE7] text-[#16A34A]' :
+                        isReturned ? 'bg-amber-100 text-amber-600' :
+                        isRejected ? 'bg-red-100 text-red-600' :
+                        'bg-gray-100 text-gray-500'
+                     }`}>3</div>
+                     {isVerified ? (
+                       <CheckCircle2 className="w-5 h-5 text-[#16A34A]" />
+                     ) : isReturned ? (
+                       <AlertTriangle className="w-5 h-5 text-amber-500" />
+                     ) : isRejected ? (
+                       <XCircle className="w-5 h-5 text-red-500" />
+                     ) : (
+                       <Clock className="w-5 h-5 text-gray-400" />
+                     )}
+                   </div>
+                   <div>
+                     <h3 className={`font-bold text-sm mb-0.5 ${
+                        isVerified ? 'text-[#15803D]' :
+                        isReturned ? 'text-amber-700' :
+                        isRejected ? 'text-red-700' :
+                        'text-gray-900'
+                     }`}>Authority Review</h3>
+                     <p className="text-xs font-medium text-gray-600">
+                       {isVerified ? 'Government Approved' :
+                        isReturned ? 'Action Required' :
+                        isRejected ? 'Rejected' : 'Under Active Review'}
+                     </p>
+                   </div>
+                   <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold w-fit ${
+                      isVerified ? 'bg-[#DCFCE7] text-[#15803D]' :
+                      isReturned ? 'bg-amber-100 text-amber-700' :
+                      isRejected ? 'bg-red-100 text-red-700' :
+                      'bg-gray-100 text-gray-600'
+                   }`}>
+                     {isVerified ? <><Check className="w-3 h-3" /> Approved</> :
+                      isReturned ? 'Returned' :
+                      isRejected ? 'Rejected' : 'In Progress...'}
+                   </div>
                 </div>
-                <p className="text-[11px] text-slate-300">
-                  {isVerified
-                    ? 'Government Approved'
-                    : isReturned
-                    ? 'Action Required'
-                    : isRejected
-                    ? 'Rejected'
-                    : 'Under Active Review'}
-                </p>
-                <span
-                  className={`text-[10px] font-medium ${
-                    isVerified
-                      ? 'text-emerald-400'
-                      : isReturned
-                      ? 'text-amber-400'
-                      : isRejected
-                      ? 'text-rose-400'
-                      : 'text-indigo-300'
-                  }`}
-                >
-                  {isVerified ? 'Approved ✓' : isReturned ? 'Returned' : isRejected ? 'Rejected' : 'In Progress...'}
-                </span>
-              </div>
 
-              {/* Step 4 */}
-              <div
-                className={`p-3.5 rounded-2xl border space-y-1 ${
-                  isVerified
-                    ? 'bg-slate-900/70 border-emerald-500/30'
-                    : 'bg-slate-950/40 border-slate-800/80 opacity-60'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-bold text-white">
-                  <span>4. Booking Active</span>
-                  {isVerified ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  ) : (
-                    <Lock className="w-4 h-4 text-slate-500" />
-                  )}
+                {/* Step 4 */}
+                <div className={`rounded-2xl p-6 flex flex-col space-y-4 shadow-sm border ${
+                  isVerified ? 'bg-[#FFFBEB] border-[#FDE68A]' : 'bg-gray-50 border-gray-100 opacity-75'
+                }`}>
+                   <div className="flex items-center justify-between">
+                     <div className={`w-8 h-8 rounded-full font-bold flex items-center justify-center text-sm ${
+                        isVerified ? 'bg-[#FEF3C7] text-[#D97706]' : 'bg-gray-200 text-gray-500'
+                     }`}>4</div>
+                     {isVerified ? (
+                       <CheckCircle2 className="w-5 h-5 text-[#D97706]" />
+                     ) : (
+                       <Lock className="w-5 h-5 text-gray-400" />
+                     )}
+                   </div>
+                   <div>
+                     <h3 className={`font-bold text-sm mb-0.5 ${isVerified ? 'text-[#B45309]' : 'text-gray-500'}`}>
+                       Booking Active
+                     </h3>
+                     <p className="text-xs font-medium text-gray-500">
+                       {isVerified ? 'Arrival Slot Scheduling' : 'Locked until verified'}
+                     </p>
+                   </div>
+                   <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold w-fit ${
+                      isVerified ? 'bg-[#FEF3C7] text-[#B45309]' : 'bg-gray-200 text-gray-500'
+                   }`}>
+                     {isVerified ? <><Check className="w-3 h-3" /> Ready for Booking</> : 'Pending Step 3'}
+                   </div>
                 </div>
-                <p className="text-[11px] text-slate-400">
-                  {isVerified ? 'Arrival Slot Scheduling' : 'Locked until verified'}
-                </p>
-                <span
-                  className={`text-[10px] font-medium ${
-                    isVerified ? 'text-emerald-400' : 'text-slate-500'
-                  }`}
-                >
-                  {isVerified ? 'Ready for Booking' : 'Pending Step 3'}
-                </span>
               </div>
             </div>
           </div>
@@ -446,135 +453,141 @@ export default function FarmerVerificationPage() {
           {/* ============================================================ */}
 
           {/* Personal Details */}
-          <div className="glass-card rounded-2xl border border-slate-800/80 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <button
               onClick={() => toggleSection('personal')}
-              className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-800/40 transition"
+              className="w-full p-5 sm:p-6 flex items-center justify-between text-left bg-[#F3FBF8] hover:bg-[#E8F8F3] transition border-b border-[#A7E8D0]"
             >
               <div className="flex items-center gap-3">
-                <User className="w-4 h-4 text-emerald-400" />
-                <span className="font-bold text-sm text-white">{t.personalTitle}</span>
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-[#A7E8D0]">
+                  <User className="w-4 h-4 text-[#00695C]" />
+                </div>
+                <span className="font-bold text-lg text-[#00695C]">{t.personalTitle}</span>
               </div>
               {openSections.personal ? (
-                <ChevronUp className="w-4 h-4 text-slate-400" />
+                <ChevronUp className="w-5 h-5 text-gray-400" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+                <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
 
             {openSections.personal && (
-              <div className="p-4 sm:p-5 pt-0 border-t border-slate-800/60 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.fullName}</span>
-                  <span className="font-semibold text-white">{regData.personal?.fullName || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.fullName}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.personal?.fullName || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{locale === 'hi' ? 'पिता / पति का नाम' : 'Father / Spouse Name'}</span>
-                  <span className="font-semibold text-white">{regData.personal?.fatherOrSpouseName || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{locale === 'hi' ? 'पिता / पति का नाम' : 'Father / Spouse Name'}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.personal?.fatherOrSpouseName || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.gender}</span>
-                  <span className="font-semibold text-white capitalize">{regData.personal?.gender || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.gender}</span>
+                  <span className="font-semibold text-gray-900 text-base capitalize">{regData.personal?.gender || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.category}</span>
-                  <span className="font-semibold text-white">{regData.personal?.category || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.category}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.personal?.category || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{locale === 'hi' ? 'मोबाइल नंबर' : 'Mobile Number'}</span>
-                  <span className="font-semibold text-white">{regData.personal?.mobile || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{locale === 'hi' ? 'मोबाइल नंबर' : 'Mobile Number'}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.personal?.mobile || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Aadhaar (Masked)</span>
-                  <span className="font-mono text-white">{regData.personal?.aadhaarNumberMasked || 'XXXX-XXXX-XXXX'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">Aadhaar (Masked)</span>
+                  <span className="font-mono font-semibold text-gray-900 text-base">{regData.personal?.aadhaarNumberMasked || 'XXXX-XXXX-XXXX'}</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Address Details */}
-          <div className="glass-card rounded-2xl border border-slate-800/80 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <button
               onClick={() => toggleSection('address')}
-              className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-800/40 transition"
+              className="w-full p-5 sm:p-6 flex items-center justify-between text-left bg-[#F0F9FF] hover:bg-[#E0F2FE] transition border-b border-[#BAE6FD]"
             >
               <div className="flex items-center gap-3">
-                <MapPin className="w-4 h-4 text-teal-400" />
-                <span className="font-bold text-sm text-white">{t.addressTitle}</span>
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-[#BAE6FD]">
+                  <MapPin className="w-4 h-4 text-[#0369A1]" />
+                </div>
+                <span className="font-bold text-lg text-[#0369A1]">{t.addressTitle}</span>
               </div>
               {openSections.address ? (
-                <ChevronUp className="w-4 h-4 text-slate-400" />
+                <ChevronUp className="w-5 h-5 text-gray-400" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+                <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
 
             {openSections.address && (
-              <div className="p-4 sm:p-5 pt-0 border-t border-slate-800/60 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.district}</span>
-                  <span className="font-semibold text-white">{regData.address?.district || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.district}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.address?.district || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.block}</span>
-                  <span className="font-semibold text-white">{regData.address?.block || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.block}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.address?.block || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.village}</span>
-                  <span className="font-semibold text-white">{regData.address?.village || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.village}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.address?.village || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.pincode}</span>
-                  <span className="font-semibold text-white">{regData.address?.pincode || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.pincode}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.address?.pincode || '—'}</span>
                 </div>
-                <div className="col-span-2">
-                  <span className="text-slate-400 block text-[11px]">Address Line</span>
-                  <span className="font-semibold text-white">{regData.address?.addressLine || '—'}</span>
+                <div className="md:col-span-2">
+                  <span className="text-gray-500 block text-sm font-medium mb-1">Address Line</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.address?.addressLine || '—'}</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Land Holding & Crops */}
-          <div className="glass-card rounded-2xl border border-slate-800/80 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <button
               onClick={() => toggleSection('land')}
-              className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-800/40 transition"
+              className="w-full p-5 sm:p-6 flex items-center justify-between text-left bg-[#F0FDF4] hover:bg-[#DCFCE7] transition border-b border-[#BBF7D0]"
             >
               <div className="flex items-center gap-3">
-                <Layers className="w-4 h-4 text-emerald-400" />
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-[#BBF7D0]">
+                  <Layers className="w-4 h-4 text-[#15803D]" />
+                </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-white">{t.landTitle}</span>
-                  <span className="text-xs text-slate-400">
+                  <span className="font-bold text-lg text-[#15803D]">{t.landTitle}</span>
+                  <span className="text-sm font-medium text-gray-500">
                     ({regData.landParcels?.length || 0} parcels, {totalLandAcres.toFixed(1)} {t.acres})
                   </span>
                 </div>
               </div>
               {openSections.land ? (
-                <ChevronUp className="w-4 h-4 text-slate-400" />
+                <ChevronUp className="w-5 h-5 text-gray-400" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+                <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
 
             {openSections.land && (
-              <div className="p-4 sm:p-5 pt-0 border-t border-slate-800/60 space-y-3">
+              <div className="p-5 sm:p-6 space-y-4">
                 {regData.landParcels?.map((parcel, idx) => (
-                  <div key={idx} className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-300">
+                  <div key={idx} className="p-4 bg-[#F3FBF8] rounded-xl border border-[#A7E8D0] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <span className="font-bold text-[#00695C] block mb-1 text-sm">
                         {locale === 'hi' ? 'पार्सल' : 'Parcel'} #{idx + 1} — Survey / Khasra: {parcel.surveyNumber || 'N/A'}
                       </span>
-                      <span className="font-mono font-bold text-white">
-                        {parcel.areaAcres} {t.acres}
-                      </span>
+                      <div className="text-gray-600 text-sm font-medium flex flex-wrap gap-x-4 gap-y-1">
+                        <span>Type: <span className="font-semibold text-gray-900">{parcel.landType}</span></span>
+                        <span className="hidden md:inline">•</span>
+                        <span>Crop: <span className="font-semibold text-gray-900">{parcel.cropSown || 'Wheat / Paddy'}</span></span>
+                        <span className="hidden md:inline">•</span>
+                        <span>Season: <span className="font-semibold text-gray-900">{parcel.season || 'Rabi 2026-27'}</span></span>
+                      </div>
                     </div>
-                    <div className="text-slate-400 text-[11px] flex gap-3">
-                      <span>Type: {parcel.landType}</span>
-                      <span>•</span>
-                      <span>Crop: {parcel.cropSown || 'Wheat / Paddy'}</span>
-                      <span>•</span>
-                      <span>Season: {parcel.season || 'Rabi 2026-27'}</span>
+                    <div className="font-mono font-bold text-[#00695C] text-lg md:text-right">
+                      {parcel.areaAcres} {t.acres}
                     </div>
                   </div>
                 ))}
@@ -583,46 +596,48 @@ export default function FarmerVerificationPage() {
           </div>
 
           {/* Bank & Payment Details */}
-          <div className="glass-card rounded-2xl border border-slate-800/80 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <button
               onClick={() => toggleSection('bank')}
-              className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-800/40 transition"
+              className="w-full p-5 sm:p-6 flex items-center justify-between text-left bg-[#EFF6FF] hover:bg-[#DBEAFE] transition border-b border-[#BFDBFE]"
             >
               <div className="flex items-center gap-3">
-                <Landmark className="w-4 h-4 text-cyan-400" />
-                <span className="font-bold text-sm text-white">{t.bankTitle}</span>
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-[#BFDBFE]">
+                  <Landmark className="w-4 h-4 text-[#1D4ED8]" />
+                </div>
+                <span className="font-bold text-lg text-[#1E40AF]">{t.bankTitle}</span>
               </div>
               {openSections.bank ? (
-                <ChevronUp className="w-4 h-4 text-slate-400" />
+                <ChevronUp className="w-5 h-5 text-gray-400" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+                <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
 
             {openSections.bank && (
-              <div className="p-4 sm:p-5 pt-0 border-t border-slate-800/60 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{locale === 'hi' ? 'खाता धारक का नाम' : 'Account Holder Name'}</span>
-                  <span className="font-semibold text-white">{regData.bank?.accountHolderName || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{locale === 'hi' ? 'खाता धारक का नाम' : 'Account Holder Name'}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.bank?.accountHolderName || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.bankName}</span>
-                  <span className="font-semibold text-white">{regData.bank?.bankName || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.bankName}</span>
+                  <span className="font-semibold text-gray-900 text-base">{regData.bank?.bankName || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.ifscCode}</span>
-                  <span className="font-mono font-semibold text-white">{regData.bank?.ifscCode || '—'}</span>
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.ifscCode}</span>
+                  <span className="font-mono font-semibold text-gray-900 text-base">{regData.bank?.ifscCode || '—'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">{t.accountNumber}</span>
-                  <span className="font-mono text-white">
+                  <span className="text-gray-500 block text-sm font-medium mb-1">{t.accountNumber}</span>
+                  <span className="font-mono font-semibold text-gray-900 text-base">
                     {regData.bank?.accountNumberMasked || regData.bank?.accountNumber || '—'}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">DBT Settlement</span>
-                  <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
-                    <Check className="w-3 h-3" /> Aadhaar Linked
+                <div className="md:col-span-2">
+                  <span className="text-gray-500 block text-sm font-medium mb-1">DBT Settlement</span>
+                  <span className="inline-flex items-center gap-1 text-[#16A34A] font-semibold text-sm">
+                    <Check className="w-4 h-4" /> Aadhaar Linked
                   </span>
                 </div>
               </div>

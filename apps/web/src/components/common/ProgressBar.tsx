@@ -24,7 +24,7 @@ export function ProgressBar({
   const stepLabels = [t.step1, t.step2, t.step3, t.step4, t.step5, t.step6];
 
   return (
-    <div className="w-full bg-white mb-6">
+    <div className="w-full bg-white mb-2">
       {/* Mobile step indicator text */}
       <div className="flex items-center justify-between sm:hidden mb-3 px-1">
         <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -38,7 +38,7 @@ export function ProgressBar({
       {/* Visual Step Bar */}
       <div className="relative px-2">
         {/* Connecting line */}
-        <div className="absolute top-1/2 left-8 right-8 -translate-y-1/2 h-[2px] bg-slate-200 z-0 rounded-full overflow-hidden">
+        <div className="absolute top-1/2 left-4 right-4 sm:left-8 sm:right-8 -translate-y-1/2 h-[2px] bg-slate-200 z-0 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#0BAA72] transition-all duration-300"
             style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}
@@ -64,35 +64,26 @@ export function ProgressBar({
                 onClick={() => canClick && onStepClick(stepNum)}
                 className={`flex flex-col items-center group focus:outline-none ${
                   canClick ? 'cursor-pointer' : 'cursor-default'
-                } bg-white px-2`}
+                } bg-white px-0.5 sm:px-4`}
               >
                 <div
-                  className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all bg-white z-10 ${
-                    isCompleted
-                      ? 'border-[2px] border-slate-200 text-slate-400'
-                      : isCurrent
-                      ? 'bg-[#0BAA72] text-white shadow-md shadow-emerald-500/20'
-                      : 'border-[2px] border-slate-200 text-slate-400 bg-[#F8FAFC]'
-                  }`}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-[11px] sm:text-sm transition-all bg-white z-10 ${
+                    isCurrent || isCompleted
+                      ? 'bg-[#0BAA72] text-white border-2 border-white sm:border-none'
+                      : 'border-[2px] border-slate-200 text-slate-400'
+                  } ${isCurrent ? 'ring-2 ring-emerald-100 sm:ring-0' : ''}`}
                 >
-                  {isCompleted ? (
-                    <Check className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" />
-                  ) : (
-                    <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-                  )}
+                  {stepNum}
                 </div>
 
-                <span
-                  className={`hidden sm:block text-[12px] mt-2 transition ${
-                    isCurrent
-                      ? 'text-[#0BAA72] font-[800]'
-                      : isCompleted
-                      ? 'text-[#062D3D] font-[600]'
-                      : 'text-slate-500 font-[500]'
-                  }`}
-                >
-                  {stepLabels[i]}
-                </span>
+                <div className={`hidden sm:flex flex-col items-center mt-2 transition ${
+                  isCurrent || isCompleted ? 'text-[#0BAA72]' : 'text-slate-400'
+                }`}>
+                  <Icon className="w-3.5 h-3.5 mb-0.5" />
+                  <span className={`text-[11px] ${isCurrent || isCompleted ? 'font-[700]' : 'font-[500]'}`}>
+                    {stepLabels[i]}
+                  </span>
+                </div>
               </button>
             );
           })}

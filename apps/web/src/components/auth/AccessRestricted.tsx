@@ -99,6 +99,14 @@ export function AccessRestricted({ requiredRole, customMessage }: AccessRestrict
               <span>Authenticated Role:</span>
               <span className="font-bold text-white font-mono">{getRoleLabel(user.role)}</span>
             </div>
+            <div className="flex justify-between items-center text-slate-400">
+              <span>Raw Role:</span>
+              <span className="font-bold text-white font-mono">[{user.role}]</span>
+            </div>
+            <div className="flex justify-between items-center text-slate-400">
+              <span>Required Roles:</span>
+              <span className="font-bold text-white font-mono">[{JSON.stringify(requiredRole)}]</span>
+            </div>
             {user.mobile && (
               <div className="flex justify-between items-center text-slate-400">
                 <span>Account Mobile:</span>

@@ -21,7 +21,7 @@ export function RouteGuard({
 }: RouteGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, token, isLoading } = useAuth();
+  const { user, token, isLoading, farmerState } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -91,6 +91,38 @@ export function RouteGuard({
     return <AccessRestricted requiredRole={allowedRoles} />;
   }
 
-  // 3. Authorized -> Render protected workspace
+  // 3. Enforce Farmer Registration Completion
+  if (user.role === 'FARMER' && pathname.startsWith('/farmer')) {
+    const isRegistrationIncomplete =
+      !farmerState ||
+      farmerState === 'NOT_REGISTERED' ||
+      farmerState === 'DRAFT';
+
+    if (isRegistrationIncomplete) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-5 text-center px-4">
+          <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-[#014532]">
+              Complete your farmer registration first.
+            </h2>
+            <p className="text-sm text-emerald-800/80 max-w-md mx-auto">
+              Please complete all required registration steps before accessing procurement services.
+            </p>
+          </div>
+          <button
+            onClick={() => router.push('/farmer/register')}
+            className="mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition-all active:scale-95"
+          >
+            Continue Registration
+          </button>
+        </div>
+      );
+    }
+  }
+
+  // 4. Authorized -> Render protected workspace
   return <>{children}</>;
 }

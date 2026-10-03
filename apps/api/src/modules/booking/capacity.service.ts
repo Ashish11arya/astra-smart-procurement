@@ -80,17 +80,18 @@ export class CapacityService {
         bookingDate: { gte: startOfDay, lt: endOfDay },
         status: { notIn: [BookingStatus.CANCELLED, BookingStatus.NO_SHOW] },
       },
+      include: { procurement: true },
     });
 
     // Sum booked for this date at the specific centre (if centre is known)
     const bookedAtThisCentreToday = centre
       ? dayBookings
           .filter((b) => b.centreId === centre.id)
-          .reduce((sum, b) => sum + b.expectedQuantityQuintals, 0)
-      : dayBookings.reduce((sum, b) => sum + b.expectedQuantityQuintals, 0);
+          .reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0)
+      : dayBookings.reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0);
 
     const totalBookedTodayAllCentres = dayBookings.reduce(
-      (sum, b) => sum + b.expectedQuantityQuintals,
+      (sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals),
       0,
     );
 
@@ -109,9 +110,9 @@ export class CapacityService {
           farmerId,
           status: { notIn: [BookingStatus.CANCELLED, BookingStatus.NO_SHOW] },
         },
-        select: { expectedQuantityQuintals: true },
+        include: { procurement: true },
       });
-      const totalSeasonBooked = seasonBookings.reduce((sum, b) => sum + b.expectedQuantityQuintals, 0);
+      const totalSeasonBooked = seasonBookings.reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0);
       const remainingSeason = Math.max(0, policy.defaultEligibleQuotaQuintals - totalSeasonBooked);
       remainingCapacityQuintals = Math.min(remainingCapacityQuintals, remainingSeason);
     }

@@ -105,35 +105,6 @@ export default function FarmerVerificationPage() {
 
   return (
     <main className="flex-1 max-w-4xl mx-auto w-full p-4 sm:p-6 md:p-8 space-y-6 text-[#014532]">
-      {/* Top Breadcrumb & Action Bar */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/farmer/dashboard"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-800/80 hover:text-emerald-700 transition"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{locale === 'hi' ? 'डैशबोर्ड पर वापस जाएं' : 'Back to Dashboard'}</span>
-        </Link>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setHelpOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-emerald-100 bg-white/95 backdrop-blur-sm shadow-xl hover:bg-emerald-50 text-sm font-semibold text-[#014532] shadow-sm transition"
-          >
-            <PhoneCall className="w-3.5 h-3.5 text-emerald-700" />
-            <span className="hidden sm:inline">Helpline</span>
-          </button>
-
-          <button
-            onClick={fetchStatus}
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-emerald-100 bg-white/95 backdrop-blur-sm shadow-xl hover:bg-emerald-50 text-sm font-semibold text-[#014532] shadow-sm transition active:scale-95"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-emerald-700 ${loading ? 'animate-spin' : ''}`} />
-            <span>{loading ? t.loading : locale === 'hi' ? 'ताज़ा करें' : 'Refresh'}</span>
-          </button>
-        </div>
-      </div>
 
       {loading ? (
         <div className="rounded-2xl p-12 text-center border border-emerald-100 bg-white/95 backdrop-blur-sm shadow-xl shadow-xl space-y-3">
@@ -250,9 +221,18 @@ export default function FarmerVerificationPage() {
                 </div>
               </div>
 
-              {/* Application Number Box */}
-              <div className="shrink-0 bg-[#F4F9F7] border border-emerald-100 p-4 rounded-xl shadow-md text-right sm:text-left">
-                <span className="text-sm uppercase font-bold text-emerald-800/80 tracking-wider block">
+              {/* Actions & Application Number Box */}
+              <div className="shrink-0 flex flex-col items-end gap-3 z-10 md:w-80">
+                <button
+                  onClick={fetchStatus}
+                  disabled={loading}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-emerald-100 bg-white/95 backdrop-blur-sm shadow-md hover:bg-emerald-50 text-sm font-semibold text-[#014532] transition active:scale-95 w-fit"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-emerald-700 ${loading ? 'animate-spin' : ''}`} />
+                  <span>{loading ? t.loading : locale === 'hi' ? 'ताज़ा करें' : 'Refresh'}</span>
+                </button>
+                <div className="bg-[#F4F9F7] border border-emerald-100 p-4 rounded-xl shadow-md text-right sm:text-left w-full">
+                  <span className="text-sm uppercase font-bold text-emerald-800/80 tracking-wider block">
                   {t.regId}
                 </span>
                 <span className="font-mono text-base sm:text-base font-bold text-emerald-700 tracking-tight">
@@ -266,6 +246,7 @@ export default function FarmerVerificationPage() {
                     )}
                   </span>
                 )}
+              </div>
               </div>
             </div>
 

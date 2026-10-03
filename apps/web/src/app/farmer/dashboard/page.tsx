@@ -26,6 +26,7 @@ import {
   CreditCard,
   Receipt,
   Navigation,
+  Users,
 } from 'lucide-react';
 import { useLanguage } from '../../../i18n/LanguageContext';
 import { useAuth } from '../../../context/AuthContext';
@@ -64,7 +65,7 @@ export default function FarmerDashboardPage() {
         setSummary(data);
       }
     } catch (err) {
-      console.error('Failed to load farmer dashboard summary:', err);
+      console.error('Failed to load farmer dashboard summary:', err instanceof Error ? err.message : err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -103,9 +104,22 @@ export default function FarmerDashboardPage() {
       ? `${resolvedFarmer.village}, ${resolvedFarmer.district}`
       : resolvedFarmer?.district || resolvedFarmer?.village || null;
 
-  const activeBookings = summary?.activeBookings || [];
+  const isExpired = (b: any) => {
+    if (b.status !== BookingStatus.BOOKED) return false;
+    try {
+      const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+      if (b.bookingDate < todayStr) return true;
+      if (b.bookingDate > todayStr) return false;
+      const nowTime = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' }).format(new Date());
+      return nowTime > b.windowEndTime;
+    } catch {
+      return false;
+    }
+  };
+
+  const activeBookings = (summary?.activeBookings || []).filter(b => !isExpired(b));
   const todayCapacity = summary?.todayCapacity;
-  const upcomingBookings = summary?.upcomingBookings || [];
+  const upcomingBookings = (summary?.upcomingBookings || []).filter(b => !isExpired(b));
   const recentBookings = summary?.recentBookings || [];
 
   const formatDate = (dateStr: string) => {
@@ -143,38 +157,71 @@ export default function FarmerDashboardPage() {
     }
   };
 
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case BookingStatus.BOOKED:
+      case BookingStatus.PENDING:
+        return 'bg-[#E8F3EF] text-[#014532] border-[#014532]/20';
+      case BookingStatus.CHECKED_IN:
+      case BookingStatus.WEIGHMENT:
+      case BookingStatus.QUALITY_ASSESSMENT:
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+      case BookingStatus.PROCUREMENT:
+      case BookingStatus.PAYMENT:
+      case BookingStatus.COMPLETED:
+        return 'bg-[#E8F3EF] text-[#014532] border-[#014532]/20';
+      default:
+        return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getStatusDot = (status: string) => {
+    switch (status) {
+      case BookingStatus.BOOKED:
+      case BookingStatus.PENDING:
+        return 'bg-[#014532]';
+      case BookingStatus.CHECKED_IN:
+      case BookingStatus.WEIGHMENT:
+      case BookingStatus.QUALITY_ASSESSMENT:
+        return 'bg-blue-600';
+      case BookingStatus.PROCUREMENT:
+      case BookingStatus.PAYMENT:
+      case BookingStatus.COMPLETED:
+        return 'bg-[#014532]';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
   return (
-    <main className="flex-1 max-w-4xl mx-auto w-full p-4 sm:p-6 space-y-5 pb-24 md:pb-12 text-[#014532]">
-      {/* ============================================================ */}
+    <div className="w-full relative">
+      <main className="relative z-10 flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 space-y-6 pb-24 md:pb-12 font-sans">
+        {/* ============================================================ */}
       {/* 1. TOP FARMER IDENTITY CARD                                  */}
       {/* ============================================================ */}
       <section
         aria-label="Farmer Identity"
-        className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-4 sm:p-5 border border-emerald-100 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        className="rounded-xl bg-white border border-[#014532]/10 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black text-xl shrink-0 shadow-inner">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full bg-[#E8F3EF] text-[#014532] flex items-center justify-center font-bold text-2xl shrink-0">
             {farmerName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base sm:text-lg font-bold text-[#014532] tracking-tight">
-                {getGreeting()},{' '}
-                <span className="text-emerald-700 capitalize">{farmerName}</span>
-              </h1>
-            </div>
-
-            <div className="flex items-center gap-2 text-sm text-emerald-800/80 font-medium mt-1">
+            <h1 className="text-[22px] font-bold text-[#014532] tracking-tight mb-1">
+              {getGreeting()}, <span className="capitalize">{farmerName}</span>
+            </h1>
+            <div className="flex items-center gap-2 text-[14px] text-gray-600 font-medium flex-wrap">
               {villageDistrict && (
-                <span className="flex items-center gap-1 text-emerald-900/80">
-                  <MapPin className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4 text-gray-500 shrink-0" />
                   <span>{villageDistrict}</span>
                 </span>
               )}
               {registration?.registrationNumber && (
                 <>
-                  <span className="text-slate-600">•</span>
-                  <span className="font-mono text-emerald-800/80 text-sm">
+                  <span className="text-gray-300">|</span>
+                  <span>
                     ID: {registration.registrationNumber}
                   </span>
                 </>
@@ -184,17 +231,17 @@ export default function FarmerDashboardPage() {
         </div>
 
         {/* Live Sync / Refresh Action */}
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        <div className="flex items-center self-end sm:self-auto">
           <button
             onClick={() => fetchSummary(true)}
             disabled={loading || refreshing}
-            className="px-3 py-1.5 rounded-lg text-emerald-900/80 hover:text-[#014532] bg-[#F4F9F7] hover:bg-emerald-50 border border-emerald-100 transition text-sm font-semibold flex items-center gap-1.5 shadow-sm"
+            className="px-4 py-2 rounded-lg text-[#014532] bg-white border border-[#014532]/20 hover:bg-[#F4F9F7] transition text-sm font-semibold flex items-center gap-2"
             title="Refresh Live Status"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-emerald-800/80 ${refreshing ? 'animate-spin text-emerald-700' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
             <span>
               {refreshing
-                ? locale === 'hi' ? 'अपडेट हो रहा...' : 'Syncing...'
+                ? locale === 'hi' ? 'अपडेट हो रहा...' : 'Refreshing...'
                 : locale === 'hi' ? 'रिफ्रेश' : 'Refresh'}
             </span>
           </button>
@@ -233,16 +280,14 @@ export default function FarmerDashboardPage() {
       {/* ============================================================ */}
       {/* 2. HERO SECTION: NEXT PROCUREMENT VISIT                       */}
       {/* ============================================================ */}
-      <section aria-label="Next Procurement Visit" className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-            <h2 className="text-sm sm:text-base font-extrabold tracking-wider uppercase text-emerald-700">
-              {locale === 'hi' ? 'अगली निर्धारित खरीद यात्रा' : 'Next Procurement Visit'}
-            </h2>
-          </div>
+      <section aria-label="Next Procurement Visit" className="rounded-xl bg-white border border-[#014532]/10 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#014532]/10 bg-white">
+          <h2 className="text-[15px] font-bold uppercase tracking-wider text-[#014532] flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-[#014532]" />
+            <span>{locale === 'hi' ? 'अगली निर्धारित खरीद यात्रा' : 'Next Procurement Visit'}</span>
+          </h2>
           {activeBookings.length > 0 && (
-            <span className="text-sm font-semibold text-emerald-800/80">
+            <span className="px-3 py-1 rounded-full bg-[#E8F3EF] text-[#014532] text-xs font-bold">
               {activeBookings.length} {locale === 'hi' ? 'सक्रिय बुकिंग' : 'Active Booking'}
             </span>
           )}
@@ -250,147 +295,95 @@ export default function FarmerDashboardPage() {
 
         {loading ? (
           /* Clean Skeleton Loader */
-          <div className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-6 border border-emerald-100 animate-pulse space-y-4">
-            <div className="h-5 bg-slate-700 rounded w-1/3"></div>
-            <div className="h-16 bg-slate-800 rounded-xl"></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="h-10 bg-slate-800 rounded-lg"></div>
-              <div className="h-10 bg-slate-800 rounded-lg"></div>
-            </div>
-            <div className="h-10 bg-slate-700 rounded-xl"></div>
+          <div className="p-6 animate-pulse space-y-4">
+            <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-16 bg-gray-100 rounded-xl"></div>
           </div>
         ) : activeBookings.length > 0 ? (
-          <div className="space-y-4">
+          <div className="p-4 sm:p-6 space-y-6 max-h-[500px] overflow-y-auto bg-gray-50/50 relative border-t border-[#014532]/5">
             {activeBookings.map((booking) => {
               const stageIdx = getStageIndex(booking.status);
-              const isCheckedIn = booking.checkInTime !== null;
               const hasQueue = booking.queuePosition !== null;
 
-              const stages = [
-                {
-                  id: 1,
-                  labelEn: 'Booking Confirmed',
-                  labelHi: 'बुकिंग पुष्ट',
-                  noteEn: 'Slot confirmed in portal',
-                  noteHi: 'पोर्टल पर स्लॉट सुरक्षित',
-                },
-                {
-                  id: 2,
-                  labelEn: 'Check-in',
-                  labelHi: 'गेट चेक-इन',
-                  noteEn: 'Your QR will be verified at the centre entrance',
-                  noteHi: 'केंद्र गेट पर क्यूआर कोड का सत्यापन किया जाएगा',
-                },
-                {
-                  id: 3,
-                  labelEn: 'Weighment',
-                  labelHi: 'कांटा तौल',
-                  noteEn: 'Gross & tare weight recording on digital scale',
-                  noteHi: 'डिजिटल कांटे पर इलेक्ट्रॉनिक वजन दर्ज होगा',
-                },
-                {
-                  id: 4,
-                  labelEn: 'Quality Assessment',
-                  labelHi: 'गुणवत्ता जांच',
-                  noteEn: 'Moisture and grain purity inspection',
-                  noteHi: 'प्रयोगशाला द्वारा नमी व दाने की गुणवत्ता परीक्षण',
-                },
-                {
-                  id: 5,
-                  labelEn: 'Procurement',
-                  labelHi: 'खरीद आदेश',
-                  noteEn: 'Electronic procurement slip generated',
-                  noteHi: 'इलेक्ट्रॉनिक खरीद पर्ची एवं स्वीकृत रसीद जारी',
-                },
-                {
-                  id: 6,
-                  labelEn: 'Payment',
-                  labelHi: 'बैंक भुगतान',
-                  noteEn: 'Direct DBT payment transferred to bank account',
-                  noteHi: 'आधार से जुड़े बैंक खाते में सीधा भुगतान अंतरण',
-                },
-              ];
-
               return (
-                <div
-                  key={booking.id}
-                  className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border-2 border-emerald-200 p-5 sm:p-6 shadow-xl space-y-5"
-                >
-                  {/* Top Arrival Window Callout Box */}
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 text-sm font-extrabold uppercase tracking-wider text-emerald-700">
-                        <Clock className="w-4 h-4 text-emerald-700" />
-                        <span>{locale === 'hi' ? 'आपका आगमन समय (स्लॉट)' : 'YOUR ARRIVAL WINDOW'}</span>
+                <div key={booking.id} className="bg-white border border-[#014532]/15 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 space-y-5 relative overflow-hidden group">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#014532]/60 to-[#014532]/10"></div>
+                  <div className="flex flex-col md:flex-row gap-6 md:items-center">
+                    {/* Left: Time Window */}
+                    <div className="md:w-1/2">
+                      <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#014532] mb-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{locale === 'hi' ? 'आपका आगमन समय' : 'YOUR ARRIVAL WINDOW'}</span>
                       </div>
-                      <div className="text-2xl sm:text-3xl font-black text-emerald-600 font-mono tracking-tight">
+                      <div className="text-3xl sm:text-4xl font-bold text-[#014532] tracking-tight mb-2">
                         {booking.windowStartTime} – {booking.windowEndTime}
                       </div>
-                      <p className="text-sm text-emerald-900/80 font-medium">
+                      <p className="text-sm text-gray-600">
                         {locale === 'hi'
                           ? 'कृपया इस निर्धारित समय में खरीद केंद्र पर अवश्य पहुंचें।'
                           : 'Please reach the procurement centre during this window.'}
                       </p>
                     </div>
 
-                    {/* Centre & Date Badge */}
-                    <div className="sm:text-right border-t sm:border-t-0 border-emerald-100 pt-3 sm:pt-0 space-y-1">
-                      <div className="text-sm font-bold text-emerald-900/80 flex sm:justify-end items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-emerald-700" />
-                        <span>{formatDate(booking.bookingDate)}</span>
+                    {/* Divider */}
+                    <div className="hidden md:block w-px h-24 bg-[#014532]/10"></div>
+
+                    {/* Right: Date & Centre */}
+                    <div className="md:w-1/2 space-y-4">
+                      <div className="flex items-start gap-3">
+                        <Calendar className="w-5 h-5 text-[#014532] mt-0.5 shrink-0" />
+                        <span className="text-[15px] font-bold text-[#014532]">{formatDate(booking.bookingDate)}</span>
                       </div>
-                      <div className="text-sm font-bold text-[#014532] flex sm:justify-end items-center gap-1.5">
-                        <Building className="w-3.5 h-3.5 text-emerald-700" />
-                        <span>{booking.centreName}</span>
-                      </div>
-                      <div className="text-sm text-emerald-800/80 font-mono">
-                        Ref: {booking.bookingNumber}
+                      <div className="flex items-start gap-3">
+                        <Building className="w-5 h-5 text-[#014532] mt-0.5 shrink-0" />
+                        <div className="flex flex-col">
+                          <span className="text-[15px] font-bold text-[#014532] leading-tight">{booking.centreName}</span>
+                          <span className="text-sm text-[#014532]/60 mt-1 font-medium">
+                            Ref: {booking.bookingNumber}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Physical Queue Status (if available from backend) */}
+                  {/* Physical Queue Status */}
                   {hasQueue && stageIdx >= 2 && stageIdx < 5 && (
-                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1.5">
-                      <span className="text-sm font-extrabold uppercase tracking-wider text-emerald-700 block">
-                        {locale === 'hi' ? 'केंद्र लाइव कतार स्थिति' : 'Live Centre Queue'}
-                      </span>
-                      <div className="flex flex-wrap items-baseline gap-3">
-                        <span className="text-xl font-black font-mono text-emerald-600">
-                          Position #{booking.queuePosition}
+                    <div className="p-4 bg-[#E8F3EF] rounded-xl border border-[#014532]/20 flex flex-col sm:flex-row sm:items-center gap-3 mt-2">
+                      <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#014532] shrink-0">
+                        <Users className="w-4 h-4" />
+                        <span>{locale === 'hi' ? 'लाइव केंद्र कतार' : 'LIVE CENTRE QUEUE'}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-[#014532] flex-wrap">
+                        <span className="text-[16px] sm:text-lg font-bold bg-white px-3 py-1 rounded-md shadow-sm border border-[#014532]/10">Position #{booking.queuePosition}</span>
+                        <span className="text-[#014532]/30 hidden sm:inline">|</span>
+                        <span className="font-semibold text-[15px]">
+                          {booking.farmersAhead === 0
+                            ? locale === 'hi' ? 'अगला नंबर आपका है' : 'Next in line'
+                            : `${booking.farmersAhead} ${locale === 'hi' ? 'किसान आगे हैं' : 'farmers ahead'}`}
                         </span>
-                        {booking.farmersAhead !== null && (
-                          <span className="text-sm font-bold text-emerald-700">
-                            {booking.farmersAhead === 0
-                              ? locale === 'hi' ? 'अगला नंबर आपका है' : 'Next in line'
-                              : `${booking.farmersAhead} ${locale === 'hi' ? 'किसान आगे हैं' : 'farmers ahead'}`}
-                          </span>
-                        )}
-                        {booking.queueStatusLabel && (
-                          <span className="text-sm text-emerald-800/80">
-                            ({booking.queueStatusLabel})
-                          </span>
-                        )}
+                        <span className="text-[#014532]/30 hidden sm:inline">|</span>
+                        <span className="font-medium text-sm bg-white/60 px-2 py-0.5 rounded text-[#014532]">({booking.queueStatusLabel})</span>
                       </div>
                     </div>
                   )}
 
-                  {/* Primary & Secondary Action Buttons */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                     <Link
                       href={`/farmer/bookings/${booking.id}`}
-                      className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-[#014532] font-bold text-sm sm:text-base shadow-md flex items-center justify-center gap-2 transition active:scale-[0.99]"
+                      className="py-3 px-4 rounded-lg bg-[#014532] hover:bg-[#002f2d] text-white font-bold text-[14px] flex items-center justify-center gap-2 transition"
                     >
-                      <span>{locale === 'hi' ? 'खरीद विवरण एवं यात्रा ट्रैक करें' : 'VIEW PROCUREMENT DETAILS'}</span>
+                      <FileText className="w-4 h-4" />
+                      <span>{locale === 'hi' ? 'खरीद विवरण देखें' : 'VIEW PROCUREMENT DETAILS'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </Link>
 
                     <Link
                       href={`/farmer/bookings/${booking.id}`}
-                      className="w-full sm:w-auto py-3 px-5 rounded-xl bg-emerald-50 hover:bg-[#232F48] border border-emerald-100 text-[#014532] font-bold text-sm sm:text-base shadow-sm flex items-center justify-center gap-2 transition"
+                      className="py-3 px-4 rounded-lg bg-[#F4F9F7] border border-[#014532]/20 hover:bg-[#E8F3EF] text-[#014532] font-bold text-[14px] flex items-center justify-center gap-2 transition"
                     >
-                      <QrCode className="w-4 h-4 text-emerald-700" />
-                      <span>{locale === 'hi' ? 'डिजिटल पास / क्यूआर' : 'VIEW BOOKING PASS'}</span>
+                      <QrCode className="w-4 h-4" />
+                      <span>{locale === 'hi' ? 'बुकिंग पास देखें' : 'VIEW BOOKING PASS'}</span>
                     </Link>
                   </div>
                 </div>
@@ -399,28 +392,23 @@ export default function FarmerDashboardPage() {
           </div>
         ) : (
           /* Clean Empty State */
-          <div className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-8 sm:p-10 border border-emerald-100 text-center space-y-4 shadow-md">
-            <div className="w-14 h-14 rounded-2xl bg-[#F4F9F7] border border-emerald-100 text-emerald-800/80 flex items-center justify-center mx-auto">
-              <Package className="w-7 h-7" />
-            </div>
-            <div className="space-y-1.5 max-w-md mx-auto">
-              <h3 className="text-base sm:text-lg font-bold text-[#014532] tracking-tight">
-                {locale === 'hi' ? 'कोई आगामी खरीद यात्रा नहीं है' : 'NO UPCOMING BOOKINGS'}
-              </h3>
-              <p className="text-sm sm:text-base text-emerald-800/80 leading-relaxed">
-                {locale === 'hi'
-                  ? 'वर्तमान में आपकी कोई खरीद बुकिंग नहीं है। न्यूनतम समर्थन मूल्य (MSP) पर अनाज बेचने के लिए निकटतम अधिकृत खरीद केंद्र का स्लॉट बुक करें।'
-                  : "You don't have an upcoming procurement visit. Book an arrival slot at your nearest authorized procurement depot to sell produce at guaranteed MSP."}
-              </p>
-            </div>
+          <div className="p-8 text-center space-y-3">
+            <h3 className="text-[16px] font-bold text-[#014532]">
+              {locale === 'hi' ? 'कोई आगामी खरीद यात्रा नहीं है' : 'NO UPCOMING BOOKINGS'}
+            </h3>
+            <p className="text-sm text-gray-600 max-w-md mx-auto">
+              {locale === 'hi'
+                ? 'वर्तमान में आपकी कोई खरीद बुकिंग नहीं है। न्यूनतम समर्थन मूल्य (MSP) पर अनाज बेचने के लिए निकटतम अधिकृत खरीद केंद्र का स्लॉट बुक करें।'
+                : "You don't have an upcoming procurement visit. Book an arrival slot at your nearest authorized procurement depot to sell produce at guaranteed MSP."}
+            </p>
             {isVerified && (
-              <div className="pt-2">
+              <div className="pt-4">
                 <Link
                   href="/farmer/centres"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-[#014532] font-bold text-sm sm:text-base shadow-md transition"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#014532] hover:bg-[#002f2d] text-white font-bold text-sm transition"
                 >
                   <Building className="w-4 h-4" />
-                  <span>{locale === 'hi' ? 'खरीद केंद्र चुनें व स्लॉट बुक करें' : 'BOOK PROCUREMENT VISIT'}</span>
+                  <span>{locale === 'hi' ? 'स्लॉट बुक करें' : 'BOOK PROCUREMENT VISIT'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -435,102 +423,97 @@ export default function FarmerDashboardPage() {
       {todayCapacity && (
         <section
           aria-label="Today's Booking Capacity"
-          className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-4 sm:p-5 border border-emerald-100 space-y-3.5 shadow-md"
+          className="rounded-xl bg-white border border-[#014532]/10 p-5 space-y-5"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-emerald-100 pb-2.5">
-            <div>
-              <h2 className="text-sm sm:text-base font-bold uppercase tracking-wider text-[#014532] flex items-center gap-2">
-                <Layers className="w-4 h-4 text-emerald-700" />
-                <span>{locale === 'hi' ? 'आज की उपार्जन क्षमता (दैनिक कोटा)' : "Today's Booking Capacity"}</span>
-              </h2>
-              <span className="text-sm text-emerald-800/80 font-medium">
-                {todayCapacity.crop} • {todayCapacity.season} • {todayCapacity.farmerCategory}
-              </span>
-            </div>
-            <span className="text-sm text-emerald-800/80 font-mono">
+          <div className="flex items-center justify-between border-b border-[#014532]/10 pb-3">
+            <h2 className="text-[15px] font-bold uppercase tracking-wider text-[#014532] flex items-center gap-2">
+              <Layers className="w-5 h-5 text-[#014532]" />
+              <span>{locale === 'hi' ? 'आज की बुकिंग क्षमता' : "TODAY'S BOOKING CAPACITY"}</span>
+            </h2>
+            <span className="text-[13px] font-medium text-gray-500">
               {formatDate(todayCapacity.date)}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             {/* Centre Daily Limit */}
-            <div className="p-3 rounded-xl bg-[#F4F9F7] border border-emerald-100">
-              <span className="text-sm text-emerald-800/80 block font-semibold uppercase tracking-wider">
-                {locale === 'hi' ? 'केंद्र दैनिक सीमा' : 'Centre Daily Limit'}
+            <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 flex flex-col items-center justify-center transition-colors hover:bg-blue-100/50">
+              <span className="text-[11px] text-blue-700/80 font-bold uppercase tracking-wider mb-1">
+                {locale === 'hi' ? 'केंद्र दैनिक सीमा' : 'CENTRE DAILY LIMIT'}
               </span>
-              <span className="text-base sm:text-lg font-black font-mono text-[#014532] block mt-0.5">
-                {todayCapacity.centreDailyLimitQuintals ?? todayCapacity.dailyBookingCapacityQuintals ?? 50}{' '}
-                <span className="text-sm font-sans font-normal text-emerald-800/80">qtl</span>
+              <span className="text-2xl font-bold text-blue-900 flex items-baseline gap-1">
+                {todayCapacity.centreDailyLimitQuintals ?? todayCapacity.dailyBookingCapacityQuintals ?? 50}
+                <span className="text-[14px] font-semibold text-blue-700/70">qtl</span>
               </span>
-              <span className="text-[9px] text-emerald-700/80 block mt-0.5">Level 2 Limit</span>
+              <span className="text-[11px] text-blue-600/70 mt-1 font-medium">Level 2 Limit</span>
             </div>
 
             {/* Booked Today */}
-            <div className="p-3 rounded-xl bg-[#F4F9F7] border border-emerald-100">
-              <span className="text-sm text-emerald-800/80 block font-semibold uppercase tracking-wider">
-                {locale === 'hi' ? 'आज बुक किया' : 'Booked Today'}
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200/60 flex flex-col items-center justify-center transition-colors hover:bg-amber-100/50">
+              <span className="text-[11px] text-amber-700/80 font-bold uppercase tracking-wider mb-1">
+                {locale === 'hi' ? 'आज बुक किया' : 'BOOKED TODAY'}
               </span>
-              <span className="text-base sm:text-lg font-black font-mono text-emerald-700 block mt-0.5">
-                {todayCapacity.bookedTodayQuintals}{' '}
-                <span className="text-sm font-sans font-normal text-emerald-800/80">qtl</span>
+              <span className="text-2xl font-bold text-amber-900 flex items-baseline gap-1">
+                {todayCapacity.bookedTodayQuintals}
+                <span className="text-[14px] font-semibold text-amber-700/70">qtl</span>
               </span>
-              <span className="text-[9px] text-emerald-700/80 block mt-0.5">Current Usage</span>
+              <span className="text-[11px] text-amber-600/70 mt-1 font-medium">Current Usage</span>
             </div>
 
             {/* Remaining Capacity */}
-            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
-              <span className="text-sm text-emerald-600 block font-semibold uppercase tracking-wider">
-                {locale === 'hi' ? 'शेष क्षमता' : 'Remaining'}
+            <div className="p-4 rounded-xl bg-[#E8F3EF] border border-[#014532]/20 flex flex-col items-center justify-center transition-colors hover:bg-[#DDF0E8]">
+              <span className="text-[11px] text-[#014532]/80 font-bold uppercase tracking-wider mb-1">
+                {locale === 'hi' ? 'शेष क्षमता' : 'REMAINING'}
               </span>
-              <span className="text-base sm:text-lg font-black font-mono text-emerald-600 block mt-0.5">
-                {todayCapacity.remainingCapacityQuintals}{' '}
-                <span className="text-sm font-sans font-normal text-emerald-700">qtl</span>
+              <span className="text-2xl font-bold text-[#014532] flex items-baseline gap-1">
+                {todayCapacity.remainingCapacityQuintals}
+                <span className="text-[14px] font-semibold text-[#014532]/70">qtl</span>
               </span>
-              <span className="text-[9px] text-emerald-700 block mt-0.5">Available Today</span>
+              <span className="text-[11px] text-[#014532]/70 mt-1 font-medium">Available Today</span>
             </div>
 
             {/* Minimum Booking */}
-            <div className="p-3 rounded-xl bg-[#F4F9F7] border border-emerald-100">
-              <span className="text-sm text-emerald-800/80 block font-semibold uppercase tracking-wider">
-                {locale === 'hi' ? 'न्यूनतम बुकिंग' : 'Min. Booking'}
+            <div className="p-4 rounded-xl bg-violet-50 border border-violet-100 flex flex-col items-center justify-center transition-colors hover:bg-violet-100/50">
+              <span className="text-[11px] text-violet-700/80 font-bold uppercase tracking-wider mb-1">
+                {locale === 'hi' ? 'न्यूनतम बुकिंग' : 'MIN. BOOKING'}
               </span>
-              <span className="text-base sm:text-lg font-black font-mono text-[#014532] block mt-0.5">
-                {todayCapacity.minimumBookingQuantityQuintals}{' '}
-                <span className="text-sm font-sans font-normal text-emerald-800/80">qtl</span>
+              <span className="text-2xl font-bold text-violet-900 flex items-baseline gap-1">
+                {todayCapacity.minimumBookingQuantityQuintals}
+                <span className="text-[14px] font-semibold text-violet-700/70">qtl</span>
               </span>
-              <span className="text-[9px] text-emerald-700/80 block mt-0.5">Threshold</span>
+              <span className="text-[11px] text-violet-600/70 mt-1 font-medium">Threshold</span>
             </div>
           </div>
 
           {/* Capacity notice if applicable */}
           {todayCapacity.capacityMessage && (
-            <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-xl flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+            <div className="text-[13px] text-[#935200] bg-[#FFF8E6] border border-[#FFD98E] p-3 rounded-lg flex items-center gap-2 font-medium">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-[#E07900]" />
               <span>{todayCapacity.capacityMessage}</span>
             </div>
           )}
 
           {/* Action buttons */}
           {isVerified && (
-            <div className="pt-1 flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between pt-1">
               <Link
                 href={todayCapacity.canBookAnother ? '/farmer/centres' : '#'}
                 aria-disabled={!todayCapacity.canBookAnother}
-                className={`text-sm font-bold px-4 py-2 rounded-lg transition inline-flex items-center gap-1.5 ${
+                className={`text-[14px] font-bold px-4 py-2 rounded-lg transition flex items-center gap-2 ${
                   todayCapacity.canBookAnother
-                    ? 'bg-[#014532] hover:bg-[#002f2d] text-white shadow-sm'
-                    : 'bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed'
+                    ? 'bg-[#014532] hover:bg-[#002f2d] text-white'
+                    : 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
-                <span>{locale === 'hi' ? '+ दूसरी यात्रा बुक करें' : '+ Book Another Visit'}</span>
-                {todayCapacity.canBookAnother && <ChevronRight className="w-3.5 h-3.5 text-white" />}
+                <span>+ {locale === 'hi' ? 'दूसरी यात्रा बुक करें' : 'Book Another Visit'}</span>
+                {todayCapacity.canBookAnother && <ArrowRight className="w-4 h-4" />}
               </Link>
-
               <Link
                 href="/farmer/visits"
-                className="text-sm text-emerald-700 hover:text-emerald-600 font-bold transition"
+                className="text-[14px] text-[#014532] hover:underline font-bold flex items-center gap-1"
               >
-                {locale === 'hi' ? 'सभी बुकिंग देखें →' : 'View All Bookings →'}
+                <span>{locale === 'hi' ? 'सभी बुकिंग देखें' : 'View All Bookings'}</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           )}
@@ -538,138 +521,91 @@ export default function FarmerDashboardPage() {
       )}
 
       {/* ============================================================ */}
-      {/* 4. UPCOMING BOOKINGS LIST                                    */}
+      {/* 4. RECENT PROCUREMENT HISTORY (TABLE FORMAT)                 */}
       {/* ============================================================ */}
-      {upcomingBookings.length > 0 && (
-        <section aria-label="Upcoming Bookings" className="space-y-2.5">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm sm:text-base font-bold uppercase tracking-wider text-emerald-900/80 flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-emerald-700" />
-              <span>{locale === 'hi' ? 'आगामी निर्धारित यात्राएं' : 'Upcoming Bookings'}</span>
+      {recentBookings.length > 0 && (
+        <section aria-label="Recent Bookings" className="rounded-xl bg-white border border-[#014532]/10 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#014532]/10">
+            <h2 className="text-[15px] font-bold uppercase tracking-wider text-[#014532] flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#014532]" />
+              <span>{locale === 'hi' ? 'हालिया बुकिंग' : 'RECENT BOOKINGS'}</span>
             </h2>
             <Link
               href="/farmer/visits"
-              className="text-sm text-emerald-700 hover:text-emerald-600 font-bold"
+              className="text-[14px] text-[#014532] hover:underline font-bold"
             >
               {locale === 'hi' ? 'सभी देखें' : 'View All'}
             </Link>
           </div>
-
-          <div className="space-y-2">
-            {upcomingBookings.map((b) => (
-              <div
-                key={b.id}
-                className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border border-emerald-100 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-500 transition shadow-sm"
-              >
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-[#014532]">
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[600px]">
+              <thead>
+                <tr className="bg-[#F9FAFB] border-b border-gray-100">
+                  <th className="px-5 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">DATE</th>
+                  <th className="px-5 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">QUANTITY</th>
+                  <th className="px-5 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">CENTRE</th>
+                  <th className="px-5 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">STATUS</th>
+                  <th className="px-5 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">ACTION</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {recentBookings.map((b) => (
+                  <tr key={b.id} className="hover:bg-[#F9FAFB] transition">
+                    <td className="px-5 py-4 text-[13px] text-gray-700 whitespace-nowrap">
                       {formatDate(b.bookingDate)}
-                    </span>
-                    <span className="text-sm text-emerald-700 font-mono font-semibold">
-                      {b.windowStartTime} – {b.windowEndTime}
-                    </span>
-                  </div>
-                  <div className="text-sm text-emerald-800/80 flex items-center gap-1.5">
-                    <Building className="w-3.5 h-3.5 text-emerald-700/80" />
-                    <span>{b.centreName}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-3 self-stretch sm:self-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-emerald-100">
-                  <span className="text-sm font-bold font-mono text-emerald-700">
-                    {b.expectedQuantityQuintals} qtl
-                  </span>
-                  <Link
-                    href={`/farmer/bookings/${b.id}`}
-                    className="text-sm font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[#014532] hover:bg-[#232F48] transition"
-                  >
-                    {locale === 'hi' ? 'विवरण देखें' : 'View Booking'}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ============================================================ */}
-      {/* 5. RECENT PROCUREMENT HISTORY                                */}
-      {/* ============================================================ */}
-      {recentBookings.length > 0 && (
-        <section aria-label="Recent History" className="space-y-2.5">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm sm:text-base font-bold uppercase tracking-wider text-emerald-900/80 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-              <span>{locale === 'hi' ? 'हालिया खरीद इतिहास' : 'Recent Bookings'}</span>
-            </h2>
-            <Link
-              href="/farmer/visits"
-              className="text-sm text-emerald-700 hover:text-emerald-600 font-bold"
-            >
-              {locale === 'hi' ? 'पूरी सूची' : 'View All'}
-            </Link>
-          </div>
-
-          <div className="space-y-2">
-            {recentBookings.map((b) => (
-              <div
-                key={b.id}
-                className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border border-emerald-100 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-sm"
-              >
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-[#014532]">
-                      {formatDate(b.bookingDate)}
-                    </span>
-                    <span className="text-sm font-mono font-bold text-emerald-900/80">
+                    </td>
+                    <td className="px-5 py-4 text-[13px] font-bold text-[#014532] whitespace-nowrap">
                       {b.acceptedQuantityQuintals || b.expectedQuantityQuintals} qtl
-                    </span>
-                  </div>
-                  <span className="text-sm text-emerald-800/80 block">
-                    {b.centreName}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-3 self-stretch sm:self-auto pt-1 sm:pt-0">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-bold bg-emerald-50 border border-emerald-200 text-emerald-600">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-700" />
-                    <span>{b.statusLabel}</span>
-                  </span>
-                  <Link
-                    href={`/farmer/bookings/${b.id}`}
-                    className="text-sm text-emerald-700 hover:underline font-semibold"
-                  >
-                    {locale === 'hi' ? 'रिकॉर्ड →' : 'View Record →'}
-                  </Link>
-                </div>
-              </div>
-            ))}
+                    </td>
+                    <td className="px-5 py-4 text-[13px] text-gray-700">
+                      {b.centreName}
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${getStatusStyles(b.status)}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${getStatusDot(b.status)}`}></div>
+                        {b.statusLabel || b.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <Link
+                        href={`/farmer/bookings/${b.id}`}
+                        className="text-[13px] text-[#014532] hover:underline font-bold flex items-center gap-1"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>View Record</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
       )}
 
       {/* ============================================================ */}
-      {/* 6. TOLL-FREE HELPLINE & SUPPORT STRIP                        */}
+      {/* 5. TOLL-FREE HELPLINE & SUPPORT STRIP                        */}
       {/* ============================================================ */}
       <section
         aria-label="Kisan Support"
-        className="rounded-xl bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border border-emerald-200 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm"
+        className="rounded-xl bg-white border border-[#014532]/10 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-600 text-[#014532] flex items-center justify-center shrink-0 shadow font-bold">
+          <div className="w-10 h-10 rounded-full bg-[#014532] text-white flex items-center justify-center shrink-0 font-bold">
             <PhoneCall className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-bold text-[#014532] text-sm sm:text-base">
+            <h3 className="font-bold text-[#014532] text-[15px]">
               {locale === 'hi' ? 'खरीद सहायता व किसान हेल्पलाइन' : 'Need assistance with your procurement?'}
             </h3>
-            <p className="text-sm text-emerald-800/80">
+            <p className="text-[13px] text-gray-500 mt-0.5">
               {locale === 'hi' ? 'टोल-फ्री किसान हेल्पलाइन:' : 'Toll-Free Kisan Helpline:'}{' '}
-              <a href="tel:18001801551" className="text-emerald-700 font-mono font-bold hover:underline">
+              <a href="tel:18001801551" className="text-[#014532] font-mono font-bold hover:underline">
                 {summary?.helpline || '1800-180-1551'}
               </a>{' '}
-              <span className="text-emerald-700/80">• 8:00 AM – 8:00 PM (All Days)</span>
+              <span className="text-gray-400">• 8:00 AM – 8:00 PM (All Days)</span>
             </p>
           </div>
         </div>
@@ -677,7 +613,7 @@ export default function FarmerDashboardPage() {
         <button
           onClick={() => setHelpOpen(true)}
           type="button"
-          className="px-4 py-2 rounded-lg bg-emerald-50 border border-emerald-100 hover:bg-[#232F48] text-[#014532] font-bold text-sm transition shrink-0 shadow-sm"
+          className="px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 text-[#014532] font-bold text-sm transition shrink-0"
         >
           {locale === 'hi' ? 'सामान्य प्रश्न व उत्तर (FAQs)' : 'Help & FAQs'}
         </button>
@@ -685,5 +621,6 @@ export default function FarmerDashboardPage() {
 
       <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </main>
+    </div>
   );
 }

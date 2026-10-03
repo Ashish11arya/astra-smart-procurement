@@ -10,6 +10,7 @@ import {
   BookingEstimateResponseDto,
   DaySessionAvailability,
 } from '@astra/shared';
+import { getTodayIstDateStr, parseIstDateRange, formatIstDateStr } from '../../common/utils/date.util';
 
 @Injectable()
 export class SchedulingService {
@@ -19,34 +20,38 @@ export class SchedulingService {
   ) {}
 
   /**
-   * Generates the rolling 7-day booking window starting from today.
+   * Generates the rolling 7-day booking window starting from today (IST).
    */
-  getRolling7Dates(): Date[] {
-    const dates: Date[] = [];
-    const now = new Date();
-    for (let i = 0; i <= 7; i++) {
-      const d = new Date(now);
-      d.setDate(now.getDate() + i);
-      d.setHours(0, 0, 0, 0);
-      dates.push(d);
+  getRolling7Dates(): { canonicalDateStr: string; startOfDay: Date; endOfDay: Date }[] {
+    const dates = [];
+    const todayStr = getTodayIstDateStr();
+    const [year, month, day] = todayStr.split('-').map(Number);
+    for (let i = 0; i < 7; i++) {
+      const dStr = `${year}-${String(month).padStart(2, '0')}-${String(day + i).padStart(2, '0')}`;
+      // Let JavaScript Date normalize day overflow automatically
+      const dObj = new Date(year, month - 1, day + i);
+      const canonicalDateStr = `${dObj.getFullYear()}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${String(dObj.getDate()).padStart(2, '0')}`;
+      dates.push(parseIstDateRange(canonicalDateStr));
     }
     return dates;
   }
 
   /**
-   * Checks if a date falls on an operating day for the centre.
+   * Checks if a date string falls on an operating day for the centre.
    */
-  isOperatingDay(date: Date, operatingDaysStr: string): boolean {
+  isOperatingDay(canonicalDateStr: string, operatingDaysStr: string): boolean {
+    const [year, month, day] = canonicalDateStr.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const day = dayNames[date.getDay()];
+    const dayName = dayNames[d.getDay()];
     // Standard default: "Monday - Saturday"
     if (operatingDaysStr.toLowerCase().includes('monday - saturday')) {
-      return day !== 'Sunday';
+      return dayName !== 'Sunday';
     }
     if (operatingDaysStr.toLowerCase().includes('all days') || operatingDaysStr.toLowerCase().includes('monday - sunday')) {
       return true;
     }
-    return operatingDaysStr.toLowerCase().includes(day.toLowerCase());
+    return operatingDaysStr.toLowerCase().includes(dayName.toLowerCase());
   }
 
   /**
@@ -62,9 +67,8 @@ export class SchedulingService {
     }
 
     const rollingDates = this.getRolling7Dates();
-    const startDate = rollingDates[0];
-    const endDate = new Date(rollingDates[rollingDates.length - 1]);
-    endDate.setHours(23, 59, 59, 999);
+    const startDate = rollingDates[0].startOfDay;
+    const endDate = rollingDates[rollingDates.length - 1].endOfDay;
 
     // Fetch existing active bookings for this date range
     const existingBookings = await this.prisma.procurementBooking.findMany({
@@ -87,14 +91,15 @@ export class SchedulingService {
 
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    return rollingDates.map((date) => {
-      const dateStr = date.toISOString().split('T')[0];
-      const dayOfWeek = dayNames[date.getDay()];
-      const isOperating = this.isOperatingDay(date, centre.operatingDays);
+    return rollingDates.map(({ canonicalDateStr }) => {
+      const dateStr = canonicalDateStr;
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const dayOfWeek = dayNames[new Date(year, month - 1, day).getDay()];
+      const isOperating = this.isOperatingDay(canonicalDateStr, centre.operatingDays);
 
       // Sum existing session quantities
       const dayBookings = existingBookings.filter((b) => {
-        const bDateStr = new Date(b.bookingDate).toISOString().split('T')[0];
+        const bDateStr = formatIstDateStr(b.bookingDate);
         return bDateStr === dateStr;
       });
 
@@ -162,11 +167,10 @@ export class SchedulingService {
     }
 
     // Validate date falls in next 7 days
-    const reqDate = new Date(dto.bookingDate);
-    reqDate.setHours(0, 0, 0, 0);
+    const { canonicalDateStr, startOfDay, endOfDay } = parseIstDateRange(dto.bookingDate);
 
     const rollingDates = this.getRolling7Dates();
-    const isValidWindow = rollingDates.some((d) => d.toISOString().split('T')[0] === dto.bookingDate);
+    const isValidWindow = rollingDates.some((d) => d.canonicalDateStr === canonicalDateStr);
 
     if (!isValidWindow) {
       throw new BadRequestException(
@@ -174,20 +178,17 @@ export class SchedulingService {
       );
     }
 
-    if (!this.isOperatingDay(reqDate, centre.operatingDays)) {
-      throw new BadRequestException(`Centre is closed on ${dto.bookingDate} (${centre.operatingDays}).`);
+    if (!this.isOperatingDay(canonicalDateStr, centre.operatingDays)) {
+      throw new BadRequestException(`Centre is closed on ${canonicalDateStr} (${centre.operatingDays}).`);
     }
 
     // Check session capacity
-    const nextDay = new Date(reqDate);
-    nextDay.setDate(reqDate.getDate() + 1);
-
     const activeBookings = await this.prisma.procurementBooking.findMany({
       where: {
         centreId: dto.centreId,
         bookingDate: {
-          gte: reqDate,
-          lt: nextDay,
+          gte: startOfDay,
+          lt: endOfDay,
         },
         session: dto.session,
         status: {

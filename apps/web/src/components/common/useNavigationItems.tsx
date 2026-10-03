@@ -52,7 +52,7 @@ export function useNavigationItems() {
         { 
           label: locale === 'hi' ? 'प्राधिकरण' : 'Authority', 
           shortLabel: locale === 'hi' ? 'अधिकारी' : 'Admin', 
-          href: '#', 
+          href: '/authority/login', 
           icon: ShieldCheck,
           isActive: pathname === '/authority/login' || pathname === '/verification/login',
           children: [

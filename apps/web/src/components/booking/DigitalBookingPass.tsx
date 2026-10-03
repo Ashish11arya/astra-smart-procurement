@@ -62,20 +62,21 @@ export function DigitalBookingPass({
       {/* ============================================================ */}
       {/* 1. SCREEN VIEW (CLEAN OFFICIAL GOV SLIP - HIDDEN ON PRINT)   */}
       {/* ============================================================ */}
-      <div className="relative print:hidden bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-7 shadow-2xl space-y-5 text-center text-[#F8FAFC]">
-        {/* Status Badge */}
-        <div className="w-12 h-12 bg-emerald-950/60 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-sm">
-          <CheckCircle2 className="w-7 h-7" />
+      <div className="relative print:hidden bg-white rounded-3xl border border-slate-200 p-4 sm:p-5 shadow-xl shadow-slate-200/50 space-y-4 text-center text-slate-900 max-w-2xl mx-auto">
+        
+        {/* Status Icon */}
+        <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center mx-auto text-white shadow-md shadow-emerald-200">
+          <CheckCircle2 className="w-5 h-5" />
         </div>
 
-        <div className="space-y-1">
-          <span className="text-[11px] font-bold text-emerald-300 tracking-wider uppercase bg-emerald-950/70 px-3.5 py-0.5 rounded-full border border-emerald-500/40 inline-block">
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-bold text-emerald-700 tracking-widest uppercase bg-emerald-50 px-3 py-0.5 rounded-full inline-block">
             {isHindi ? 'खरीद स्लॉट आरक्षित' : 'Procurement Visit Confirmed'}
           </span>
-          <h1 className="text-xl sm:text-2xl font-black text-white pt-0.5">
-            {isHindi ? 'डिजिटल बुकिंग पास' : 'Booking Confirmed'}
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+            {isHindi ? 'बुकिंग कन्फर्म' : 'Booking Confirmed'}
           </h1>
-          <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
+          <p className="text-xs text-slate-600 max-w-[400px] mx-auto leading-relaxed">
             {isHindi
               ? 'आपका आगमन समय निर्धारित है। डिपो गेट पर चेक-इन के लिए यह क्यूआर कोड प्रस्तुत करें।'
               : 'Your arrival window is reserved. Please present this QR code or booking reference at the depot gate.'}
@@ -83,26 +84,26 @@ export function DigitalBookingPass({
         </div>
 
         {/* Prominent QR Code Presentation Card */}
-        <div className="bg-[#0B1020] border border-[#334155] rounded-2xl p-4 sm:p-5 max-w-sm mx-auto shadow-sm space-y-3">
-          <div className="bg-white p-3.5 sm:p-4 rounded-xl inline-block shadow-sm mx-auto border border-slate-200">
+        <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-3 sm:p-4 max-w-[360px] mx-auto shadow-sm space-y-2">
+          <div className="bg-white p-3 rounded-xl inline-block shadow-sm mx-auto border border-slate-200">
             <QRCodeSVG
               value={qrValue}
-              size={175}
+              size={120}
               level="H"
               includeMargin={true}
               aria-label={`Booking QR Code for ${booking.bookingNumber}`}
             />
           </div>
 
-          <div className="space-y-0.5">
-            <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center justify-center gap-1.5">
+          <div className="space-y-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 flex items-center justify-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{isHindi ? 'गेट पर स्कैन करें' : 'Scan at the centre gate'}</span>
             </div>
-            <div className="font-mono text-sm sm:text-base font-black text-white tracking-wider">
+            <div className="font-mono text-sm sm:text-base font-black text-slate-900 tracking-wider">
               {booking.bookingNumber}
             </div>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[10px] text-slate-500 font-medium">
               {isHindi
                 ? 'यह सुरक्षित क्यूआर आपकी खरीद बुकिंग से प्रमाणित है।'
                 : 'This QR is securely linked to your procurement booking.'}
@@ -111,94 +112,99 @@ export function DigitalBookingPass({
         </div>
 
         {/* Safe Operational Details Card */}
-        <div className="bg-[#0B1020] rounded-2xl p-4 sm:p-5 border border-[#334155] text-left space-y-3.5">
-          <div className="flex items-center justify-between pb-2.5 border-b border-[#334155]">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 text-left space-y-3 shadow-sm">
+          {/* Top Row: Booking Reference and Confirmed Pill */}
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">
                 {isHindi ? 'बुकिंग संदर्भ' : 'Booking Reference'}
               </span>
-              <div className="font-mono text-sm font-bold text-white mt-0.5">
+              <div className="font-mono text-xs sm:text-sm font-bold text-slate-900 mt-0.5">
                 {booking.bookingNumber}
               </div>
             </div>
-            <span className="px-2.5 py-0.5 bg-emerald-950/60 text-emerald-300 text-[11px] font-bold rounded-full border border-emerald-500/40 font-mono">
+            <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full font-mono uppercase">
               {isHindi ? 'पुष्टीकृत' : 'CONFIRMED'}
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
-              <span className="text-slate-400 flex items-center gap-1 text-[11px] font-medium">
-                <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-slate-500 flex items-center gap-1.5 text-[11px] font-semibold">
+                <Building2 className="w-3.5 h-3.5 text-slate-400" />
                 <span>{isHindi ? 'खरीद केंद्र' : 'Procurement Centre'}</span>
               </span>
-              <div className="font-bold text-white text-xs sm:text-sm mt-0.5">
+              <div className="font-bold text-slate-900 mt-1 text-xs">
                 {booking.centreName}
               </div>
-              <div className="text-slate-400 text-[11px] mt-0.5 leading-relaxed">
+              <div className="text-slate-500 text-[10px] mt-0.5 leading-relaxed">
                 {booking.centreAddress}
               </div>
             </div>
 
             <div>
-              <span className="text-slate-400 flex items-center gap-1 text-[11px] font-medium">
-                <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-slate-500 flex items-center gap-1.5 text-[11px] font-semibold">
+                <Calendar className="w-3.5 h-3.5 text-slate-400" />
                 <span>{isHindi ? 'निर्धारित तिथि व सत्र' : 'Scheduled Date & Session'}</span>
               </span>
-              <div className="font-bold text-white text-xs sm:text-sm mt-0.5">
+              <div className="font-bold text-slate-900 mt-1 text-xs">
                 {booking.bookingDate}
               </div>
-              <div className="text-slate-400 text-[11px] mt-0.5 capitalize">
+              <div className="text-slate-500 text-[10px] mt-0.5 capitalize">
                 {booking.session.toLowerCase()} {isHindi ? 'सत्र' : 'Session'}
               </div>
             </div>
           </div>
 
           {/* Assigned Arrival Window Card */}
-          <div className="bg-[#1B2438] p-3.5 rounded-xl border border-emerald-500/30 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">
-                {isHindi ? 'निर्धारित आगमन खिड़की' : 'ASSIGNED ARRIVAL WINDOW'}
-              </span>
-              <div className="text-lg sm:text-xl font-black text-emerald-300 font-mono mt-0.5">
-                {booking.windowStartTime} – {booking.windowEndTime}
+          <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-start sm:items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-emerald-100 shadow-sm shrink-0">
+                <Clock className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-[11px] text-emerald-400/80 block mt-0.5 font-medium">
-                {isHindi
-                  ? 'समय पर आगमन सीधी तौल सुनिश्चित करता है।'
-                  : 'Punctual arrival ensures direct weighment and queue priority.'}
-              </span>
+              <div>
+                <span className="text-[9px] text-emerald-800 font-bold uppercase tracking-wider block">
+                  {isHindi ? 'निर्धारित आगमन खिड़की' : 'ASSIGNED ARRIVAL WINDOW'}
+                </span>
+                <div className="text-base sm:text-lg font-black text-emerald-900 font-mono mt-0.5">
+                  {booking.windowStartTime} – {booking.windowEndTime}
+                </div>
+                <span className="text-[10px] text-emerald-700 block mt-0.5 font-medium">
+                  {isHindi
+                    ? 'समय पर आगमन सीधी तौल सुनिश्चित करता है।'
+                    : 'Punctual arrival ensures direct weighment.'}
+                </span>
+              </div>
             </div>
-            <Clock className="w-6 h-6 text-emerald-400 hidden sm:block" />
+            <Clock className="w-6 h-6 text-emerald-200 hidden sm:block opacity-50" />
           </div>
 
           {/* Farmer & Transport Summary */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-0.5 text-xs">
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
             <div>
-              <span className="text-slate-400 block text-[10px] font-medium">
+              <span className="text-slate-500 block text-[10px] font-medium">
                 {isHindi ? 'अनुमानित मात्रा' : 'Expected Quantity'}
               </span>
-              <span className="font-bold text-white text-xs mt-0.5 block">
+              <span className="font-bold text-slate-900 text-xs mt-0.5 block">
                 {booking.expectedQuantityQuintals} Quintals
               </span>
             </div>
 
             <div>
-              <span className="text-slate-400 block text-[10px] font-medium">
+              <span className="text-slate-500 block text-[10px] font-medium">
                 {isHindi ? 'परिवहन' : 'Transport'}
               </span>
-              <span className="font-bold text-white text-xs mt-0.5 block truncate">
+              <span className="font-bold text-slate-900 text-xs mt-0.5 block truncate">
                 {booking.vehicleType || 'Standard Transport'}
-                {booking.vehicleNumber ? ` (${booking.vehicleNumber})` : ''}
               </span>
             </div>
 
             {booking.farmerCode && (
-              <div className="col-span-2 sm:col-span-1">
-                <span className="text-slate-400 block text-[10px] font-medium">
+              <div>
+                <span className="text-slate-500 block text-[10px] font-medium">
                   {isHindi ? 'किसान आईडी' : 'Farmer ID'}
                 </span>
-                <span className="font-mono font-bold text-white text-xs mt-0.5 block">
+                <span className="font-mono font-bold text-slate-900 text-xs mt-0.5 block">
                   {booking.farmerCode}
                 </span>
               </div>
@@ -211,19 +217,19 @@ export function DigitalBookingPass({
           <button
             type="button"
             onClick={handlePrint}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 text-white hover:bg-emerald-500 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2 bg-[#004D40] text-white hover:bg-[#003d33] rounded-lg text-xs font-semibold shadow-sm transition-all"
           >
-            <Printer className="w-4 h-4" />
+            <Printer className="w-3.5 h-3.5" />
             <span>{isHindi ? 'पास प्रिंट / सेव करें' : 'Print / Save Pass'}</span>
           </button>
 
           {showVisitLink && (
             <Link
               href="/farmer/visits"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0B1020] hover:bg-[#1B2438] text-white rounded-xl text-xs sm:text-sm font-bold border border-[#334155] shadow-sm transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold border border-slate-300 shadow-sm transition-all"
             >
               <span>{isHindi ? 'मेरी बुकिंग्स में देखें' : 'View in My Visits'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}
 
@@ -231,7 +237,7 @@ export function DigitalBookingPass({
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto px-5 py-2.5 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-transparent hover:bg-[#1B2438] rounded-xl border border-[#334155] transition"
+              className="w-full sm:w-auto px-5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-transparent hover:bg-slate-100 rounded-lg border border-transparent transition"
             >
               {isHindi ? 'बंद करें' : 'Close'}
             </button>

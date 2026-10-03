@@ -162,13 +162,13 @@ export class BookingService {
       const { startOfDay, endOfDay, canonicalDateStr } = parseIstDateRange(dto.bookingDate);
 
       const rollingDates = this.schedulingService.getRolling7Dates();
-      const isValidDate = rollingDates.some((d) => formatIstDateStr(d) === canonicalDateStr);
+      const isValidDate = rollingDates.some((d) => d.canonicalDateStr === canonicalDateStr);
 
       if (!isValidDate) {
         throw new BadRequestException('Selected date is outside the active 7-day booking window.');
       }
 
-      if (!this.schedulingService.isOperatingDay(startOfDay, centre.operatingDays)) {
+      if (!this.schedulingService.isOperatingDay(canonicalDateStr, centre.operatingDays)) {
         throw new BadRequestException(`Centre does not operate on this day (${centre.operatingDays}).`);
       }
 
