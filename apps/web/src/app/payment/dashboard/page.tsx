@@ -173,40 +173,40 @@ function PaymentDashboardContent() {
   };
 
   return (
-    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#F8FAFC]">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
       {/* Top Header - Compact & Operational */}
-      <div className="rounded-xl border border-[#334155] bg-[#151C2F] p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center space-x-3.5">
-          <div className="w-11 h-11 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-400 flex items-center justify-center flex-shrink-0 shadow-xs">
-            <CreditCard className="w-5 h-5" />
+      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
+            <CreditCard className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-black text-[#F8FAFC] tracking-tight">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 Payments
               </h1>
-              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono uppercase">
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 font-mono uppercase tracking-wider">
                 Aadhaar PFMS Gateway
               </span>
             </div>
-            <p className="text-xs text-[#94A3B8] mt-0.5">
-              <strong className="text-[#CBD5E1]">{centreInfo?.name || 'Muzaffarpur Central Grain Procurement Depot'}</strong> &bull; Direct-to-bank subsidy and MSP disbursement processing
+            <p className="text-xs text-slate-400 mt-1">
+              {centreInfo?.name || 'Muzaffarpur Central Grain Procurement Depot'} &bull; Direct-to-bank subsidy and MSP disbursement processing
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 self-end md:self-auto">
+        <div className="flex items-center gap-3 self-end md:self-auto">
           <button
             onClick={() => loadQueue()}
             disabled={loading}
-            className="px-3.5 py-2 rounded-lg border border-[#334155] bg-[#1E293B] hover:bg-[#334155] text-[#CBD5E1] hover:text-[#F8FAFC] text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-3.5 py-2 rounded-xl border border-[#334155] bg-[#0B1020] hover:bg-[#1B2438] text-slate-200 text-xs font-semibold flex items-center space-x-2 transition"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-cyan-400' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
             onClick={handleLogout}
-            className="px-3.5 py-2 rounded-lg border border-rose-900/60 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-3.5 py-2 rounded-xl border border-rose-800/40 bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 text-xs font-semibold flex items-center space-x-1.5 transition"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -215,28 +215,28 @@ function PaymentDashboardContent() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#334155] pb-2.5">
+      <div className="flex items-center gap-2 border-b border-[#334155] pb-3 text-xs font-semibold overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setActiveTab('queue')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'queue'
-              ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-[#151C2F]'
           }`}
         >
-          <CreditCard className="w-4 h-4 text-cyan-400" />
+          <CreditCard className="w-4 h-4" />
           <span>Payment Queue ({activeQueue.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('history')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'history'
-              ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-[#151C2F]'
           }`}
         >
-          <History className="w-4 h-4 text-cyan-400" />
+          <History className="w-4 h-4" />
           <span>Settled Payments & Daily History ({processedHistory.length})</span>
         </button>
       </div>

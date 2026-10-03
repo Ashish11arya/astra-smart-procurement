@@ -132,32 +132,40 @@ function VerificationApplicationsContent() {
   return (
     <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* 1. Header Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#334155]">
-        <div>
+      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+        <div className="flex flex-col gap-3">
           <Link
             href="/verification/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-purple-300 transition mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-purple-300 transition w-fit"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Scrutiny Workspace</span>
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
-            <FileCheck className="w-7 h-7 text-purple-400" />
-            <span>Farmer Applications Queue</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Operational review, scrutiny, approval, return, or rejection of farmer procurement registrations.
-          </p>
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0">
+              <FileCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                Farmer Applications Queue
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+                Operational review, scrutiny, approval, return, or rejection of farmer procurement registrations.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <button
-          onClick={fetchApplications}
-          disabled={loading}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#151C2F] border border-[#334155] hover:bg-[#1B2438] text-xs font-semibold text-slate-300 transition self-start sm:self-center"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 text-purple-400 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh Queue</span>
-        </button>
+        <div className="flex items-center gap-2 self-end md:self-auto mt-2 md:mt-0">
+          <button
+            onClick={fetchApplications}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#151C2F] border border-[#334155] hover:bg-[#1B2438] text-xs font-semibold text-slate-300 transition"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-purple-400 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh Queue</span>
+          </button>
+        </div>
       </div>
 
       {/* 2. Filter Tabs & Search Bar */}

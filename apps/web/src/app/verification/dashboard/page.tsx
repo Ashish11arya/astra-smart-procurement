@@ -67,21 +67,19 @@ export default function VerificationDashboardPage() {
   return (
     <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* 1. Official Header Strip */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#334155]">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/80 border border-purple-500/30 text-purple-300 text-xs font-bold tracking-wide">
-            <FileCheck className="w-3.5 h-3.5 text-purple-400" />
-            <span>FARMER VERIFICATION AUTHORITY • OPERATIONAL WORKSPACE</span>
+      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0">
+            <FileCheck className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-2">
-            Farmer Verification
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Operational review, 8-point documentary scrutiny, land boundary cross-referencing, and final verification decisions.
-          </p>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Farmer Verification Authority
+            </h1>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-center">
+        <div className="flex items-center gap-2 self-end md:self-auto">
           <button
             onClick={fetchStats}
             disabled={loading}
