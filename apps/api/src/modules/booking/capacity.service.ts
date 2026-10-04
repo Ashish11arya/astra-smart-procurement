@@ -90,20 +90,20 @@ export class CapacityService {
           .reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0)
       : dayBookings.reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0);
 
-    const totalBookedTodayAllCentres = dayBookings.reduce(
-      (sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals),
-      0,
-    );
 
     // Level 3 calculation:
-    // Level 1: Government daily ceiling remaining (250 qtl/day minus all bookings by this farmer today across all centres)
-    const remainingUnderGovtDaily = Math.max(0, governmentMaximumQuintals - totalBookedTodayAllCentres);
+    // IMPORTANT: The calculation must NOT aggregate the farmer's bookings across all centres.
     // Level 2: Centre daily limit remaining (e.g. 50 qtl/day at this centre minus bookings at this centre today)
     const remainingAtCentre = Math.max(0, centreDailyLimitQuintals - bookedAtThisCentreToday);
-    // Level 3 remaining: min(Level 1 govt remaining, Level 2 centre remaining)
-    let remainingCapacityQuintals = Math.min(remainingAtCentre, remainingUnderGovtDaily);
+    
+    // Level 3 remaining: Only use the centre-specific limit
+    let remainingCapacityQuintals = remainingAtCentre;
 
     // If seasonal overall quota applies, cap by season remaining
+    let totalSeasonBooked = 0;
+    let remainingSeason = remainingCapacityQuintals;
+    let isRestrictedBySeason = false;
+
     if (policy.defaultEligibleQuotaQuintals) {
       const seasonBookings = await this.prisma.procurementBooking.findMany({
         where: {
@@ -112,9 +112,13 @@ export class CapacityService {
         },
         include: { procurement: true },
       });
-      const totalSeasonBooked = seasonBookings.reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0);
-      const remainingSeason = Math.max(0, policy.defaultEligibleQuotaQuintals - totalSeasonBooked);
-      remainingCapacityQuintals = Math.min(remainingCapacityQuintals, remainingSeason);
+      totalSeasonBooked = seasonBookings.reduce((sum, b) => sum + (b.procurement?.acceptedQuantityQuintals ?? b.expectedQuantityQuintals), 0);
+      remainingSeason = Math.max(0, policy.defaultEligibleQuotaQuintals - totalSeasonBooked);
+      
+      if (remainingSeason < remainingCapacityQuintals) {
+        remainingCapacityQuintals = remainingSeason;
+        isRestrictedBySeason = true;
+      }
     }
 
     const canBookAnother = remainingCapacityQuintals >= minimumBookingQuantityQuintals;
@@ -141,15 +145,19 @@ export class CapacityService {
     // Informative government/centre capacity message
     let capacityMessage = '';
     if (canBookAnother) {
-      capacityMessage = `You can book up to ${remainingCapacityQuintals.toFixed(1)} q at this centre for ${canonicalDateStr} (minimum booking: ${minimumBookingQuantityQuintals} q).`;
+      if (isRestrictedBySeason) {
+        capacityMessage = `You can book up to ${remainingCapacityQuintals.toFixed(1)} q at this centre for ${canonicalDateStr} (Seasonal quota limit reached: ${remainingSeason} q remaining out of ${policy.defaultEligibleQuotaQuintals} q).`;
+      } else {
+        capacityMessage = `You can book up to ${remainingCapacityQuintals.toFixed(1)} q at this centre for ${canonicalDateStr} (minimum booking: ${minimumBookingQuantityQuintals} q).`;
+      }
     } else if (remainingCapacityQuintals > 0 && remainingCapacityQuintals < minimumBookingQuantityQuintals) {
-      capacityMessage = `Only ${remainingCapacityQuintals.toFixed(1)} q capacity remains for this date, which is below the minimum booking quantity of ${minimumBookingQuantityQuintals} q.`;
+      capacityMessage = `Only ${remainingCapacityQuintals.toFixed(1)} q capacity remains, which is below the minimum booking quantity of ${minimumBookingQuantityQuintals} q.`;
+    } else if (isRestrictedBySeason && remainingSeason <= 0) {
+      capacityMessage = `Your overall seasonal limit (${policy.defaultEligibleQuotaQuintals} q) has been fully reached.`;
     } else if (bookedAtThisCentreToday >= centreDailyLimitQuintals) {
       capacityMessage = `Your daily booking limit (${centreDailyLimitQuintals} q) at this procurement centre has been fully reached for today.`;
-    } else if (totalBookedTodayAllCentres >= governmentMaximumQuintals) {
-      capacityMessage = `The statutory government daily procurement limit (${governmentMaximumQuintals} q) has been fully reached for this date.`;
     } else {
-      capacityMessage = `Daily booking capacity limit (${applicableDailyLimitQuintals} q) has been reached for this date.`;
+      capacityMessage = `Booking capacity limit has been reached.`;
     }
 
     return {
@@ -163,6 +171,9 @@ export class CapacityService {
       dailyBookingCapacityQuintals: applicableDailyLimitQuintals, // Alias for backward compatibility
       minimumBookingQuantityQuintals,
       bookedTodayQuintals: bookedAtThisCentreToday,
+      totalSeasonBooked,
+      remainingSeason,
+      isRestrictedBySeason,
       remainingCapacityQuintals,
       centreTotalRemainingQuintals,
       sessionRemainingQuintals,

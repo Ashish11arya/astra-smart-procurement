@@ -346,17 +346,28 @@ function FarmerBookingContent() {
   useEffect(() => {
     if (!centreId) return;
     const targetDate = bookingDate || getTodayIstString();
+    
+    let isMounted = true;
     setLoadingCapacity(true);
+    setCapacityInfo(null); // Clear previous date's capacity to avoid stale UI state
+
     apiRequest<any>(`/bookings/capacity?centreId=${centreId}&date=${targetDate}`)
       .then((cap) => {
+        if (!isMounted) return;
         setCapacityInfo(cap);
       })
       .catch((err) => {
+        if (!isMounted) return;
         console.warn('Could not load date-specific capacity info:', err);
       })
       .finally(() => {
+        if (!isMounted) return;
         setLoadingCapacity(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [centreId, bookingDate]);
 
   // Handle Slot Selection from Calendar
@@ -365,6 +376,8 @@ function FarmerBookingContent() {
     setSession(selectedSession);
     setSlotSelected(true);
     setSubmitError(null);
+    setCapacityInfo(null);
+    setEstimate(null);
 
     // Smooth scroll to form section
     setTimeout(() => {
@@ -1054,8 +1067,17 @@ function FarmerBookingContent() {
                 </div>
               )}
 
-              {/* Notice if farmer already booked quantity on this date */}
-              {capacityInfo?.bookedTodayQuintals > 0 && (
+              {/* Notice if farmer already booked quantity on this date or season */}
+              {capacityInfo?.isRestrictedBySeason && capacityInfo?.totalSeasonBooked > 0 ? (
+                <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl flex items-center gap-2 font-medium">
+                  <Info className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>
+                    {lang === 'hi'
+                      ? `आप इस सीज़न में पहले ही ${capacityInfo.totalSeasonBooked} क्विंटल बुक कर चुके हैं (शेष स्वीकार्य: ${capacityInfo.remainingSeason} q)।`
+                      : `You have already booked ${capacityInfo.totalSeasonBooked} q this season (Remaining permissible: ${capacityInfo.remainingSeason} q).`}
+                  </span>
+                </div>
+              ) : capacityInfo?.bookedTodayQuintals > 0 ? (
                 <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl flex items-center gap-2 font-medium">
                   <Info className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>
@@ -1064,7 +1086,7 @@ function FarmerBookingContent() {
                       : `You have already booked ${capacityInfo.bookedTodayQuintals} q on this date (Remaining permissible: ${capacityInfo.remainingCapacityQuintals} q).`}
                   </span>
                 </div>
-              )}
+              ) : null}
 
               {/* Visual Quota Progress Bar */}
               <div className="space-y-2 w-full">

@@ -187,9 +187,15 @@ export class BookingService {
       }
 
       if (dto.expectedQuantityQuintals > capacity.remainingCapacityQuintals) {
-        throw new BadRequestException(
-          `You can book only ${capacity.remainingCapacityQuintals.toFixed(1)} q more for this date at this centre.`,
-        );
+        if ((capacity as any).isRestrictedBySeason) {
+          throw new BadRequestException(
+            `You can book only ${(capacity as any).remainingSeason.toFixed(1)} q more for this season. Your overall seasonal quota (${(capacity as any).policy?.defaultEligibleQuotaQuintals} q) restricts further bookings.`
+          );
+        } else {
+          throw new BadRequestException(
+            `You can book only ${capacity.remainingCapacityQuintals.toFixed(1)} q more for this date at this centre.`,
+          );
+        }
       }
 
       // 4. Revalidate centre physical session capacity
