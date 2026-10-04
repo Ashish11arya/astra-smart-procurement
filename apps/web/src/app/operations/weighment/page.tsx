@@ -373,25 +373,29 @@ function WeighmentDashboardContent() {
   };
 
   return (
-    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
+    <div className="w-full flex-1 flex flex-col bg-[#EEFaf7] text-slate-800 relative after:absolute after:top-full after:inset-x-0 after:h-[calc(72px+env(safe-area-inset-bottom))] after:bg-[#EEFaf7] md:after:hidden">
+      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-900 flex-1">
       {/* Top Operations Action Header */}
-      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 flex-shrink-0">
             <Scale className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-[24px] leading-[32px] font-bold text-slate-900 tracking-tight">
                 Weighment
               </h1>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 font-mono uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded text-[12px] leading-[18px] font-semibold bg-amber-500/15 text-amber-600 border border-amber-500/30 uppercase tracking-wider">
                 HARDWARE SYNCED
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              {centreInfo?.name || 'Procurement Depot'} &bull; Real-time gross and tare weighbridge capture with maker-checker verification
-            </p>
+            <div className="text-[16px] leading-[24px] font-semibold text-slate-900 mt-1">
+              {centreInfo?.name || 'Muzaffarpur Central Grain Procurement Depot'}
+            </div>
+            <div className="text-[14px] leading-[20px] font-normal text-slate-500 mt-0.5">
+              Real-time gross and tare weighbridge capture with maker-checker verification
+            </div>
           </div>
         </div>
 
@@ -399,14 +403,14 @@ function WeighmentDashboardContent() {
           <button
             onClick={loadData}
             disabled={loading}
-            className="px-3.5 py-2 rounded-xl border border-[#334155] bg-[#0B1020] hover:bg-[#1B2438] text-slate-200 text-xs font-semibold flex items-center space-x-2 transition"
+            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center space-x-2 transition"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-amber-400' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-amber-600' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
             onClick={handleLogout}
-            className="px-3.5 py-2 rounded-xl border border-rose-800/40 bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold flex items-center space-x-1.5 transition"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -415,53 +419,53 @@ function WeighmentDashboardContent() {
       </div>
 
       {/* Tab Navigation (Desktop only) */}
-      <div className="hidden md:flex md:static bg-transparent border-b border-[#334155] pb-0 justify-start space-x-4 text-xs font-semibold">
+      <div className="hidden md:flex md:static bg-transparent border-b border-slate-200 pb-0 justify-start space-x-4">
         <button
           onClick={() => setActiveTab('officer')}
-          className={`pb-3 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none ${
+          className={`pb-4 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none text-[16px] leading-[24px] font-semibold ${
             activeTab === 'officer'
-              ? 'border-amber-400 text-amber-400 font-bold'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-amber-500 text-amber-600'
+              : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
           }`}
           aria-label="Weighment Desk"
         >
-          <Scale className="w-4 h-4" />
+          <Scale className="w-5 h-5" />
           <span>Weighment Desk ({activeQueue.length} in queue)</span>
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`pb-3 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none ${
+          className={`pb-4 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none text-[16px] leading-[24px] font-semibold ${
             activeTab === 'history'
-              ? 'border-amber-400 text-amber-400 font-bold'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-amber-500 text-amber-600'
+              : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
           }`}
           aria-label="Completed Weighments and Daily History"
         >
-          <History className="w-4 h-4" />
+          <History className="w-5 h-5" />
           <span>Completed Weighments & Daily History ({processedHistory.length})</span>
         </button>
         {isSupervisor && (
           <button
             onClick={() => setActiveTab('supervisor')}
-            className={`pb-3 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none ${
+            className={`pb-4 px-1 border-b-2 flex items-center space-x-2 transition-all flex-none text-[16px] leading-[24px] font-semibold ${
               activeTab === 'supervisor'
-                ? 'border-amber-400 text-amber-400 font-bold'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-amber-500 text-amber-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
             }`}
             aria-label="Supervisor Verification"
           >
-            <ShieldCheck className="w-4 h-4" />
+            <ShieldCheck className="w-5 h-5" />
             <span>Supervisor Verification ({pendingCorrections.length} pending)</span>
           </button>
         )}
       </div>
 
       {error && (
-        <div className="p-3.5 bg-rose-950/40 border border-rose-800/80 rounded-xl flex items-start space-x-3 text-rose-300 text-xs">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-400" />
+        <div className="p-3.5 bg-rose-50 border border-rose-800/80 rounded-xl flex items-start space-x-3 text-rose-600 text-xs">
+          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-600" />
           <div>
-            <p className="font-semibold text-rose-200">Notice</p>
-            <p className="text-xs text-rose-300/80 mt-0.5">{error}</p>
+            <p className="font-semibold text-rose-700">Notice</p>
+            <p className="text-xs text-rose-600/80 mt-0.5">{error}</p>
           </div>
         </div>
       )}
@@ -472,22 +476,22 @@ function WeighmentDashboardContent() {
           {/* Left Col: Checked-in Farmers Queue */}
           <div className="lg:col-span-5 space-y-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between px-1 shrink-0">
-              <h2 className="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-2">
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <h2 className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center space-x-2">
+                <Clock className="w-5 h-5 text-amber-600" />
                 <span>Checked-In Arrivals Queue</span>
               </h2>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#151C2F] text-amber-300 border border-[#334155]">
+              <span className="px-2.5 py-0.5 rounded text-[12px] leading-[18px] font-semibold bg-white text-amber-600 border border-slate-200">
                 {activeQueue.length} awaiting scale
               </span>
             </div>
 
             {activeQueue.length === 0 ? (
-              <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-10 text-center space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
+              <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-500/20 flex items-center justify-center text-emerald-600 mx-auto">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
-                <p className="text-xs font-semibold text-slate-300">Weighment Queue Clear</p>
-                <p className="text-[11px] text-slate-500 max-w-xs mx-auto">
+                <h3 className="text-[18px] leading-[26px] font-semibold text-slate-800">Weighment Queue Clear</h3>
+                <p className="text-[16px] leading-[24px] font-normal text-slate-500 max-w-xs mx-auto">
                   No admitted farmers waiting at the weighbridge station. Arrivals will appear here after gate check-in.
                 </p>
               </div>
@@ -507,42 +511,42 @@ function WeighmentDashboardContent() {
                       className={`p-4 rounded-xl border transition-all cursor-pointer ${
                         isSelected
                           ? 'border-amber-500/80 bg-amber-950/20 shadow-md ring-1 ring-amber-500/30'
-                          : 'bg-[#151C2F] border-[#334155] hover:bg-[#1B2438] hover:border-slate-600'
+                          : 'bg-white border-slate-200 hover:bg-slate-100 hover:border-slate-600'
                       }`}
                     >
                       <div className="flex items-start justify-between">
                         <div>
-                          <span className="text-[11px] font-mono font-bold text-amber-400">
+                          <span className="text-[12px] leading-[18px] font-medium text-amber-600">
                             #{item.bookingNumber}
                           </span>
-                          <h3 className="text-sm font-bold text-white mt-0.5">
+                          <h3 className="text-[15px] leading-[20px] font-semibold text-slate-900 mt-0.5">
                             {item.farmerName}
                           </h3>
-                          <p className="text-xs text-slate-400 font-mono">{item.farmerCode} &bull; {item.farmerMobile}</p>
+                          <p className="text-[12px] leading-[18px] font-medium text-slate-500">{item.farmerCode} &bull; {item.farmerMobile}</p>
                         </div>
-                        <span className="px-2 py-0.5 bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 text-[10px] font-bold rounded font-mono uppercase tracking-wider">
+                        <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[12px] leading-[18px] font-semibold rounded uppercase tracking-wider">
                           {item.status.replace(/_/g, ' ')}
                         </span>
                       </div>
 
-                      <div className="mt-3 pt-2.5 border-t border-[#334155]/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div className="mt-3 pt-2.5 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
-                          <span className="text-[10px] text-slate-400 uppercase font-semibold block">Crop</span>
-                          <p className="font-semibold text-slate-200">{item.commodityName}</p>
+                          <span className="text-[12px] leading-[18px] text-slate-500 font-medium block">Crop</span>
+                          <p className="text-[14px] leading-[20px] font-semibold text-slate-900">{item.commodityName}</p>
                         </div>
                         <div className="text-right">
-                          <span className="text-[10px] text-slate-400 uppercase font-semibold block">Estimated Weight</span>
-                          <p className="font-bold text-amber-400 font-mono">
+                          <span className="text-[12px] leading-[18px] text-slate-500 font-medium block">Estimated Weight</span>
+                          <p className="text-[14px] leading-[20px] font-semibold text-amber-600">
                             {item.expectedQuantityQuintals} Qtl
                           </p>
                         </div>
                       </div>
 
                       {item.vehicleNumber && (
-                        <div className="mt-2 pt-2 border-t border-[#334155]/40 text-[11px] text-slate-400 flex items-center space-x-1.5">
-                          <Truck className="w-3.5 h-3.5 text-slate-500" />
+                        <div className="mt-2 pt-2 border-t border-slate-200/40 text-[12px] leading-[18px] text-slate-500 flex items-center space-x-1.5 font-medium">
+                          <Truck className="w-4 h-4 text-slate-500" />
                           <span>
-                            {item.vehicleType || 'Vehicle'}: <strong className="text-slate-300 font-mono">{item.vehicleNumber}</strong>
+                            {item.vehicleType || 'Vehicle'}: <strong className="text-[14px] leading-[20px] text-slate-900 font-semibold">{item.vehicleNumber}</strong>
                           </span>
                         </div>
                       )}
@@ -556,31 +560,31 @@ function WeighmentDashboardContent() {
           {/* Right Col: Hardware Station & Weighbridge Controls */}
           <div className="lg:col-span-7">
             {selectedBooking ? (
-              <div className="bg-[#151C2F] rounded-2xl border border-[#334155] shadow-xl overflow-hidden sticky top-20">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden sticky top-20">
                 {/* Station Banner */}
-                <div className="bg-[#0B1020] border-b border-[#334155] p-5">
+                <div className="bg-slate-50 border-b border-slate-200 p-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Cpu className="w-4 h-4 text-emerald-400" />
-                      <span className="text-xs font-mono font-bold tracking-wide uppercase text-slate-300">
+                      <Cpu className="w-4 h-4 text-emerald-600" />
+                      <span className="text-xs font-mono font-bold tracking-wide uppercase text-slate-600">
                         INDICATOR PORT: {deviceCode}
                       </span>
                     </div>
-                    <span className="px-2.5 py-0.5 bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 text-[10px] font-mono rounded">
+                    <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-600 border border-emerald-200 text-[10px] font-mono rounded">
                       SERIAL LINK CONNECTED (9600 BAUD)
                     </span>
                   </div>
 
                   {/* Physical Weighbridge Gross & Tare Measurement Inputs */}
-                  <div className="mt-4 p-4 rounded-xl bg-[#151C2F] border border-[#334155] space-y-3">
+                  <div className="mt-4 p-4 rounded-xl bg-white border border-slate-200 space-y-3">
                     <div className="flex items-center justify-between flex-wrap gap-2">
-                      <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                        <Scale className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center gap-2">
+                        <Scale className="w-5 h-5 text-amber-600" />
                         <span>Gross & Tare Weight Inputs (kg)</span>
                       </span>
                       {parsedGross > 0 && parsedTare > 0 && (
                         <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono font-bold ${
-                          isGrossTareValid ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'
+                          isGrossTareValid ? 'bg-emerald-950 text-emerald-600 border border-emerald-200' : 'bg-rose-950 text-rose-600 border border-rose-800'
                         }`}>
                           {isGrossTareValid ? `NET: ${computedNetKg.toLocaleString()} KG (${computedNetQuintals} QTL)` : 'GROSS MUST EXCEED TARE'}
                         </span>
@@ -589,7 +593,7 @@ function WeighmentDashboardContent() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                        <label className="block text-[11px] font-medium text-slate-500 mb-1">
                           Laden Vehicle Gross Weight (kg) *
                         </label>
                         <input
@@ -597,12 +601,12 @@ function WeighmentDashboardContent() {
                           value={grossWeightKg}
                           onChange={(e) => handleGrossChange(e.target.value)}
                           placeholder="e.g. 10250"
-                          className="w-full px-3 py-2 bg-[#0B1020] border border-[#334155] rounded-xl text-white font-mono text-sm focus:outline-none focus:border-amber-500"
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono text-sm focus:outline-none focus:border-amber-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                        <label className="block text-[11px] font-medium text-slate-500 mb-1">
                           Unladen Vehicle Tare Weight (kg) *
                         </label>
                         <input
@@ -610,13 +614,13 @@ function WeighmentDashboardContent() {
                           value={tareWeightKg}
                           onChange={(e) => handleTareChange(e.target.value)}
                           placeholder="e.g. 3500"
-                          className="w-full px-3 py-2 bg-[#0B1020] border border-[#334155] rounded-xl text-white font-mono text-sm focus:outline-none focus:border-amber-500"
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono text-sm focus:outline-none focus:border-amber-500"
                         />
                       </div>
                     </div>
 
                     {parsedGross > 0 && parsedTare > 0 && !isGrossTareValid && (
-                      <p className="text-[11px] text-rose-400 font-medium">
+                      <p className="text-[11px] text-rose-600 font-medium">
                         Validation Error: Gross weight must be strictly greater than Tare weight (Gross &gt; Tare &gt; 0).
                       </p>
                     )}
@@ -627,11 +631,11 @@ function WeighmentDashboardContent() {
                     <div className="text-[10px] font-mono text-emerald-500/80 uppercase tracking-widest mb-1">
                       Digital Load Cell Readout &bull; Net Weight
                     </div>
-                    <div className="text-5xl sm:text-6xl font-mono font-black tracking-tight text-emerald-400 py-2">
+                    <div className="text-5xl sm:text-6xl font-mono font-black tracking-tight text-emerald-600 py-2">
                       {activeWeight !== null ? `${activeWeight.toFixed(2)}` : '00.00'}
                       <span className="text-2xl font-normal text-emerald-500 ml-3">Qtl</span>
                     </div>
-                    <div className="text-xs text-slate-400 font-mono">
+                    <div className="text-xs text-slate-500 font-mono">
                       {activeWeight !== null
                         ? `STABLE LOAD CELL SIGNAL &bull; ${(activeWeight * 100).toFixed(0)} KG NET`
                         : 'Waiting for weighbridge capture...'}
@@ -641,18 +645,18 @@ function WeighmentDashboardContent() {
 
                 {/* Booking Summary */}
                 <div className="p-5 sm:p-6 space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-[#0B1020] border border-[#334155] rounded-xl text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Farmer</span>
-                      <p className="font-bold text-white text-xs mt-0.5 truncate">{selectedBooking.farmerName}</p>
+                      <span className="text-[12px] leading-[18px] text-slate-500 font-medium block">Farmer</span>
+                      <p className="text-[15px] leading-[20px] font-semibold text-slate-900 mt-0.5 truncate">{selectedBooking.farmerName}</p>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Commodity</span>
-                      <p className="font-bold text-white text-xs mt-0.5 truncate">{selectedBooking.commodityName}</p>
+                      <span className="text-[12px] leading-[18px] text-slate-500 font-medium block">Commodity</span>
+                      <p className="text-[14px] leading-[20px] font-semibold text-slate-900 mt-0.5 truncate">{selectedBooking.commodityName}</p>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Booked Est.</span>
-                      <p className="font-bold text-amber-400 text-xs mt-0.5 font-mono">
+                      <span className="text-[12px] leading-[18px] text-slate-500 font-medium block">Booked Est.</span>
+                      <p className="text-[14px] leading-[20px] font-semibold text-amber-600 mt-0.5">
                         {selectedBooking.expectedQuantityQuintals} Qtl
                       </p>
                     </div>
@@ -663,9 +667,9 @@ function WeighmentDashboardContent() {
                     <button
                       onClick={handleSimulateHardware}
                       disabled={isSimulating}
-                      className="w-full py-2.5 bg-[#0B1020] hover:bg-[#1B2438] border border-[#334155] text-white font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 transition"
+                      className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 transition"
                     >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isSimulating ? 'animate-spin text-amber-400' : ''}`} />
+                      <RefreshCw className={`w-3.5 h-3.5 ${isSimulating ? 'animate-spin text-amber-600' : ''}`} />
                       <span>
                         {activeWeight !== null
                           ? 'Re-Capture Scale Reading'
@@ -678,7 +682,7 @@ function WeighmentDashboardContent() {
                         <button
                           onClick={handleConfirmWeight}
                           disabled={confirming}
-                          className="py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 shadow-md transition disabled:opacity-50"
+                          className="py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 shadow-md transition disabled:opacity-50"
                         >
                           <CheckCircle2 className="w-4 h-4" />
                           <span>
@@ -693,27 +697,27 @@ function WeighmentDashboardContent() {
                             setCorrectionWeight(activeWeight.toString());
                             setShowCorrectionModal(true);
                           }}
-                          className="py-3 bg-amber-950/40 hover:bg-amber-900/50 text-amber-300 border border-amber-800/60 font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 transition"
+                          className="py-3 bg-amber-950/40 hover:bg-amber-900/50 text-amber-600 border border-amber-200 font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 transition"
                         >
-                          <FileEdit className="w-4 h-4 text-amber-400" />
+                          <FileEdit className="w-4 h-4 text-amber-600" />
                           <span>Tare / Discrepancy Exception</span>
                         </button>
                       </div>
                     )}
                   </div>
 
-                  <div className="text-[11px] text-slate-400 bg-[#0B1020] p-3 rounded-xl border border-[#334155] leading-relaxed">
-                    <strong className="text-slate-300">Station Workflow:</strong> Confirmed weights automatically transfer lot to Quality Inspection. Tare adjustments require independent supervisor review.
+                  <div className="text-[11px] text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
+                    <strong className="text-slate-600">Station Workflow:</strong> Confirmed weights automatically transfer lot to Quality Inspection. Tare adjustments require independent supervisor review.
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-12 text-center space-y-3">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mx-auto">
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 mx-auto">
                   <Scale className="w-6 h-6" />
                 </div>
-                <h3 className="text-sm font-bold text-white">Select an Arrival from the Queue</h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                <h3 className="text-[18px] leading-[26px] font-semibold text-slate-800">Select an Arrival from the Queue</h3>
+                <p className="text-[16px] leading-[24px] font-normal text-slate-500 max-w-sm mx-auto">
                   Select a checked-in farmer from the queue on the left to capture and record the load cell weight.
                 </p>
               </div>
@@ -726,24 +730,26 @@ function WeighmentDashboardContent() {
       {activeTab === 'history' && (
         <div className="space-y-5">
           {/* Filter Bar */}
-          <div className="bg-[#151C2F] rounded-xl border border-[#334155] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-semibold text-slate-300">Select Date:</span>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="bg-[#0B1020] border border-[#334155] rounded-xl px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-amber-500"
-                />
+              <div className="flex items-center gap-3">
+                <span className="text-base font-medium text-slate-600">Select Date:</span>
+                <div className="relative flex items-center">
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="bg-slate-50 border border-slate-300 rounded-xl pl-3 pr-10 py-2 text-base font-medium text-slate-900 font-sans focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:top-0 [&::-webkit-calendar-picker-indicator]:w-12 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:z-20 relative"
+                  />
+                  <Calendar className="w-5 h-5 text-amber-600 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+                </div>
               </div>
 
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setSelectedDate(todayStr)}
-                  className={`px-2.5 py-1 rounded text-xs font-semibold ${
-                    selectedDate === todayStr ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-[#0B1020] text-slate-400 hover:text-white border border-[#334155]'
+                  className={`px-3 py-1.5 rounded text-sm font-medium ${
+                    selectedDate === todayStr ? 'bg-amber-500/20 text-amber-600 border border-amber-500/40' : 'bg-slate-50 text-slate-500 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
                   Today
@@ -754,7 +760,7 @@ function WeighmentDashboardContent() {
                     y.setDate(y.getDate() - 1);
                     setSelectedDate(y.toISOString().split('T')[0]);
                   }}
-                  className="px-2.5 py-1 rounded text-xs font-semibold bg-[#0B1020] text-slate-400 hover:text-white border border-[#334155]"
+                  className="px-3 py-1.5 rounded text-sm font-medium bg-slate-50 text-slate-500 hover:text-slate-900 border border-slate-200"
                 >
                   Yesterday
                 </button>
@@ -762,38 +768,38 @@ function WeighmentDashboardContent() {
             </div>
 
             <div className="relative w-full sm:min-w-[240px] sm:w-auto">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+              <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
               <input
                 type="text"
                 placeholder="Search Farmer, ID, Booking..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0B1020] border border-[#334155] rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
 
           {/* Table */}
-          <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
-            <div className="p-4 sm:p-5 border-b border-[#334155] flex items-center justify-between">
+          <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg">
+            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-white">Daily Weighed Farmer Records ({processedHistory.length})</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900">Daily Weighed Farmer Records ({processedHistory.length})</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
                   Official digital weighbridge records for {selectedDate}
                 </p>
               </div>
             </div>
 
             {processedHistory.length === 0 ? (
-              <div className="p-12 text-center text-slate-400 space-y-2">
+              <div className="p-12 text-center text-slate-500 space-y-2">
                 <Scale className="w-8 h-8 text-slate-600 mx-auto" />
-                <p className="text-xs font-semibold text-slate-300">No Weighment Records Found</p>
+                <p className="text-xs font-semibold text-slate-600">No Weighment Records Found</p>
                 <p className="text-[11px] text-slate-500">No farmer produce was weighed at this depot for {selectedDate}.</p>
               </div>
             ) : (
               <div className="operations-queue-scroll overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse">
-                  <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 font-mono uppercase tracking-wider text-[10px] border-b border-[#334155]">
+                <table className="w-full min-w-max text-left border-collapse tabular-nums">
+                  <thead className="sticky top-0 z-10 bg-[#E8F7F3] text-[#475569] font-sans font-semibold text-sm border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">Booking Number</th>
                       <th className="py-3 px-4">Farmer Details</th>
@@ -806,42 +812,42 @@ function WeighmentDashboardContent() {
                       <th className="py-3 px-4">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#334155]/60 font-sans">
+                  <tbody className="divide-y divide-slate-200 font-sans text-sm">
                     {processedHistory.map((item: any) => {
                       const finalQtl = item.weighmentRecord?.finalWeightQuintals ?? item.finalWeightQuintals ?? item.expectedQuantityQuintals;
                       const grossEst = Math.round(finalQtl * 100 + 4500);
                       const tareEst = 4500;
                       return (
-                        <tr key={item.id} className="hover:bg-[#1B2438] transition-colors">
-                          <td className="py-3 px-4 font-mono font-semibold text-amber-400 whitespace-nowrap">
+                        <tr key={item.id} className="hover:bg-slate-100 transition-colors">
+                          <td className="py-3 px-4 font-sans font-semibold text-sky-600 whitespace-nowrap text-sm">
                             #{item.bookingNumber}
                           </td>
                           <td className="py-3 px-4 whitespace-nowrap">
-                            <div className="font-semibold text-white">{item.farmerName}</div>
-                            <div className="text-[10px] text-slate-400 font-mono">{item.farmerCode}</div>
+                            <div className="font-semibold font-sans text-[15px] text-slate-900">{item.farmerName}</div>
+                            <div className="text-[12px] leading-[18px] text-slate-500 font-sans">{item.farmerCode}</div>
                           </td>
-                          <td className="py-3 px-4 text-slate-300 font-medium whitespace-nowrap">
+                          <td className="py-3 px-4 text-slate-600 font-medium whitespace-nowrap text-sm">
                             {item.commodityName}
                           </td>
-                          <td className="py-3 px-4 font-mono text-slate-300 whitespace-nowrap">
+                          <td className="py-3 px-4 font-sans text-slate-600 whitespace-nowrap text-sm">
                             {grossEst.toLocaleString()} kg
                           </td>
-                          <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
+                          <td className="py-3 px-4 font-sans text-slate-500 whitespace-nowrap text-sm">
                             {tareEst.toLocaleString()} kg
                           </td>
-                          <td className="py-3 px-4 font-mono font-bold text-emerald-400 whitespace-nowrap">
+                          <td className="py-3 px-4 font-sans font-bold text-emerald-600 whitespace-nowrap text-sm">
                             {finalQtl} Qtl
                           </td>
-                          <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
+                          <td className="py-3 px-4 font-sans text-slate-500 whitespace-nowrap text-sm">
                             {item.weighmentRecord?.deviceCode || 'Scale-01'}
                           </td>
-                          <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
+                          <td className="py-3 px-4 font-sans text-slate-500 whitespace-nowrap text-sm">
                             {item.weighedAt
                               ? new Date(item.weighedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                               : '08:24 AM'}
                           </td>
                           <td className="py-3 px-4 whitespace-nowrap">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-950/70 text-amber-300 border border-amber-800/80 uppercase font-mono">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-semibold font-sans uppercase">
                               {item.status.replace(/_/g, ' ')}
                             </span>
                           </td>
@@ -859,26 +865,26 @@ function WeighmentDashboardContent() {
       {/* SUPERVISOR VIEW */}
       {activeTab === 'supervisor' && (
         <div className="space-y-5">
-          <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-800/60 text-xs text-amber-200 flex items-start space-x-3.5">
-            <ShieldCheck className="w-4 h-4 flex-shrink-0 text-amber-400 mt-0.5" />
+          <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-700 flex items-start space-x-3.5">
+            <ShieldCheck className="w-4 h-4 flex-shrink-0 text-amber-600 mt-0.5" />
             <div className="space-y-1">
-              <p className="font-bold text-amber-300 text-xs">Maker-Checker Policy</p>
-              <p className="text-amber-200/80 leading-relaxed text-[11px]">
+              <p className="font-bold text-amber-600 text-xs">Maker-Checker Policy</p>
+              <p className="text-amber-700/80 leading-relaxed text-[11px]">
                 Weight corrections require independent supervisor verification. As an anti-fraud measure, officers who initiated an adjustment request cannot approve their own submissions. Original hardware scale readings are preserved in the audit log.
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-white">
+            <h2 className="text-[18px] leading-[26px] font-semibold text-slate-900">
               Pending Weight Adjustments ({pendingCorrections.length})
             </h2>
           </div>
 
           {pendingCorrections.length === 0 ? (
-            <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-12 text-center text-slate-400 text-xs space-y-2">
-              <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-              <p className="text-xs font-semibold text-white">No Pending Corrections</p>
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500 text-xs space-y-2">
+              <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+              <p className="text-xs font-semibold text-slate-900">No Pending Corrections</p>
               <p className="text-slate-500 text-[11px]">All weight adjustments have been reviewed and decided.</p>
             </div>
           ) : (
@@ -887,51 +893,51 @@ function WeighmentDashboardContent() {
                 {pendingCorrections.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-[#151C2F] rounded-xl border border-[#334155] p-5 space-y-3"
+                    className="bg-white rounded-xl border border-slate-200 p-5 space-y-3"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[11px] font-mono font-bold text-amber-400">
+                        <span className="text-[11px] font-mono font-bold text-amber-600">
                           #{item.bookingNumber}
                         </span>
-                        <h3 className="text-sm font-bold text-white mt-0.5">
+                        <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900 mt-0.5">
                           {item.farmerName}
                         </h3>
-                        <p className="text-xs text-slate-400 font-mono">Farmer ID: {item.farmerCode}</p>
+                        <p className="text-xs text-slate-500 font-mono">Farmer ID: {item.farmerCode}</p>
                       </div>
-                      <span className="px-2 py-0.5 bg-amber-950/80 text-amber-300 border border-amber-800/60 text-[10px] font-bold rounded">
+                      <span className="px-2 py-0.5 bg-amber-950/80 text-amber-600 border border-amber-200 text-[10px] font-bold rounded">
                         AWAITING REVIEW
                       </span>
                     </div>
 
                     {/* Weight Comparison */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-[#0B1020] border border-[#334155] rounded-lg text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs">
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                        <span className="text-[10px] text-slate-500 uppercase font-semibold block">
                           Original Scale
                         </span>
-                        <span className="text-base font-bold text-slate-400 line-through">
+                        <span className="text-base font-bold text-slate-500 line-through">
                           {item.originalHardwareWeight} Qtl
                         </span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-amber-400 uppercase font-bold block">
+                        <span className="text-[10px] text-amber-600 uppercase font-bold block">
                           Requested Final
                         </span>
-                        <span className="text-base font-black text-amber-400 font-mono">
+                        <span className="text-base font-black text-amber-600 font-mono">
                           {item.requestedWeightQuintals} Qtl
                         </span>
                       </div>
                     </div>
 
-                    <div className="text-xs space-y-1 text-slate-300">
+                    <div className="text-xs space-y-1 text-slate-600">
                       <p>
-                        <strong className="text-slate-400">Reason:</strong>{' '}
+                        <strong className="text-slate-500">Reason:</strong>{' '}
                         {item.correctionReason.replace(/_/g, ' ')}
                       </p>
                       {item.officerRemarks && (
                         <p>
-                          <strong className="text-slate-400">Officer Notes:</strong>{' '}
+                          <strong className="text-slate-500">Officer Notes:</strong>{' '}
                           {item.officerRemarks}
                         </p>
                       )}
@@ -941,13 +947,13 @@ function WeighmentDashboardContent() {
                       </p>
                     </div>
 
-                    <div className="pt-2 border-t border-[#334155]">
+                    <div className="pt-2 border-t border-slate-200">
                       <button
                         onClick={() => {
                           setSelectedCorrection(item);
                           setSupervisorRemarks('');
                         }}
-                        className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs rounded-lg transition shadow-sm"
+                        className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-slate-900 font-semibold text-xs rounded-lg transition shadow-sm"
                       >
                         Review & Decide
                       </button>
@@ -963,25 +969,25 @@ function WeighmentDashboardContent() {
       {/* CORRECTION REQUEST MODAL (Officer Desk) */}
       {showCorrectionModal && selectedBooking && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#334155] pb-3">
-              <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-                <FileEdit className="w-4 h-4 text-amber-400" />
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center space-x-2">
+                <FileEdit className="w-4 h-4 text-amber-600" />
                 <span>Tare / Exception Request</span>
               </h3>
               <button
                 onClick={() => setShowCorrectionModal(false)}
-                className="text-slate-400 hover:text-white text-base font-bold"
+                className="text-slate-500 hover:text-slate-900 text-base font-bold"
               >
                 &times;
               </button>
             </div>
 
             <form onSubmit={handleSubmitCorrection} className="space-y-3.5 text-xs">
-              <div className="p-3 bg-[#0B1020] border border-[#334155] rounded-xl space-y-1">
-                <p className="text-slate-400">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                <p className="text-slate-500">
                   Original Hardware Scale:{' '}
-                  <strong className="text-white text-sm">{activeWeight} Qtl</strong>
+                  <strong className="text-slate-900 text-sm">{activeWeight} Qtl</strong>
                 </p>
                 <p className="text-[11px] text-slate-500">
                   The original reading will remain permanently recorded in the audit trail.
@@ -989,7 +995,7 @@ function WeighmentDashboardContent() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-600 mb-1">
                   Requested Final Net Weight (Quintals) *
                 </label>
                 <input
@@ -998,16 +1004,16 @@ function WeighmentDashboardContent() {
                   required
                   value={correctionWeight}
                   onChange={(e) => setCorrectionWeight(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0B1020] border border-[#334155] text-white rounded-xl text-sm font-mono font-bold focus:border-amber-500 outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl text-sm font-mono font-bold focus:border-amber-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Reason *</label>
+                <label className="block font-semibold text-slate-600 mb-1">Reason *</label>
                 <select
                   value={correctionReason}
                   onChange={(e) => setCorrectionReason(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0B1020] border border-[#334155] text-white rounded-xl text-xs font-semibold focus:border-amber-500 outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl text-xs font-semibold focus:border-amber-500 outline-none"
                 >
                   <option value="SCALE_TARE_ERROR">Vehicle Tare Discrepancy (Dunnage / Fuel)</option>
                   <option value="CONTAINER_EXCLUSION">Gunny Bag / Container Weight Exclusion</option>
@@ -1018,7 +1024,7 @@ function WeighmentDashboardContent() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-600 mb-1">
                   Officer Explanation *
                 </label>
                 <textarea
@@ -1027,7 +1033,7 @@ function WeighmentDashboardContent() {
                   value={correctionRemarks}
                   onChange={(e) => setCorrectionRemarks(e.target.value)}
                   placeholder="State the verified physical discrepancy..."
-                  className="w-full px-3 py-2 bg-[#0B1020] border border-[#334155] text-white placeholder-slate-500 rounded-xl text-xs focus:border-amber-500 outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-500 rounded-xl text-xs focus:border-amber-500 outline-none"
                 />
               </div>
 
@@ -1035,14 +1041,14 @@ function WeighmentDashboardContent() {
                 <button
                   type="button"
                   onClick={() => setShowCorrectionModal(false)}
-                  className="px-4 py-2 text-slate-400 hover:text-white rounded-xl text-xs font-medium"
+                  className="px-4 py-2 text-slate-500 hover:text-slate-900 rounded-xl text-xs font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingCorrection}
-                  className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-semibold text-xs shadow-md transition"
+                  className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-slate-900 rounded-xl font-semibold text-xs shadow-md transition"
                 >
                   {submittingCorrection ? 'Submitting...' : 'Submit to Supervisor'}
                 </button>
@@ -1055,41 +1061,41 @@ function WeighmentDashboardContent() {
       {/* SUPERVISOR DECISION MODAL */}
       {selectedCorrection && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#334155] pb-3">
-              <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 <span>Supervisor Decision</span>
               </h3>
               <button
                 onClick={() => setSelectedCorrection(null)}
-                className="text-slate-400 hover:text-white text-base font-bold"
+                className="text-slate-500 hover:text-slate-900 text-base font-bold"
               >
                 &times;
               </button>
             </div>
 
             <div className="text-xs space-y-3.5">
-              <div className="p-3 bg-[#0B1020] border border-[#334155] rounded-xl space-y-1.5 text-slate-300">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 text-slate-600">
                 <p>
-                  <strong className="text-slate-400">Farmer:</strong> {selectedCorrection.farmerName} ({selectedCorrection.farmerCode})
+                  <strong className="text-slate-500">Farmer:</strong> {selectedCorrection.farmerName} ({selectedCorrection.farmerCode})
                 </p>
                 <p>
-                  <strong className="text-slate-400">Booking:</strong> #{selectedCorrection.bookingNumber}
+                  <strong className="text-slate-500">Booking:</strong> #{selectedCorrection.bookingNumber}
                 </p>
                 <p>
-                  <strong className="text-slate-400">Original Hardware:</strong> {selectedCorrection.originalHardwareWeight} Qtl
+                  <strong className="text-slate-500">Original Hardware:</strong> {selectedCorrection.originalHardwareWeight} Qtl
                 </p>
-                <p className="text-amber-400 font-bold">
+                <p className="text-amber-600 font-bold">
                   <strong>Requested Final:</strong> {selectedCorrection.requestedWeightQuintals} Qtl
                 </p>
                 <p>
-                  <strong className="text-slate-400">Reason:</strong> {selectedCorrection.correctionReason}
+                  <strong className="text-slate-500">Reason:</strong> {selectedCorrection.correctionReason}
                 </p>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-600 mb-1">
                   Supervisor Decision Notes *
                 </label>
                 <textarea
@@ -1098,7 +1104,7 @@ function WeighmentDashboardContent() {
                   value={supervisorRemarks}
                   onChange={(e) => setSupervisorRemarks(e.target.value)}
                   placeholder="Document physical verification and decision basis..."
-                  className="w-full px-3 py-2 bg-[#0B1020] border border-[#334155] text-white placeholder-slate-500 rounded-xl text-xs focus:border-amber-500 outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-500 rounded-xl text-xs focus:border-amber-500 outline-none"
                 />
               </div>
 
@@ -1107,7 +1113,7 @@ function WeighmentDashboardContent() {
                   type="button"
                   disabled={deciding}
                   onClick={() => handleSupervisorDecision(selectedCorrection.id, 'REJECTED')}
-                  className="py-2.5 bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-800/60 rounded-xl font-semibold flex items-center justify-center space-x-1.5 transition"
+                  className="py-2.5 bg-rose-50 hover:bg-rose-900/50 text-rose-600 border border-rose-200 rounded-xl font-semibold flex items-center justify-center space-x-1.5 transition"
                 >
                   <XCircle className="w-4 h-4" />
                   <span>Reject</span>
@@ -1117,7 +1123,7 @@ function WeighmentDashboardContent() {
                   type="button"
                   disabled={deciding}
                   onClick={() => handleSupervisorDecision(selectedCorrection.id, 'APPROVED')}
-                  className="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold flex items-center justify-center space-x-1.5 shadow-md transition"
+                  className="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-900 rounded-xl font-semibold flex items-center justify-center space-x-1.5 shadow-md transition"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Approve Final</span>
@@ -1127,6 +1133,7 @@ function WeighmentDashboardContent() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -310,24 +310,25 @@ function CentreDashboardContent() {
   const avgTimes = data?.averageProcessingTimes;
 
   return (
-    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-[#F8FAFC]">
+    <div className="w-full flex-1 flex flex-col bg-[#EEFaf7] text-slate-800 relative after:absolute after:top-full after:inset-x-0 after:h-[calc(72px+env(safe-area-inset-bottom))] after:bg-[#EEFaf7] md:after:hidden">
+      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-900 flex-1">
       {/* Centre Head Header */}
-      <div className="rounded-xl border border-[#334155] bg-[#151C2F] p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+      <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-3.5">
-          <div className="w-11 h-11 rounded-lg bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center flex-shrink-0 shadow-xs">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 flex-shrink-0">
             <Building2 className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-black text-[#F8FAFC] tracking-tight">
+              <h1 className="text-[24px] leading-[32px] font-bold text-slate-900 tracking-tight">
                 {centre?.name || 'Procurement Centre Command Terminal'}
               </h1>
-              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-950 text-amber-300 border border-amber-800 font-mono uppercase">
+              <span className="px-2.5 py-0.5 rounded text-[12px] leading-[18px] font-semibold bg-amber-50 text-amber-600 border border-amber-200 font-sans uppercase tracking-wider">
                 Centre Dashboard
               </span>
             </div>
-            <p className="text-xs text-[#94A3B8] mt-0.5">
-              Code: <strong className="text-[#CBD5E1] font-mono">{centre?.centreCode}</strong> &bull; {centre?.districtName}, {centre?.stateName} &bull; Operating Hours: <strong className="text-[#CBD5E1]">{centre?.operatingHours}</strong>
+            <p className="text-[16px] leading-[24px] font-normal text-slate-500 mt-0.5">
+              Code: <strong className="text-slate-900 font-sans">{centre?.centreCode}</strong> &bull; {centre?.districtName}, {centre?.stateName} &bull; Operating Hours: <strong className="text-slate-900 font-sans">{centre?.operatingHours}</strong>
             </p>
           </div>
         </div>
@@ -336,14 +337,14 @@ function CentreDashboardContent() {
           <button
             onClick={() => loadDashboard()}
             disabled={loading}
-            className="px-3.5 py-2 rounded-lg border border-[#334155] bg-[#1E293B] hover:bg-[#334155] text-[#CBD5E1] hover:text-[#F8FAFC] text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-[14px] leading-[20px] font-medium flex items-center space-x-2 transition shadow-sm"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-amber-400' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
             onClick={handleLogout}
-            className="px-3.5 py-2 rounded-lg border border-rose-900/60 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 text-[14px] leading-[20px] font-medium flex items-center space-x-2 transition"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -352,71 +353,71 @@ function CentreDashboardContent() {
       </div>
 
       {/* Navigation Matrix Tabs for Centre Head */}
-      <div className="flex items-center gap-1.5 border-b border-[#334155] pb-2.5 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setCurrentView('today')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[16px] leading-[24px] font-semibold whitespace-nowrap transition-all ${
             currentView === 'today'
-              ? 'bg-amber-950/70 text-amber-300 border border-amber-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
           }`}
         >
-          <TrendingUp className="w-4 h-4 text-amber-400" />
+          <TrendingUp className="w-5 h-5 text-amber-600" />
           <span>Today View</span>
         </button>
 
         <button
           onClick={() => setCurrentView('monitor')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[16px] leading-[24px] font-semibold whitespace-nowrap transition-all ${
             currentView === 'monitor'
-              ? 'bg-amber-950/70 text-amber-300 border border-amber-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
           }`}
         >
-          <Activity className="w-4 h-4 text-amber-400" />
+          <Activity className="w-5 h-5 text-amber-600" />
           <span>Processing Monitor & Farmers ({data?.allBookings?.length || 0})</span>
         </button>
 
         <button
           onClick={() => setCurrentView('forecast')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[16px] leading-[24px] font-semibold whitespace-nowrap transition-all ${
             currentView === 'forecast'
-              ? 'bg-amber-950/70 text-amber-300 border border-amber-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
           }`}
         >
-          <Calendar className="w-4 h-4 text-amber-400" />
+          <Calendar className="w-5 h-5 text-amber-600" />
           <span>Next 7 Days Forecast</span>
         </button>
 
         <button
           onClick={() => setCurrentView('personnel')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[16px] leading-[24px] font-semibold whitespace-nowrap transition-all ${
             currentView === 'personnel'
-              ? 'bg-amber-950/70 text-amber-300 border border-amber-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
           }`}
         >
-          <Users className="w-4 h-4 text-amber-400" />
+          <Users className="w-5 h-5 text-amber-600" />
           <span>Personnel Overview & Desks</span>
         </button>
 
         <button
           onClick={() => setCurrentView('capacity')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[16px] leading-[24px] font-semibold whitespace-nowrap transition-all ${
             currentView === 'capacity'
-              ? 'bg-amber-950/70 text-amber-300 border border-amber-500/40 shadow-xs'
-              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]'
+              ? 'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
           }`}
         >
-          <Layers className="w-4 h-4 text-amber-400" />
+          <Layers className="w-5 h-5 text-amber-600" />
           <span>Capacity & Policy</span>
         </button>
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl border border-rose-800/60 bg-rose-950/40 text-rose-200 text-sm flex items-center space-x-3">
-          <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+        <div className="p-4 rounded-2xl border border-rose-200 bg-rose-50 text-rose-700 text-[14px] leading-[20px] flex items-center space-x-3 shadow-sm">
+          <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
@@ -428,84 +429,84 @@ function CentreDashboardContent() {
         <div className="space-y-8">
           {/* Key Stat Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="glass-card rounded-3xl border border-slate-800/80 p-5 bg-slate-900/40 space-y-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Today Scheduled</span>
-              <div className="text-3xl font-black text-white font-mono">{workload.todayTotalBookings}</div>
-              <p className="text-xs text-slate-400">Total farmer booking slots confirmed</p>
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-2 shadow-lg">
+              <span className="text-[14px] leading-[20px] font-semibold text-slate-500 uppercase tracking-wider block">Today Scheduled</span>
+              <div className="text-[32px] leading-[40px] font-bold text-slate-900 font-sans">{workload.todayTotalBookings}</div>
+              <p className="text-[14px] leading-[20px] text-slate-500">Total farmer booking slots confirmed</p>
             </div>
 
-            <div className="glass-card rounded-3xl border border-slate-800/80 p-5 bg-slate-900/40 space-y-2">
-              <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">Checked In & Queue</span>
-              <div className="text-3xl font-black text-amber-400 font-mono">{workload.checkedInCount}</div>
-              <p className="text-xs text-slate-400">Farmers physically admitted at gate</p>
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-2 shadow-lg">
+              <span className="text-[14px] leading-[20px] font-semibold text-amber-600 uppercase tracking-wider block">Checked In & Queue</span>
+              <div className="text-[32px] leading-[40px] font-bold text-slate-900 font-sans">{workload.checkedInCount}</div>
+              <p className="text-[14px] leading-[20px] text-slate-500">Farmers physically admitted at gate</p>
             </div>
 
-            <div className="glass-card rounded-3xl border border-slate-800/80 p-5 bg-slate-900/40 space-y-2">
-              <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">Completed Today</span>
-              <div className="text-3xl font-black text-emerald-400 font-mono">{workload.completedCount}</div>
-              <p className="text-xs text-slate-400">Fully procured & settled disbursements</p>
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-2 shadow-lg">
+              <span className="text-[14px] leading-[20px] font-semibold text-emerald-600 uppercase tracking-wider block">Completed Today</span>
+              <div className="text-[32px] leading-[40px] font-bold text-slate-900 font-sans">{workload.completedCount}</div>
+              <p className="text-[14px] leading-[20px] text-slate-500">Fully procured & settled disbursements</p>
             </div>
 
-            <div className="glass-card rounded-3xl border border-slate-800/80 p-5 bg-slate-900/40 space-y-2">
-              <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider block">Pending Processing</span>
-              <div className="text-3xl font-black text-cyan-400 font-mono">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-2 shadow-lg">
+              <span className="text-[14px] leading-[20px] font-semibold text-cyan-600 uppercase tracking-wider block">Pending Processing</span>
+              <div className="text-[32px] leading-[40px] font-bold text-slate-900 font-sans">
                 {Math.max(0, workload.todayTotalBookings - workload.completedCount)}
               </div>
-              <p className="text-xs text-slate-400">In physical workflow or scheduled</p>
+              <p className="text-[14px] leading-[20px] text-slate-500">In physical workflow or scheduled</p>
             </div>
           </div>
 
           {/* Section 14 & 15: Stage-by-Stage Average Processing Times */}
-          <div className="glass-card rounded-3xl border border-slate-800/80 bg-slate-900/50 p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-lg">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <h2 className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-amber-400" />
                 <span>Department Operational Processing Durations</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-[14px] leading-[20px] text-slate-500 mt-0.5">
                 Calculated directly from actual database event timestamps (Gate &rarr; Weighbridge &rarr; Quality &rarr; Procurement &rarr; DBT)
               </p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-center space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-mono block">Queue Waiting</span>
-                <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1">
+                <span className="text-[12px] leading-[18px] font-semibold text-slate-500 uppercase font-sans block tracking-wider">Queue Waiting</span>
+                <span className="text-[24px] leading-[32px] font-bold text-slate-900 font-sans block mt-1">
                   {avgTimes?.queueWaitingMinutes ? `${avgTimes.queueWaitingMinutes} min` : '12 min'}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Gate &rarr; Weighment</span>
+                <span className="text-[12px] leading-[18px] text-slate-500 block font-sans mt-1">Gate &rarr; Weighment</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-center space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-mono block">Weighbridge</span>
-                <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1">
+                <span className="text-[12px] leading-[18px] font-semibold text-slate-500 uppercase font-sans block tracking-wider">Weighbridge</span>
+                <span className="text-[24px] leading-[32px] font-bold text-slate-900 font-sans block mt-1">
                   {avgTimes?.weighmentMinutes ? `${avgTimes.weighmentMinutes} min` : '5 min'}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Tare & Gross capture</span>
+                <span className="text-[12px] leading-[18px] text-slate-500 block font-sans mt-1">Tare & Gross capture</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-center space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-mono block">Quality Lab</span>
-                <span className="text-xl sm:text-2xl font-black text-teal-400 font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1">
+                <span className="text-[12px] leading-[18px] font-semibold text-slate-500 uppercase font-sans block tracking-wider">Quality Lab</span>
+                <span className="text-[24px] leading-[32px] font-bold text-slate-900 font-sans block mt-1">
                   {avgTimes?.qualityMinutes ? `${avgTimes.qualityMinutes} min` : '8 min'}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Sampling & Certification</span>
+                <span className="text-[12px] leading-[18px] text-slate-500 block font-sans mt-1">Sampling & Certification</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-center space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-mono block">Procurement</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1">
+                <span className="text-[12px] leading-[18px] font-semibold text-slate-500 uppercase font-sans block tracking-wider">Procurement</span>
+                <span className="text-[24px] leading-[32px] font-bold text-slate-900 font-sans block mt-1">
                   {avgTimes?.procurementMinutes ? `${avgTimes.procurementMinutes} min` : '5 min'}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Voucher authorization</span>
+                <span className="text-[12px] leading-[18px] text-slate-500 block font-sans mt-1">Voucher authorization</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-center space-y-1 col-span-2 sm:col-span-1">
-                <span className="text-[10px] text-slate-400 uppercase font-mono block">Door-to-Door Total</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-300 font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1 col-span-2 sm:col-span-1">
+                <span className="text-[12px] leading-[18px] font-semibold text-slate-500 uppercase font-sans block tracking-wider">Door-to-Door Total</span>
+                <span className="text-[24px] leading-[32px] font-bold text-[#059669] font-sans block mt-1">
                   {avgTimes?.totalProcessingMinutes ? `${avgTimes.totalProcessingMinutes} min` : '30 min'}
                 </span>
-                <span className="text-[10px] text-slate-500 block">Total turnaround</span>
+                <span className="text-[12px] leading-[18px] text-slate-500 block font-sans mt-1">Total turnaround</span>
               </div>
             </div>
           </div>
@@ -513,52 +514,52 @@ function CentreDashboardContent() {
           {/* Session Capacity Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Morning Session */}
-            <div className="glass-card rounded-3xl border border-slate-800/80 p-6 bg-slate-900/40 space-y-4">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-white">Morning Session (08:00 – 13:00)</h3>
-                  <p className="text-xs text-slate-400 font-mono">{workload.morning.totalBookings} Farmers Scheduled</p>
+                  <h3 className="text-[16px] leading-[24px] font-semibold text-slate-900">Morning Session (08:00 – 13:00)</h3>
+                  <p className="text-[14px] leading-[20px] font-medium text-slate-500 font-sans">{workload.morning.totalBookings} Farmers Scheduled</p>
                 </div>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-800 text-amber-400 border border-slate-700">
+                <span className="text-[12px] leading-[18px] font-sans font-semibold px-3 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200">
                   {workload.morning.utilizationPercent}% Used
                 </span>
               </div>
 
-              <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+              <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200">
                 <div
-                  className="bg-gradient-to-r from-amber-500 to-yellow-400 h-2.5 rounded-full transition-all duration-500"
+                  className="bg-emerald-500 h-2.5 rounded-full transition-all duration-500"
                   style={{ width: `${Math.min(100, workload.morning.utilizationPercent)}%` }}
                 />
               </div>
 
-              <div className="flex justify-between text-xs text-slate-400 font-mono">
-                <span>Expected: <strong className="text-slate-200">{workload.morning.expectedQuintals} Qtl</strong></span>
-                <span>Depot Capacity: <strong className="text-slate-200">{workload.morning.capacityQuintals} Qtl</strong></span>
+              <div className="flex justify-between text-[12px] leading-[18px] text-slate-500 font-sans">
+                <span>Expected: <strong className="text-slate-900">{workload.morning.expectedQuintals} Qtl</strong></span>
+                <span>Depot Capacity: <strong className="text-slate-900">{workload.morning.capacityQuintals} Qtl</strong></span>
               </div>
             </div>
 
             {/* Afternoon Session */}
-            <div className="glass-card rounded-3xl border border-slate-800/80 p-6 bg-slate-900/40 space-y-4">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-white">Afternoon Session (14:00 – 18:00)</h3>
-                  <p className="text-xs text-slate-400 font-mono">{workload.afternoon.totalBookings} Farmers Scheduled</p>
+                  <h3 className="text-[16px] leading-[24px] font-semibold text-slate-900">Afternoon Session (14:00 – 18:00)</h3>
+                  <p className="text-[14px] leading-[20px] font-medium text-slate-500 font-sans">{workload.afternoon.totalBookings} Farmers Scheduled</p>
                 </div>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-800 text-teal-400 border border-slate-700">
+                <span className="text-[12px] leading-[18px] font-sans font-semibold px-3 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200">
                   {workload.afternoon.utilizationPercent}% Used
                 </span>
               </div>
 
-              <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+              <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200">
                 <div
-                  className="bg-gradient-to-r from-teal-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500"
+                  className="bg-emerald-500 h-2.5 rounded-full transition-all duration-500"
                   style={{ width: `${Math.min(100, workload.afternoon.utilizationPercent)}%` }}
                 />
               </div>
 
-              <div className="flex justify-between text-xs text-slate-400 font-mono">
-                <span>Expected: <strong className="text-slate-200">{workload.afternoon.expectedQuintals} Qtl</strong></span>
-                <span>Depot Capacity: <strong className="text-slate-200">{workload.afternoon.capacityQuintals} Qtl</strong></span>
+              <div className="flex justify-between text-[12px] leading-[18px] text-slate-500 font-sans">
+                <span>Expected: <strong className="text-slate-900">{workload.afternoon.expectedQuintals} Qtl</strong></span>
+                <span>Depot Capacity: <strong className="text-slate-900">{workload.afternoon.capacityQuintals} Qtl</strong></span>
               </div>
             </div>
           </div>
@@ -571,24 +572,24 @@ function CentreDashboardContent() {
       {currentView === 'monitor' && (
         <div className="space-y-6">
           {/* Filter Bar */}
-          <div className="glass-card rounded-2xl border border-slate-800/80 bg-slate-900/40 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-bold text-slate-300">Date:</span>
+                <Calendar className="w-5 h-5 text-amber-600" />
+                <span className="text-[14px] leading-[20px] font-semibold text-slate-700">Select Date:</span>
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-amber-500"
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-[14px] leading-[20px] text-slate-900 font-sans focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setSelectedDate(todayStr)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                    selectedDate === todayStr ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-slate-800 text-slate-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-xl text-[14px] leading-[20px] font-medium ${
+                    selectedDate === todayStr ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-white text-slate-500 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
                   Today
@@ -599,20 +600,20 @@ function CentreDashboardContent() {
                     y.setDate(y.getDate() - 1);
                     setSelectedDate(y.toISOString().split('T')[0]);
                   }}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white"
+                  className="px-3 py-1.5 rounded-xl text-[14px] leading-[20px] font-medium bg-white text-slate-500 hover:text-slate-900 border border-slate-200"
                 >
                   Yesterday
                 </button>
               </div>
 
               {/* Status Filter Chips */}
-              <div className="flex items-center gap-1.5 pl-2 border-l border-slate-800">
+              <div className="flex items-center gap-2 pl-3 border-l border-slate-200">
                 {['ALL', 'CHECKED_IN', 'PROCESSING', 'COMPLETED'].map((st) => (
                   <button
                     key={st}
                     onClick={() => setStatusFilter(st)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                      statusFilter === st ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800/60 text-slate-400 hover:text-white'
+                    className={`px-3 py-1.5 rounded-xl text-[14px] leading-[20px] font-medium ${
+                      statusFilter === st ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-500 hover:text-slate-900 border border-slate-200'
                     }`}
                   >
                     {st.replace(/_/g, ' ')}
@@ -621,39 +622,39 @@ function CentreDashboardContent() {
               </div>
             </div>
 
-            <div className="relative min-w-[240px]">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+            <div className="relative w-full sm:min-w-[240px] sm:w-auto">
+              <Search className="w-5 h-5 text-slate-500 absolute left-3 top-2" />
               <input
                 type="text"
                 placeholder="Search Farmer, ID, Booking..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-950/80 border border-slate-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-[16px] leading-[24px] text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
 
           {/* Table */}
-          <div className="glass-card rounded-3xl border border-slate-800/80 bg-slate-900/50 overflow-hidden shadow-xl">
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+          <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg">
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white">Centre Processing Monitor ({filteredBookings.length})</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h3 className="text-[16px] leading-[24px] font-semibold text-slate-900">Centre Processing Monitor ({filteredBookings.length})</h3>
+                <p className="text-[14px] leading-[20px] text-slate-500 mt-0.5">
                   Complete operational timeline for {selectedDate}
                 </p>
               </div>
             </div>
 
             {filteredBookings.length === 0 ? (
-              <div className="p-12 text-center text-slate-400 space-y-2">
-                <Activity className="w-8 h-8 text-slate-600 mx-auto" />
-                <p className="text-sm font-semibold text-slate-300">No Records Matching Filter</p>
+              <div className="p-12 text-center text-slate-500 space-y-2">
+                <Activity className="w-8 h-8 text-slate-400 mx-auto" />
+                <p className="text-[14px] leading-[20px] font-semibold text-slate-600">No Records Matching Filter</p>
                 <p className="text-xs text-slate-500">Try adjusting the date, status, or search query.</p>
               </div>
             ) : (
               <div className="operations-queue-scroll overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse">
-                  <thead className="sticky top-0 z-10 bg-slate-950 text-slate-400 font-mono uppercase tracking-wider border-b border-slate-800 shadow-sm">
+                <table className="w-full min-w-max text-left border-collapse tabular-nums">
+                  <thead className="sticky top-0 z-10 bg-[#E8F7F3] text-[#475569] font-sans font-semibold text-[14px] leading-[20px] border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">Booking Number</th>
                       <th className="py-3 px-4">Farmer Details</th>
@@ -665,63 +666,63 @@ function CentreDashboardContent() {
                       <th className="py-3 px-4">Total Duration</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60 font-sans">
+                  <tbody className="divide-y divide-slate-200 font-sans text-[14px] leading-[20px]">
                     {filteredBookings.map((b) => (
-                      <tr key={b.bookingId} className="hover:bg-slate-800/30 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-bold text-amber-400">
+                      <tr key={b.bookingId} className="hover:bg-slate-100 transition-colors">
+                        <td className="py-3 px-4 font-sans font-semibold text-slate-700 whitespace-nowrap">
                           #{b.bookingNumber}
                         </td>
-                        <td className="py-3.5 px-4">
-                          <div className="font-bold text-white">{b.farmerName}</div>
-                          <div className="text-[11px] text-slate-400 font-mono">
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          <div className="font-semibold font-sans text-[15px] leading-[20px] text-slate-900">{b.farmerName}</div>
+                          <div className="text-[12px] leading-[18px] text-slate-500 font-sans">
                             {b.farmerCode} &bull; {b.farmerMobile ? b.farmerMobile.slice(-4).padStart(10, 'X') : 'XXXX'}
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 font-mono">
-                          <span className="font-bold text-white">
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          <span className="font-semibold text-slate-900 block">
                             {b.actualWeightQuintals ?? b.expectedQuantityQuintals} Qtl
                           </span>
                           {b.actualWeightQuintals && (
-                            <span className="text-[10px] text-emerald-400 block font-normal">Weighed</span>
+                            <span className="text-[12px] text-[#059669] font-sans font-semibold block">Weighed</span>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-300">
+                        <td className="py-3 px-4 font-sans text-slate-600 whitespace-nowrap">
                           {b.checkInTime ? new Date(b.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending'}
                         </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-300">
+                        <td className="py-3 px-4 font-sans text-slate-600 whitespace-nowrap">
                           {b.weighedAt ? new Date(b.weighedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending'}
                         </td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-3 px-4 whitespace-nowrap">
                           {b.qualityGrade ? (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-950 text-teal-300 border border-teal-700/60 uppercase">
+                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E8F7F3] text-[#059669] border border-[#A7F3D0] uppercase font-sans">
                               {b.qualityGrade.replace(/_/g, ' ')}
                             </span>
                           ) : (
-                            <span className="text-slate-500 font-mono">Pending</span>
+                            <span className="text-slate-500 font-sans">Pending</span>
                           )}
                         </td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-3 px-4 whitespace-nowrap">
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase font-mono ${
+                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase font-sans inline-block ${
                               b.status === 'COMPLETED'
-                                ? 'bg-emerald-950 text-emerald-300 border border-emerald-700/60'
+                                ? 'bg-[#059669] text-white border-transparent'
                                 : b.status === 'PAYMENT'
-                                ? 'bg-cyan-950 text-cyan-300 border border-cyan-700/60'
+                                ? 'bg-cyan-50 text-cyan-700 border border-cyan-200'
                                 : b.status === 'PROCUREMENT'
-                                ? 'bg-indigo-950 text-indigo-300 border border-indigo-700/60'
+                                ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
                                 : b.status === 'QUALITY_ASSESSMENT'
-                                ? 'bg-teal-950 text-teal-300 border border-teal-700/60'
-                                : 'bg-slate-800 text-slate-300 border border-slate-700'
+                                ? 'bg-[#E8F7F3] text-[#059669] border border-[#A7F3D0]'
+                                : 'bg-slate-100 text-slate-700 border border-slate-200'
                             }`}
                           >
                             {b.status.replace(/_/g, ' ')}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-300">
+                        <td className="py-3 px-4 font-sans text-slate-600 whitespace-nowrap">
                           {b.durations?.totalMinutes ? (
-                            <span className="font-bold text-emerald-400">{b.durations.totalMinutes} min</span>
+                            <span className="font-semibold text-[#059669]">{b.durations.totalMinutes} min</span>
                           ) : b.checkInTime ? (
-                            <span className="text-amber-400 font-semibold">In Progress</span>
+                            <span className="text-amber-600 font-semibold">In Progress</span>
                           ) : (
                             <span className="text-slate-500">N/A</span>
                           )}
@@ -741,12 +742,12 @@ function CentreDashboardContent() {
       {/* ===================================================================== */}
       {currentView === 'forecast' && (
         <div className="space-y-6">
-          <div className="glass-card rounded-2xl border border-slate-800/80 bg-slate-900/40 p-5">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-lg">
+            <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-amber-400" />
               <span>Rolling 7-Day Operational Capacity & Workload Forecast</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-[14px] leading-[20px] text-slate-500 mt-1">
               Anticipated arrivals, morning/afternoon sessions, and depot capacity utilization for upcoming operating days
             </p>
           </div>
@@ -756,37 +757,37 @@ function CentreDashboardContent() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {forecastData.map((day) => (
-                <div key={day.date} className="glass-card rounded-3xl border border-slate-800/80 bg-slate-900/50 p-6 space-y-4 shadow-xl">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div key={day.date} className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-lg">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                     <div>
-                      <span className="text-xs font-mono text-amber-400 font-bold uppercase">
+                      <span className="text-[12px] leading-[18px] font-semibold text-amber-600 font-sans uppercase tracking-wider">
                         {new Date(day.date).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' })}
                       </span>
-                      <h4 className="text-lg font-black text-white">{day.totalBookings} Farmers Booked</h4>
+                      <h4 className="text-[20px] leading-[28px] font-bold text-slate-900 mt-1">{day.totalBookings} Farmers Booked</h4>
                     </div>
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold font-mono bg-slate-800 text-amber-300 border border-slate-700">
+                    <span className="px-3 py-1 rounded-full text-[12px] leading-[18px] font-semibold font-sans bg-amber-50 text-amber-700 border border-amber-200">
                       {day.utilizationPercent}% Used
                     </span>
                   </div>
 
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between text-slate-400">
+                  <div className="space-y-2 text-[14px] leading-[20px]">
+                    <div className="flex justify-between text-slate-500">
                       <span>Morning Slots:</span>
-                      <strong className="text-white font-mono">{day.morningBookings} ({day.morningQuintals} Qtl)</strong>
+                      <strong className="text-slate-900 font-sans font-semibold">{day.morningBookings} ({day.morningQuintals} Qtl)</strong>
                     </div>
-                    <div className="flex justify-between text-slate-400">
+                    <div className="flex justify-between text-slate-500">
                       <span>Afternoon Slots:</span>
-                      <strong className="text-white font-mono">{day.afternoonBookings} ({day.afternoonQuintals} Qtl)</strong>
+                      <strong className="text-slate-900 font-sans font-semibold">{day.afternoonBookings} ({day.afternoonQuintals} Qtl)</strong>
                     </div>
-                    <div className="flex justify-between text-slate-400">
+                    <div className="flex justify-between text-slate-500">
                       <span>Total Expected Grain:</span>
-                      <strong className="text-emerald-400 font-mono text-sm">{day.totalExpectedQuintals} Qtl</strong>
+                      <strong className="text-[#059669] font-sans font-semibold text-[15px]">{day.totalExpectedQuintals} Qtl</strong>
                     </div>
                   </div>
 
-                  <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
                     <div
-                      className="bg-amber-400 h-2 rounded-full"
+                      className="bg-amber-500 h-2 rounded-full"
                       style={{ width: `${Math.min(100, day.utilizationPercent)}%` }}
                     />
                   </div>
@@ -805,17 +806,17 @@ function CentreDashboardContent() {
       {/* ===================================================================== */}
       {currentView === 'personnel' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-[#334155] bg-[#151C2F] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
             <div>
-              <h3 className="text-sm font-bold text-[#F8FAFC] flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-400" />
+              <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-amber-600" />
                 <span>Depot Counter & Personnel Oversight</span>
               </h3>
-              <p className="text-xs text-[#94A3B8] mt-0.5">
+              <p className="text-[16px] leading-[24px] font-normal text-slate-500 mt-0.5">
                 Active operating counters and hardware scale connectivity for this procurement depot
               </p>
             </div>
-            <span className="text-xs px-2.5 py-1 rounded bg-[#1E293B] text-[#CBD5E1] border border-[#334155] font-mono self-start sm:self-auto">
+            <span className="text-[12px] leading-[18px] font-semibold px-3 py-1 rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-sans self-start sm:self-auto">
               {counters.length} Operational Desks
             </span>
           </div>
@@ -823,20 +824,20 @@ function CentreDashboardContent() {
           <div className="operations-queue-scroll pr-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {counters.map((c) => (
-                <div key={c.id} className="rounded-xl border border-[#334155] bg-[#151C2F] p-4 space-y-3.5 shadow-sm">
+                <div key={c.id} className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-lg">
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[10px] font-mono text-amber-400 uppercase font-bold tracking-wider">
+                      <span className="text-[12px] leading-[18px] font-semibold text-amber-600 uppercase font-sans tracking-wider">
                         Counter #{c.counterNumber}
                       </span>
-                      <h4 className="text-sm font-bold text-[#F8FAFC] mt-0.5">{c.counterName}</h4>
-                      <p className="text-xs text-[#94A3B8]">{c.counterType}</p>
+                      <h4 className="text-[16px] leading-[24px] font-bold text-slate-900 mt-1">{c.counterName}</h4>
+                      <p className="text-[14px] leading-[20px] font-medium text-slate-500">{c.counterType}</p>
                     </div>
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase ${
+                      className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold font-sans uppercase ${
                         c.status === 'OPEN'
-                          ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                          : 'bg-amber-950 text-amber-300 border border-amber-800'
+                          ? 'bg-[#E8F7F3] text-[#059669] border border-[#A7F3D0]'
+                          : 'bg-amber-50 text-amber-700 border border-amber-200'
                       }`}
                     >
                       {c.status === 'OPEN' ? 'ONLINE' : c.status}
@@ -846,7 +847,7 @@ function CentreDashboardContent() {
                   <button
                     onClick={() => handleToggleCounter(c.id, c.status)}
                     disabled={updatingCounterId === c.id}
-                    className="w-full py-2 rounded-lg border border-[#334155] bg-[#1E293B] hover:bg-[#334155] text-xs font-semibold text-[#CBD5E1] hover:text-[#F8FAFC] transition"
+                    className="w-full py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[14px] leading-[20px] font-semibold text-slate-700 hover:text-slate-900 transition shadow-sm"
                   >
                     {updatingCounterId === c.id
                       ? 'Updating...'
@@ -869,18 +870,18 @@ function CentreDashboardContent() {
           {/* Header & Status Alerts */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-[20px] leading-[28px] font-bold text-slate-900 flex items-center gap-2">
                 <Layers className="w-5 h-5 text-amber-400" />
                 <span>Procurement Capacity & Government Policy Control</span>
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-[14px] leading-[20px] text-slate-500 mt-1">
                 Configure operational farmer booking limits while strictly complying with the Government Maximum Ceiling
               </p>
             </div>
             <button
               onClick={() => loadCapacityConfig()}
               disabled={capacityLoading}
-              className="px-4 py-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-2 transition self-start sm:self-auto"
+              className="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[14px] leading-[20px] font-medium text-slate-700 flex items-center gap-2 transition self-start sm:self-auto shadow-sm"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${capacityLoading ? 'animate-spin text-amber-400' : ''}`} />
               <span>Refresh Policy</span>
@@ -888,86 +889,86 @@ function CentreDashboardContent() {
           </div>
 
           {capacitySuccess && (
-            <div className="p-4 rounded-2xl border border-emerald-800/70 bg-emerald-950/40 text-emerald-200 text-sm flex items-center gap-3">
+            <div className="p-4 rounded-2xl border border-[#A7F3D0] bg-[#E8F7F3] text-[#059669] text-[14px] leading-[20px] flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
               <span>{capacitySuccess}</span>
             </div>
           )}
 
           {capacityError && (
-            <div className="p-4 rounded-2xl border border-rose-800/70 bg-rose-950/40 text-rose-200 text-sm flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+            <div className="p-4 rounded-2xl border border-rose-200 bg-rose-50 text-rose-700 text-[14px] leading-[20px] flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0" />
               <span>{capacityError}</span>
             </div>
           )}
 
           {/* Level 1: Government Policy Ceiling (Read-Only) */}
-          <div className="glass-card rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-950/20 via-slate-900/60 to-slate-900/80 p-6 space-y-4">
+          <div className="bg-amber-50/50 rounded-2xl border border-amber-200/60 p-6 space-y-4 shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-amber-400" />
-                <span className="text-xs font-extrabold tracking-wider uppercase text-amber-400">
+                <span className="text-[12px] leading-[18px] font-bold tracking-wider uppercase text-amber-700 font-sans">
                   Level 1 • Statutory Government Ceiling (Immutable)
                 </span>
               </div>
-              <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-950 text-amber-300 border border-amber-800/60">
+              <span className="px-3 py-1 rounded-full text-[12px] leading-[18px] font-semibold bg-amber-100 text-amber-800 border border-amber-200 font-sans">
                 Department of Food & Public Distribution
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">
+              <div className="p-4 rounded-2xl bg-white border border-amber-100 space-y-1 shadow-sm">
+                <span className="text-[12px] leading-[18px] text-slate-500 uppercase font-semibold tracking-wider block font-sans">
                   Government Maximum Ceiling
                 </span>
-                <div className="text-2xl font-black text-amber-300 font-mono">
+                <div className="text-[24px] leading-[32px] font-bold text-amber-600 font-sans mt-1">
                   {capacityConfig?.governmentMaximumPerFarmerQuintals ?? 250.0}{' '}
-                  <span className="text-xs font-normal text-slate-400">qtl / farmer / day</span>
+                  <span className="text-[14px] leading-[20px] font-medium text-slate-500 font-sans">qtl / farmer / day</span>
                 </div>
-                <p className="text-[11px] text-slate-400">Strict statutory ceiling across all procurement centres</p>
+                <p className="text-[12px] leading-[18px] text-slate-500 mt-1 block font-sans">Strict statutory ceiling across all procurement centres</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">
+              <div className="p-4 rounded-2xl bg-white border border-amber-100 space-y-1 shadow-sm">
+                <span className="text-[12px] leading-[18px] text-slate-500 uppercase font-semibold tracking-wider block font-sans">
                   Commodity & MSP Rate
                 </span>
-                <div className="text-lg font-bold text-white">
+                <div className="text-[20px] leading-[28px] font-bold text-slate-900 mt-1">
                   {capacityConfig?.crop || 'Paddy (Grade A)'}
                 </div>
-                <p className="text-[11px] text-emerald-400 font-mono font-semibold">₹2,320 / quintal (MSP)</p>
+                <p className="text-[12px] leading-[18px] text-[#059669] font-sans font-semibold mt-1 block">₹2,320 / quintal (MSP)</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">
+              <div className="p-4 rounded-2xl bg-white border border-amber-100 space-y-1 shadow-sm">
+                <span className="text-[12px] leading-[18px] text-slate-500 uppercase font-semibold tracking-wider block font-sans">
                   Procurement Season
                 </span>
-                <div className="text-lg font-bold text-white">
+                <div className="text-[20px] leading-[28px] font-bold text-slate-900 mt-1">
                   {capacityConfig?.season || 'Kharif 2026-27'}
                 </div>
-                <p className="text-[11px] text-slate-400">Active Procurement Period</p>
+                <p className="text-[12px] leading-[18px] text-slate-500 mt-1 block font-sans">Active Procurement Period</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">
+              <div className="p-4 rounded-2xl bg-white border border-amber-100 space-y-1 shadow-sm">
+                <span className="text-[12px] leading-[18px] text-slate-500 uppercase font-semibold tracking-wider block font-sans">
                   Default Centre Baseline
                 </span>
-                <div className="text-2xl font-black text-slate-200 font-mono">
-                  50.0 <span className="text-xs font-normal text-slate-400">qtl / farmer / day</span>
+                <div className="text-[24px] leading-[32px] font-bold text-slate-700 font-sans mt-1">
+                  50.0 <span className="text-[14px] leading-[20px] font-medium text-slate-500 font-sans">qtl / farmer / day</span>
                 </div>
-                <p className="text-[11px] text-slate-400">Standard operational baseline</p>
+                <p className="text-[12px] leading-[18px] text-slate-500 mt-1 block font-sans">Standard operational baseline</p>
               </div>
             </div>
           </div>
 
           {/* Level 2 & Centre Session: Operational Capacity Form */}
-          <div className="glass-card rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 sm:p-8 space-y-6">
-            <div className="border-b border-slate-800 pb-4">
-              <h4 className="text-base font-bold text-white">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-lg">
+            <div className="border-b border-slate-200 pb-5">
+              <h4 className="text-[18px] leading-[26px] font-semibold text-slate-900">
                 Centre Operational Capacity & Farmer Booking Policy
               </h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-[14px] leading-[20px] text-slate-500 mt-1">
                 Adjust the maximum quantity an individual farmer can book per day at this centre, and session throughput limits.
-                <strong className="text-amber-400 ml-1">
+                <strong className="text-amber-600 ml-1 font-semibold">
                   Note: Values above {capacityConfig?.governmentMaximumPerFarmerQuintals ?? 250.0} qtl are rejected automatically by backend security.
                 </strong>
               </p>
@@ -977,7 +978,7 @@ function CentreDashboardContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Centre Daily Farmer Limit */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                  <label className="text-[12px] leading-[18px] font-semibold text-slate-600 block uppercase font-sans tracking-wider">
                     Centre Daily Farmer Limit (Quintals) *
                   </label>
                   <div className="relative">
@@ -989,18 +990,18 @@ function CentreDashboardContent() {
                       value={inputDailyLimit}
                       onChange={(e) => setInputDailyLimit(parseFloat(e.target.value) || 0)}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-slate-700 bg-slate-950 text-white font-mono text-base focus:outline-none focus:border-amber-500 transition"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-sans text-[16px] leading-[24px] focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition"
                     />
-                    <span className="absolute right-4 top-3.5 text-xs text-slate-400 font-mono">QTL / DAY</span>
+                    <span className="absolute right-4 top-3.5 text-[14px] leading-[20px] font-medium text-slate-500 font-sans">QTL / DAY</span>
                   </div>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[12px] leading-[18px] text-slate-500 font-sans mt-1 block">
                     Maximum quantity a single farmer may book at this centre per day. Must be between {inputMinBooking || 10} and {capacityConfig?.governmentMaximumPerFarmerQuintals || 250} qtl.
                   </p>
                 </div>
 
                 {/* Minimum Booking Quantity */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                  <label className="text-[12px] leading-[18px] font-semibold text-slate-600 block uppercase font-sans tracking-wider">
                     Minimum Booking Quantity (Quintals) *
                   </label>
                   <div className="relative">
@@ -1012,18 +1013,18 @@ function CentreDashboardContent() {
                       value={inputMinBooking}
                       onChange={(e) => setInputMinBooking(parseFloat(e.target.value) || 0)}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-slate-700 bg-slate-950 text-white font-mono text-base focus:outline-none focus:border-amber-500 transition"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-sans text-[16px] leading-[24px] focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition"
                     />
-                    <span className="absolute right-4 top-3.5 text-xs text-slate-400 font-mono">QTL</span>
+                    <span className="absolute right-4 top-3.5 text-[14px] leading-[20px] font-medium text-slate-500 font-sans">QTL</span>
                   </div>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[12px] leading-[18px] text-slate-500 font-sans mt-1 block">
                     Minimum booking threshold per arrival visit (standard government default: 10.0 qtl).
                   </p>
                 </div>
 
                 {/* Morning Session Capacity */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                  <label className="text-[12px] leading-[18px] font-semibold text-slate-600 block uppercase font-sans tracking-wider">
                     Morning Session Capacity (09:00 – 13:00) *
                   </label>
                   <div className="relative">
@@ -1034,18 +1035,18 @@ function CentreDashboardContent() {
                       value={inputMorningCap}
                       onChange={(e) => setInputMorningCap(parseFloat(e.target.value) || 0)}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-slate-700 bg-slate-950 text-white font-mono text-base focus:outline-none focus:border-amber-500 transition"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-sans text-[16px] leading-[24px] focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition"
                     />
-                    <span className="absolute right-4 top-3.5 text-xs text-slate-400 font-mono">QTL</span>
+                    <span className="absolute right-4 top-3.5 text-[14px] leading-[20px] font-medium text-slate-500 font-sans">QTL</span>
                   </div>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[12px] leading-[18px] text-slate-500 font-sans mt-1 block">
                     Total grain weight throughput capacity for the morning shift across all counters.
                   </p>
                 </div>
 
                 {/* Afternoon Session Capacity */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                  <label className="text-[12px] leading-[18px] font-semibold text-slate-600 block uppercase font-sans tracking-wider">
                     Afternoon Session Capacity (14:00 – 18:00) *
                   </label>
                   <div className="relative">
@@ -1056,11 +1057,11 @@ function CentreDashboardContent() {
                       value={inputAfternoonCap}
                       onChange={(e) => setInputAfternoonCap(parseFloat(e.target.value) || 0)}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-slate-700 bg-slate-950 text-white font-mono text-base focus:outline-none focus:border-amber-500 transition"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-sans text-[16px] leading-[24px] focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition"
                     />
-                    <span className="absolute right-4 top-3.5 text-xs text-slate-400 font-mono">QTL</span>
+                    <span className="absolute right-4 top-3.5 text-[14px] leading-[20px] font-medium text-slate-500 font-sans">QTL</span>
                   </div>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[12px] leading-[18px] text-slate-500 font-sans mt-1 block">
                     Total grain weight throughput capacity for the afternoon shift across all counters.
                   </p>
                 </div>
@@ -1068,7 +1069,7 @@ function CentreDashboardContent() {
 
               {/* Justification / Reason */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                <label className="text-[12px] leading-[18px] font-semibold text-slate-600 block uppercase font-sans tracking-wider">
                   Operational Justification / Reason for Change
                 </label>
                 <input
@@ -1076,9 +1077,9 @@ function CentreDashboardContent() {
                   placeholder="e.g. Weighbridge 2 operational; daily capacity adjusted to meet regional harvest peak"
                   value={inputReason}
                   onChange={(e) => setInputReason(e.target.value)}
-                  className="w-full px-4 py-3 rounded-2xl border border-slate-700 bg-slate-950 text-white text-sm focus:outline-none focus:border-amber-500 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-sans text-[16px] leading-[24px] focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition"
                 />
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[12px] leading-[18px] text-slate-500 font-sans mt-1 block">
                   Recorded permanently in the government audit ledger for transparency and administrative compliance.
                 </p>
               </div>
@@ -1087,16 +1088,16 @@ function CentreDashboardContent() {
                 <button
                   type="submit"
                   disabled={capacitySaving}
-                  className="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-amber-500/20 transition active:scale-95 disabled:opacity-50"
+                  className="px-6 py-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 font-semibold text-[14px] leading-[20px] flex items-center gap-2 shadow-sm transition disabled:opacity-50"
                 >
                   {capacitySaving ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <RefreshCw className="w-5 h-5 animate-spin" />
                       <span>Saving Policy...</span>
                     </>
                   ) : (
                     <>
-                      <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+                      <CheckCircle2 className="w-5 h-5" />
                       <span>Save Operational Policy</span>
                     </>
                   )}
@@ -1106,21 +1107,21 @@ function CentreDashboardContent() {
           </div>
 
           {/* Audit History Log */}
-          <div className="glass-card rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 space-y-4">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-lg">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <h4 className="text-[16px] leading-[24px] font-bold text-slate-900 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-400" />
                 <span>Capacity Audit Ledger & History</span>
               </h4>
-              <span className="text-xs text-slate-400">
+              <span className="text-[14px] leading-[20px] font-medium text-slate-500">
                 {capacityConfig?.recentAudits?.length || 0} Audit Record(s)
               </span>
             </div>
 
             {capacityConfig?.recentAudits && capacityConfig.recentAudits.length > 0 ? (
-              <div className="overflow-x-auto rounded-2xl border border-slate-800">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-slate-950 text-[11px] uppercase font-bold text-slate-400 border-b border-slate-800">
+              <div className="overflow-x-auto rounded-xl border border-slate-200">
+                <table className="w-full text-left text-[14px] leading-[20px] text-slate-600 font-sans">
+                  <thead className="bg-slate-50 text-[12px] leading-[18px] uppercase font-semibold text-slate-600 font-sans border-b border-slate-200">
                     <tr>
                       <th className="px-4 py-3">Timestamp (IST)</th>
                       <th className="px-4 py-3">Parameter Changed</th>
@@ -1129,22 +1130,22 @@ function CentreDashboardContent() {
                       <th className="px-4 py-3">Official Reason</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/70 font-mono text-xs">
+                  <tbody className="divide-y divide-slate-200 font-sans text-[14px] leading-[20px]">
                     {capacityConfig.recentAudits.map((a: any) => (
-                      <tr key={a.id} className="hover:bg-slate-800/30 transition">
-                        <td className="px-4 py-3 text-slate-400 whitespace-nowrap">
+                      <tr key={a.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
                           {new Date(a.changedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                         </td>
-                        <td className="px-4 py-3 font-sans font-semibold text-slate-200">
+                        <td className="px-4 py-3 font-semibold text-slate-900">
                           {a.fieldChanged}
                         </td>
-                        <td className="px-4 py-3 text-amber-300 font-bold whitespace-nowrap">
+                        <td className="px-4 py-3 text-[#059669] font-bold whitespace-nowrap">
                           {a.oldValue} qtl → {a.newValue} qtl
                         </td>
-                        <td className="px-4 py-3 font-sans text-slate-400">
+                        <td className="px-4 py-3 text-slate-500">
                           {a.season} • {a.crop}
                         </td>
-                        <td className="px-4 py-3 font-sans text-slate-300 max-w-xs truncate" title={a.reason || ''}>
+                        <td className="px-4 py-3 text-slate-600 max-w-xs truncate" title={a.reason || ''}>
                           {a.reason || 'Operational adjustment'}
                         </td>
                       </tr>
@@ -1153,13 +1154,14 @@ function CentreDashboardContent() {
                 </table>
               </div>
             ) : (
-              <div className="p-6 text-center text-xs text-slate-500 bg-slate-950/40 rounded-2xl border border-slate-800/50">
+              <div className="p-8 text-center text-[14px] leading-[20px] text-slate-500 bg-slate-50 rounded-xl border border-slate-200 border-dashed">
                 No capacity policy modifications recorded yet. Centre is operating on baseline government parameters.
               </div>
             )}
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -1172,7 +1174,7 @@ export default function CentreDashboardPage() {
     >
       <React.Suspense
         fallback={
-          <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 text-sm font-semibold">
+          <div className="min-h-screen bg-[#EEFaf7] flex items-center justify-center text-slate-500 text-[16px] leading-[24px] font-semibold">
             Loading depot dashboard...
           </div>
         }

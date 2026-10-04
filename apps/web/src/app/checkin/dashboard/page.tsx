@@ -340,27 +340,31 @@ function CheckinDashboardContent() {
 
   if (loading) {
     return (
-      <div className="w-full min-w-0 max-w-5xl mx-auto px-4 py-16 text-center text-slate-400 text-xs space-y-3">
-        <RefreshCw className="w-6 h-6 text-sky-400 animate-spin mx-auto" />
-        <p>Initializing Gate & Arrival Desk Terminal...</p>
+      <div className="w-full flex-1 flex flex-col bg-[#EEFaf7] text-slate-800 relative after:absolute after:top-full after:inset-x-0 after:h-[calc(72px+env(safe-area-inset-bottom))] after:bg-[#EEFaf7] md:after:hidden">
+        <div className="w-full min-w-0 max-w-5xl mx-auto px-4 py-16 text-center text-slate-500 text-xs space-y-3">
+          <RefreshCw className="w-6 h-6 text-sky-600 animate-spin mx-auto" />
+          <p>Initializing Gate & Arrival Desk Terminal...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full min-w-0 max-w-md mx-auto px-4 py-16 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 mx-auto flex items-center justify-center">
-          <AlertCircle className="w-6 h-6" />
+      <div className="w-full flex-1 flex flex-col bg-[#EEFaf7] text-slate-800 relative after:absolute after:top-full after:inset-x-0 after:h-[calc(72px+env(safe-area-inset-bottom))] after:bg-[#EEFaf7] md:after:hidden">
+        <div className="w-full min-w-0 max-w-md mx-auto px-4 py-16 text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 mx-auto flex items-center justify-center">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900">Access Restricted</h2>
+          <p className="text-xs text-slate-500">{error}</p>
+          <Link
+            href="/operations/login"
+            className="inline-flex px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-slate-900 rounded-xl text-xs font-semibold shadow-md transition"
+          >
+            Sign In to Operations Portal
+          </Link>
         </div>
-        <h2 className="text-base font-bold text-white">Access Restricted</h2>
-        <p className="text-xs text-slate-400">{error}</p>
-        <Link
-          href="/operations/login"
-          className="inline-flex px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-md transition"
-        >
-          Sign In to Operations Portal
-        </Link>
       </div>
     );
   }
@@ -369,28 +373,32 @@ function CheckinDashboardContent() {
   const pendingCount = arrivals.filter((a) => a.status === 'BOOKED' || a.status === 'PENDING').length;
 
   return (
-    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-6 space-y-6 text-slate-100">
+    <div className="w-full flex-1 flex flex-col bg-[#EEFaf7] text-slate-800 relative after:absolute after:top-full after:inset-x-0 after:h-[calc(72px+env(safe-area-inset-bottom))] after:bg-[#EEFaf7] md:after:hidden">
+      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-6 space-y-6 text-slate-900 flex-1">
       {/* Hidden container for image file scanning */}
       <div id="qr-reader-temp" className="hidden" />
 
       {/* Platform Header */}
-      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 flex-shrink-0">
             <QrCode className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-[24px] leading-[32px] font-bold text-slate-900 tracking-tight">
                 Gate & Check-in Desk
               </h1>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-sky-500/15 text-sky-400 border border-sky-500/30 font-mono uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-sky-50 text-sky-600 border border-sky-200 font-mono uppercase tracking-wider">
                 {centreInfo?.centreCode || 'GATE DESK'}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              {centreInfo?.name || 'Depot Terminal'} &bull; National Grain Procurement Platform
-            </p>
+            <div className="text-[16px] leading-[24px] font-semibold text-slate-900 mt-1">
+              {centreInfo?.name || 'Depot Terminal'}
+            </div>
+            <div className="text-[14px] leading-[20px] text-slate-500 mt-0.5">
+              National Grain Procurement Platform
+            </div>
           </div>
         </div>
 
@@ -398,15 +406,15 @@ function CheckinDashboardContent() {
           <button
             onClick={loadScheduled}
             disabled={loading}
-            className="px-3.5 py-2 rounded-xl border border-[#334155] bg-[#0B1020] hover:bg-[#1B2438] text-slate-200 text-xs font-semibold flex items-center space-x-2 transition"
+            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[14px] leading-[20px] font-semibold flex items-center space-x-2 transition"
             title="Refresh Arrivals"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-400' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-600' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
             onClick={handleLogout}
-            className="px-3.5 py-2 rounded-xl border border-rose-800/40 bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 text-[14px] leading-[20px] font-semibold flex items-center space-x-2 transition"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -416,17 +424,17 @@ function CheckinDashboardContent() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div className="bg-[#151C2F] border border-[#334155] p-4 rounded-xl shadow-lg space-y-1">
-          <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Today Expected</span>
-          <div className="text-2xl font-bold text-white font-mono">{arrivals.length}</div>
+        <div className="bg-white border border-slate-200 p-4 rounded-2xl space-y-2">
+          <span className="text-[14px] leading-[20px] font-semibold text-slate-600 block">Today Expected</span>
+          <div className="text-[24px] leading-[32px] font-bold text-slate-900">{arrivals.length}</div>
         </div>
-        <div className="bg-[#151C2F] border border-[#334155] p-4 rounded-xl shadow-lg space-y-1">
-          <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Awaiting Arrival</span>
-          <div className="text-2xl font-bold text-amber-400 font-mono">{pendingCount}</div>
+        <div className="bg-white border border-slate-200 p-4 rounded-2xl space-y-2">
+          <span className="text-[14px] leading-[20px] font-semibold text-slate-600 block">Awaiting Arrival</span>
+          <div className="text-[24px] leading-[32px] font-bold text-amber-600">{pendingCount}</div>
         </div>
-        <div className="bg-[#151C2F] border border-[#334155] p-4 rounded-xl shadow-lg space-y-1 col-span-2 sm:col-span-1">
-          <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">In Physical Queue (Weighment)</span>
-          <div className="text-2xl font-bold text-emerald-400 font-mono">{checkedInCount}</div>
+        <div className="bg-white border border-slate-200 p-4 rounded-2xl space-y-2 col-span-2 sm:col-span-1">
+          <span className="text-[14px] leading-[20px] font-semibold text-slate-600 block">In Physical Queue (Weighment)</span>
+          <div className="text-[24px] leading-[32px] font-bold text-emerald-600">{checkedInCount}</div>
         </div>
       </div>
 
@@ -434,61 +442,61 @@ function CheckinDashboardContent() {
       {/* 1. SUCCESS CONFIRMATION MODAL / BANNER                       */}
       {/* ============================================================ */}
       {confirmedResult && (
-        <div className="bg-[#151C2F] border-2 border-emerald-500/70 p-6 sm:p-7 rounded-2xl shadow-xl text-center space-y-5 animate-in fade-in zoom-in duration-200">
-          <div className="w-14 h-14 bg-emerald-500/15 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-sm">
+        <div className="bg-white border-2 border-emerald-300 p-6 sm:p-7 rounded-2xl shadow-xl text-center space-y-5 animate-in fade-in zoom-in duration-200">
+          <div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto text-emerald-600 shadow-sm">
             <CheckCircle2 className="w-8 h-8" />
           </div>
 
           <div className="space-y-1">
-            <span className="px-3 py-1 bg-emerald-950/80 text-emerald-300 text-[11px] font-bold rounded-full border border-emerald-700/60 font-mono uppercase tracking-wider">
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-600 text-[11px] font-bold rounded-full border border-emerald-300 font-mono uppercase tracking-wider">
               CHECK-IN CONFIRMED
             </span>
-            <h2 className="text-xl font-bold text-white pt-1">
+            <h2 className="text-xl font-bold text-slate-900 pt-1">
               Farmer Transferred to Physical Queue
             </h2>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-slate-600">
               Physical arrival verified. Dispatching farmer to weighbridge queue.
             </p>
           </div>
 
           {/* Queue Details Card */}
-          <div className="w-full min-w-0 max-w-md mx-auto bg-[#0B1020] border border-[#334155] rounded-xl p-4 text-left space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-[#334155]">
-              <span className="text-xs text-slate-400">Farmer Name</span>
-              <span className="font-semibold text-white text-xs">
+          <div className="w-full min-w-0 max-w-md mx-auto bg-slate-50 border border-slate-200 rounded-xl p-4 text-left space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+              <span className="text-xs text-slate-500">Farmer Name</span>
+              <span className="font-semibold text-slate-900 text-xs">
                 {confirmedResult.booking.farmerName}
               </span>
             </div>
 
-            <div className="flex items-center justify-between pb-2 border-b border-[#334155]">
-              <span className="text-xs text-slate-400">Booking Reference</span>
-              <span className="font-mono font-semibold text-slate-200 text-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+              <span className="text-xs text-slate-500">Booking Reference</span>
+              <span className="font-mono font-semibold text-slate-700 text-xs">
                 {confirmedResult.booking.bookingNumber}
               </span>
             </div>
 
-            <div className="bg-[#151C2F] p-3.5 rounded-lg border border-emerald-500/40 flex items-center justify-between">
+            <div className="bg-white p-3.5 rounded-lg border border-emerald-500/40 flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">
+                <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider block">
                   PHYSICAL QUEUE TOKEN
                 </span>
-                <span className="font-mono font-black text-xl text-emerald-300">
+                <span className="font-mono font-black text-xl text-emerald-600">
                   {confirmedResult.booking.queueToken}
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">
+                <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider block">
                   QUEUE POSITION
                 </span>
-                <span className="font-mono font-black text-2xl text-emerald-400">
+                <span className="font-mono font-black text-2xl text-emerald-600">
                   #{confirmedResult.booking.queuePosition}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-1 text-xs">
-              <span className="text-slate-400">Next Station:</span>
-              <span className="font-semibold text-amber-400 flex items-center gap-1 font-mono text-xs">
+              <span className="text-slate-500">Next Station:</span>
+              <span className="font-semibold text-amber-600 flex items-center gap-1 font-mono text-xs">
                 <Scale className="w-3.5 h-3.5" />
                 <span>Station 02: Weighment (Depot Scales)</span>
               </span>
@@ -498,7 +506,7 @@ function CheckinDashboardContent() {
           <div className="pt-2">
             <button
               onClick={resetAll}
-              className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-md transition"
+              className="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-slate-900 rounded-xl text-xs font-semibold shadow-md transition"
             >
               Scan Next Arrival
             </button>
@@ -510,52 +518,52 @@ function CheckinDashboardContent() {
       {/* 2. VERIFICATION CARD (REVIEW DETAILS BEFORE CHECK-IN)        */}
       {/* ============================================================ */}
       {validatedBooking && !confirmedResult && (
-        <div className="bg-[#151C2F] border-2 border-sky-500/50 p-6 sm:p-7 rounded-2xl shadow-xl space-y-6 animate-in fade-in duration-200">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-[#334155]">
+        <div className="bg-white border-2 border-sky-300 p-6 sm:p-7 rounded-2xl shadow-xl space-y-6 animate-in fade-in duration-200">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-slate-200">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold text-xs">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center font-bold text-xs">
                 ✓
               </div>
               <div>
-                <h2 className="text-base font-bold text-white">Booking Verified & Validated</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-2xl font-bold text-slate-900">Booking Verified & Validated</h2>
+                <p className="text-xs text-slate-500">
                   Review booking credentials before authorizing depot gate check-in.
                 </p>
               </div>
             </div>
-            <span className="px-2.5 py-1 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800 text-[11px] font-mono font-bold self-start sm:self-auto">
+            <span className="px-2.5 py-1 rounded bg-emerald-100 text-emerald-600 border border-emerald-200 text-[11px] font-mono font-bold self-start sm:self-auto">
               ✓ VERIFIED FARMER
             </span>
           </div>
 
           {/* Booking & Farmer Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-            <div className="bg-[#0B1020] p-3.5 rounded-xl border border-[#334155] space-y-1">
-              <span className="text-slate-400 block text-[10px] uppercase font-semibold">Farmer Name</span>
-              <span className="font-bold text-white text-xs block">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
+              <span className="text-slate-500 block text-[10px] uppercase font-semibold">Farmer Name</span>
+              <span className="font-bold text-slate-900 text-xs block">
                 {validatedBooking.farmerDisplayName}
               </span>
-              <span className="font-mono text-emerald-400 text-[11px] block">
+              <span className="font-mono text-emerald-600 text-[11px] block">
                 {validatedBooking.farmerCode}
               </span>
             </div>
 
-            <div className="bg-[#0B1020] p-3.5 rounded-xl border border-[#334155] space-y-1">
-              <span className="text-slate-400 block text-[10px] uppercase font-semibold">Booking Reference</span>
-              <span className="font-mono font-semibold text-white text-xs block">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
+              <span className="text-slate-500 block text-[10px] uppercase font-semibold">Booking Reference</span>
+              <span className="font-mono font-semibold text-slate-900 text-xs block">
                 {validatedBooking.bookingNumber}
               </span>
-              <span className="text-slate-400 text-[11px] block">
-                Session: <strong className="text-white capitalize">{validatedBooking.session.toLowerCase()}</strong>
+              <span className="text-slate-500 text-[11px] block">
+                Session: <strong className="text-slate-900 capitalize">{validatedBooking.session.toLowerCase()}</strong>
               </span>
             </div>
 
-            <div className="bg-[#0B1020] p-3.5 rounded-xl border border-[#334155] space-y-1">
-              <span className="text-slate-400 block text-[10px] uppercase font-semibold">Expected Produce</span>
-              <span className="font-mono font-bold text-white text-xs block">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
+              <span className="text-slate-500 block text-[10px] uppercase font-semibold">Expected Produce</span>
+              <span className="font-mono font-bold text-slate-900 text-xs block">
                 {validatedBooking.expectedQuantityQuintals} Quintals
               </span>
-              <span className="text-slate-400 text-[11px] block truncate">
+              <span className="text-slate-500 text-[11px] block truncate">
                 Transport: {validatedBooking.transport}
                 {validatedBooking.vehicleNumber ? ` (${validatedBooking.vehicleNumber})` : ''}
               </span>
@@ -566,8 +574,8 @@ function CheckinDashboardContent() {
           <div
             className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${
               validatedBooking.windowStatus === 'ON_TIME'
-                ? 'bg-emerald-950/30 border-emerald-800/60 text-emerald-300'
-                : 'bg-amber-950/30 border-amber-800/60 text-amber-300'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                : 'bg-amber-50 border-amber-200 text-amber-600'
             }`}
           >
             <div className="space-y-0.5">
@@ -584,8 +592,8 @@ function CheckinDashboardContent() {
             <span
               className={`px-3 py-1 rounded text-xs font-bold font-mono border self-start sm:self-auto ${
                 validatedBooking.windowStatus === 'ON_TIME'
-                  ? 'bg-emerald-900/60 border-emerald-500/70 text-emerald-200'
-                  : 'bg-amber-900/60 border-amber-500/70 text-amber-200'
+                  ? 'bg-emerald-100 border-emerald-300 text-emerald-700'
+                  : 'bg-amber-100 border-amber-300 text-amber-700'
               }`}
             >
               {validatedBooking.windowStatus === 'ON_TIME' ? 'ON TIME' : validatedBooking.windowStatus}
@@ -593,7 +601,7 @@ function CheckinDashboardContent() {
           </div>
 
           {confirmError && (
-            <div className="p-3 bg-rose-950/40 border border-rose-800/60 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{confirmError}</span>
             </div>
@@ -604,7 +612,7 @@ function CheckinDashboardContent() {
             <button
               onClick={resetAll}
               disabled={confirming}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-[#334155] bg-[#0B1020] hover:bg-[#1B2438] text-slate-300 text-xs font-semibold transition"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold transition"
             >
               Cancel / Scan Again
             </button>
@@ -612,7 +620,7 @@ function CheckinDashboardContent() {
             <button
               onClick={handleConfirmCheckin}
               disabled={confirming}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-md transition disabled:opacity-50"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-slate-900 rounded-xl text-xs font-semibold shadow-md transition disabled:opacity-50"
             >
               {confirming ? (
                 <>
@@ -636,15 +644,15 @@ function CheckinDashboardContent() {
       {!validatedBooking && !confirmedResult && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           {/* CAMERA SCANNER AREA (7 Cols) */}
-          <div className="min-w-0 w-full lg:col-span-7 bg-[#151C2F] border border-[#334155] rounded-2xl p-5 space-y-4 shadow-lg">
-            <div className="flex items-center justify-between pb-3 border-b border-[#334155]">
+          <div className="min-w-0 w-full lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-lg">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400">
+                <div className="p-2 rounded-xl bg-sky-50 border border-sky-200 text-sky-600">
                   <Camera className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-white">Scan Booking QR Pass</h2>
-                  <p className="text-[11px] text-slate-400">
+                  <h2 className="text-[18px] leading-[26px] font-semibold text-slate-900">Scan Booking QR Pass</h2>
+                  <p className="text-[14px] leading-[20px] font-normal text-slate-500">
                     Scan the digital booking QR code from the farmer&apos;s receipt or mobile device.
                   </p>
                 </div>
@@ -657,17 +665,17 @@ function CheckinDashboardContent() {
                     const nextIndex = (currentIndex + 1) % availableCameras.length;
                     startCamera(availableCameras[nextIndex].id);
                   }}
-                  className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-[#0B1020] hover:bg-[#1B2438] border border-[#334155] rounded-lg transition inline-flex items-center gap-1.5"
+                  className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition inline-flex items-center gap-1.5"
                   title="Switch Camera"
                 >
-                  <SwitchCamera className="w-3.5 h-3.5 text-sky-400" />
+                  <SwitchCamera className="w-3.5 h-3.5 text-sky-600" />
                   <span className="hidden sm:inline">Switch</span>
                 </button>
               )}
             </div>
 
             {/* Camera Viewport Container */}
-            <div className="relative bg-[#0B1020] rounded-xl border border-[#334155] overflow-hidden min-h-[280px] flex flex-col items-center justify-center p-3">
+            <div className="relative bg-slate-50 rounded-xl border border-slate-200 overflow-hidden min-h-[280px] flex flex-col items-center justify-center p-3">
               {/* Visible QR Container */}
               <div
                 id="qr-reader"
@@ -677,23 +685,23 @@ function CheckinDashboardContent() {
 
               {!scannerActive && !scannerLoading && (
                 <div className="text-center space-y-3 py-8 max-w-xs">
-                  <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-400 mx-auto flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600 mx-auto flex items-center justify-center">
                     <QrCode className="w-7 h-7" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-bold text-white text-xs">
+                    <h3 className="text-[16px] leading-[24px] font-semibold text-slate-900">
                       Ready to Scan Booking QR
                     </h3>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[14px] leading-[20px] font-normal text-slate-500">
                       Depot camera will authenticate booking credentials and queue eligibility.
                     </p>
                   </div>
                   <div className="space-y-2 pt-1">
                     <button
                       onClick={() => startCamera()}
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-md transition"
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-slate-900 rounded-xl text-[14px] leading-[20px] font-semibold shadow-md transition"
                     >
-                      <Camera className="w-3.5 h-3.5" />
+                      <Camera className="w-5 h-5" />
                       <span>Start Camera Scanner</span>
                     </button>
 
@@ -707,9 +715,9 @@ function CheckinDashboardContent() {
                     />
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#151C2F] hover:bg-[#1B2438] text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-[#334155] transition"
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-xl text-[14px] leading-[20px] font-medium border border-slate-200 transition"
                     >
-                      <Upload className="w-3.5 h-3.5 text-sky-400" />
+                      <Upload className="w-5 h-5 text-sky-600" />
                       <span>Select QR Image File</span>
                     </button>
                   </div>
@@ -718,32 +726,32 @@ function CheckinDashboardContent() {
 
               {scannerLoading && (
                 <div className="text-center space-y-3 py-12">
-                  <RefreshCw className="w-7 h-7 text-sky-400 animate-spin mx-auto" />
-                  <p className="text-xs text-slate-400">Initializing camera scanner...</p>
+                  <RefreshCw className="w-7 h-7 text-sky-600 animate-spin mx-auto" />
+                  <p className="text-xs text-slate-500">Initializing camera scanner...</p>
                 </div>
               )}
 
               {scannerActive && (
                 <div className="w-full pt-3 flex flex-col items-center gap-2.5">
-                  <span className="text-xs text-sky-400 font-medium animate-pulse flex items-center gap-1.5">
+                  <span className="text-xs text-sky-600 font-medium animate-pulse flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Point camera at the booking QR pass</span>
                   </span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={stopCamera}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#151C2F] hover:bg-[#1B2438] text-slate-200 rounded-lg text-xs font-medium border border-[#334155] transition"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-medium border border-slate-200 transition"
                     >
-                      <CameraOff className="w-3.5 h-3.5 text-rose-400" />
+                      <CameraOff className="w-3.5 h-3.5 text-rose-600" />
                       <span>Stop Camera</span>
                     </button>
 
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#151C2F] hover:bg-[#1B2438] text-slate-300 rounded-lg text-xs font-medium border border-[#334155] transition"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 rounded-lg text-xs font-medium border border-slate-200 transition"
                       title="Upload QR Image"
                     >
-                      <Upload className="w-3.5 h-3.5 text-sky-400" />
+                      <Upload className="w-3.5 h-3.5 text-sky-600" />
                       <span className="hidden sm:inline">Upload Image</span>
                     </button>
                   </div>
@@ -752,17 +760,17 @@ function CheckinDashboardContent() {
             </div>
 
             {validationError && (
-              <div className="p-3 bg-rose-950/40 border border-rose-800/70 rounded-xl text-xs text-rose-300 flex items-start gap-2.5 animate-in fade-in duration-200">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 flex items-start gap-2.5 animate-in fade-in duration-200">
+                <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
                 <div>
-                  <span className="font-semibold block text-rose-200">Booking Validation Failed</span>
-                  <span className="text-[11px] opacity-90 block">{validationError}</span>
+                  <span className="text-[14px] leading-[20px] font-semibold block text-rose-700">Booking Validation Failed</span>
+                  <span className="text-[14px] leading-[20px] font-normal opacity-90 block">{validationError}</span>
                 </div>
               </div>
             )}
 
             {scannerError && (
-              <div className="p-3 bg-rose-950/30 border border-rose-800/50 rounded-xl text-xs text-rose-300 space-y-1.5">
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-600 space-y-1.5">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span className="font-semibold">Camera Access Notice</span>
@@ -774,7 +782,7 @@ function CheckinDashboardContent() {
                       const input = document.getElementById('manual-booking-input');
                       if (input) input.focus();
                     }}
-                    className="text-xs font-medium text-sky-400 underline hover:text-sky-300"
+                    className="text-xs font-medium text-sky-600 underline hover:text-sky-700"
                   >
                     Enter Booking Reference manually
                   </button>
@@ -784,15 +792,15 @@ function CheckinDashboardContent() {
           </div>
 
           {/* MANUAL FALLBACK ENTRY (5 Cols) */}
-          <div className="min-w-0 w-full lg:col-span-5 bg-[#151C2F] border border-[#334155] rounded-2xl p-5 space-y-5 shadow-lg flex flex-col justify-between">
+          <div className="min-w-0 w-full lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-lg flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-center gap-2.5 pb-3 border-b border-[#334155]">
-                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-slate-200">
+                <div className="p-2 rounded-xl bg-sky-50 border border-sky-200 text-sky-600">
                   <Search className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-white">Manual Reference Lookup</h2>
-                  <p className="text-[11px] text-slate-400">
+                  <h2 className="text-[18px] leading-[26px] font-semibold text-slate-900">Manual Reference Lookup</h2>
+                  <p className="text-[14px] leading-[20px] font-normal text-slate-500">
                     Search by Booking Reference if QR is unreadable or camera is offline.
                   </p>
                 </div>
@@ -801,7 +809,7 @@ function CheckinDashboardContent() {
               <div className="space-y-2">
                 <label
                   htmlFor="manual-booking-input"
-                  className="text-xs font-semibold text-slate-300 block"
+                  className="text-[14px] leading-[20px] font-semibold text-slate-600 block"
                 >
                   Booking Reference Number
                 </label>
@@ -815,21 +823,21 @@ function CheckinDashboardContent() {
                       if (e.key === 'Enter') handleValidate(manualInput);
                     }}
                     placeholder="e.g. ASTRA-BOOK-260924-2756"
-                    className="w-full px-3.5 py-2.5 bg-[#0B1020] border border-[#334155] rounded-xl text-white font-mono text-xs placeholder:text-slate-600 focus:outline-none focus:border-sky-500 transition"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-[16px] leading-[24px] font-medium placeholder:text-slate-600 focus:outline-none focus:border-sky-500 transition"
                   />
                   <button
                     onClick={() => handleValidate(manualInput)}
                     disabled={validating || !manualInput.trim()}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-md transition disabled:opacity-40"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-slate-900 rounded-xl text-[14px] leading-[20px] font-semibold shadow-md transition disabled:opacity-40"
                   >
                     {validating ? (
                       <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <RefreshCw className="w-5 h-5 animate-spin" />
                         <span>Validating Reference...</span>
                       </>
                     ) : (
                       <>
-                        <Search className="w-3.5 h-3.5" />
+                        <Search className="w-5 h-5" />
                         <span>Lookup & Verify Booking</span>
                       </>
                     )}
@@ -838,11 +846,11 @@ function CheckinDashboardContent() {
               </div>
 
               {validationError && (
-                <div className="p-3 bg-rose-950/40 border border-rose-800/60 rounded-xl text-xs text-rose-300 flex items-start gap-2 animate-in fade-in duration-200">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 flex items-start gap-2 animate-in fade-in duration-200">
+                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                   <div className="space-y-0.5">
-                    <span className="font-semibold block">Validation Rejected</span>
-                    <span className="text-[11px] leading-tight block opacity-90">
+                    <span className="text-[14px] leading-[20px] font-semibold block">Validation Rejected</span>
+                    <span className="text-[14px] leading-[20px] font-normal leading-tight block opacity-90">
                       {validationError}
                     </span>
                   </div>
@@ -851,12 +859,12 @@ function CheckinDashboardContent() {
             </div>
 
             {/* Helpful Terminal Security Note */}
-            <div className="bg-[#0B1020] p-3.5 rounded-xl border border-[#334155] text-[11px] text-slate-400 space-y-1">
-              <span className="font-semibold text-slate-300 block flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-slate-500 space-y-1">
+              <span className="text-[14px] leading-[20px] font-semibold text-slate-600 block flex items-center gap-1.5">
+                <ShieldCheck className="w-5 h-5 text-sky-600" />
                 <span>Verification Policy</span>
               </span>
-              <p className="leading-relaxed">
+              <p className="text-[14px] leading-[20px] font-normal leading-relaxed">
                 Both QR scanning and reference entry perform identical backend validation checks. Gate entry requires valid date, centre alignment, and verified farmer identity.
               </p>
             </div>
@@ -867,83 +875,81 @@ function CheckinDashboardContent() {
       {/* ============================================================ */}
       {/* AREA 1: TODAY'S SCHEDULED ARRIVALS (Awaiting Arrival)        */}
       {/* ============================================================ */}
-      <div className="min-w-0 w-full bg-[#151C2F] border border-[#334155] rounded-2xl overflow-hidden shadow-lg">
-        <div className="p-4 sm:p-5 border-b border-[#334155] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="min-w-0 w-full bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-lg">
+        <div className="p-4 sm:p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
-            <h3 className="font-bold text-white text-sm">Today&apos;s Scheduled Arrivals</h3>
-            <p className="text-xs text-slate-400">
+            <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900">Today&apos;s Scheduled Arrivals</h3>
+            <p className="text-xs text-slate-500">
               Procurement slots booked for this depot today awaiting gate arrival
             </p>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-slate-500 font-mono">
             Pending Arrival: {arrivals.filter((b) => b.status === 'BOOKED' || b.status === 'PENDING').length} of {arrivals.length}
           </span>
         </div>
 
         {arrivals.filter((b) => b.status === 'BOOKED' || b.status === 'PENDING').length === 0 ? (
-          <div className="py-10 text-center text-slate-500 text-xs space-y-1">
+          <div className="py-10 text-center text-slate-500 text-sm space-y-1">
             <Clock className="w-7 h-7 mx-auto text-slate-600 mb-2" />
-            <p className="font-semibold text-slate-400">No pending scheduled arrivals.</p>
-            <p className="text-[11px]">All scheduled farmers for today have completed gate arrival or no further slots are booked.</p>
+            <p className="font-semibold text-slate-500">No pending scheduled arrivals.</p>
+            <p className="text-xs">All scheduled farmers for today have completed gate arrival or no further slots are booked.</p>
           </div>
         ) : (
           <div className="operations-queue-scroll overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 uppercase tracking-wider text-[10px] border-b border-[#334155]">
+            <table className="w-full min-w-max text-left border-collapse tabular-nums">
+              <thead className="sticky top-0 z-10 bg-[#E8F7F3] text-[#475569] font-sans font-semibold text-sm border-b border-slate-200">
                 <tr>
-                  <th className="px-4 py-3">Arrival Window</th>
-                  <th className="px-4 py-3">Booking ID</th>
-                  <th className="px-4 py-3">Farmer</th>
-                  <th className="px-4 py-3">Produce</th>
-                  <th className="px-4 py-3">Transport</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3 text-right">Action</th>
+                  <th className="py-3 px-4">Arrival Window</th>
+                  <th className="py-3 px-4">Booking ID</th>
+                  <th className="py-3 px-4">Farmer</th>
+                  <th className="py-3 px-4">Produce</th>
+                  <th className="py-3 px-4">Transport</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#334155]/60">
+              <tbody className="divide-y divide-slate-200 font-sans text-sm">
                 {arrivals
                   .filter((b) => b.status === 'BOOKED' || b.status === 'PENDING')
                   .map((b) => (
-                    <tr key={b.id} className="hover:bg-[#1B2438] transition-colors">
-                      <td className="px-4 py-3 font-mono font-semibold text-sky-400 whitespace-nowrap">
+                    <tr key={b.id} className="hover:bg-slate-100 transition-colors">
+                      <td className="py-3 px-4 font-sans whitespace-nowrap text-sm text-slate-900 font-semibold">
                         {b.windowStartTime} – {b.windowEndTime}
-                        <span className="block text-[10px] text-slate-400 capitalize font-normal">
+                        <span className="block text-[11px] text-slate-500 capitalize font-normal font-sans mt-0.5">
                           {b.session.toLowerCase()} session
                         </span>
                       </td>
 
-                      <td className="px-4 py-3 font-mono font-semibold text-white whitespace-nowrap">
+                      <td className="py-3 px-4 font-sans font-semibold text-sky-600 whitespace-nowrap text-sm">
                         {b.bookingNumber}
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="font-semibold text-white block">{b.farmerName}</span>
-                        <span className="text-[10px] font-mono text-slate-400 block">
-                          {b.farmerCode}
-                        </span>
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <div className="font-semibold font-sans text-[15px] text-slate-900">{b.farmerName}</div>
+                        <div className="text-[12px] leading-[18px] text-slate-500 font-sans">{b.farmerCode}</div>
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-200">
+                      <td className="py-3 px-4 font-sans font-semibold text-slate-700 whitespace-nowrap text-sm">
                         {b.expectedQuantityQuintals} q
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap text-slate-300 text-xs">
+                      <td className="py-3 px-4 font-sans text-slate-600 whitespace-nowrap text-sm">
                         {b.vehicleNumber || 'Standard Transport'}
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800/80 text-[10px] font-semibold font-mono">
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-100 text-amber-800 text-[11px] font-semibold font-sans">
                           AWAITING ARRIVAL
                         </span>
                       </td>
 
-                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                      <td className="py-3 px-4 text-right whitespace-nowrap">
                         <button
                           onClick={() => {
                             setManualInput(b.bookingNumber);
                             handleValidate(b.bookingNumber);
                           }}
-                          className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition shadow-sm"
+                          className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-slate-900 rounded-lg text-xs font-semibold transition shadow-sm"
                         >
                           Check In
                         </button>
@@ -959,85 +965,83 @@ function CheckinDashboardContent() {
       {/* ============================================================ */}
       {/* AREA 2: PHYSICAL ARRIVAL QUEUE (Admitted produce at Depot)   */}
       {/* ============================================================ */}
-      <div className="min-w-0 w-full bg-[#151C2F] border border-[#334155] rounded-2xl overflow-hidden shadow-lg">
-        <div className="p-4 sm:p-5 border-b border-[#334155] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="min-w-0 w-full bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-lg">
+        <div className="p-4 sm:p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <h3 className="font-bold text-white text-sm">Physical Arrival Queue (Admitted Lots)</h3>
+              <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900">Physical Arrival Queue (Admitted Lots)</h3>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-[12px] leading-[16px] text-slate-500 mt-0.5">
               Farmers verified and admitted through the gate awaiting scale weighment
             </p>
           </div>
-          <span className="text-xs font-mono font-bold text-emerald-400 px-2.5 py-1 bg-emerald-950/50 border border-emerald-800/50 rounded-lg">
+          <span className="text-[12px] leading-[16px] font-mono font-bold text-emerald-600 px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-lg">
             Admitted: {arrivals.filter((b) => b.status !== 'BOOKED' && b.status !== 'PENDING').length}
           </span>
         </div>
 
         {arrivals.filter((b) => b.status !== 'BOOKED' && b.status !== 'PENDING').length === 0 ? (
-          <div className="py-10 text-center text-slate-500 text-xs space-y-1">
+          <div className="py-10 text-center text-slate-500 text-sm space-y-1">
             <Truck className="w-7 h-7 mx-auto text-slate-600 mb-2" />
-            <p className="font-semibold text-slate-400">No vehicles in physical queue yet.</p>
-            <p className="text-[11px]">Farmers will enter this queue once their QR code is scanned and checked in at the gate.</p>
+            <p className="font-semibold text-slate-500">No vehicles in physical queue yet.</p>
+            <p className="text-xs">Farmers will enter this queue once their QR code is scanned and checked in at the gate.</p>
           </div>
         ) : (
           <div className="operations-queue-scroll overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 uppercase tracking-wider text-[10px] border-b border-[#334155]">
+            <table className="w-full min-w-max text-left border-collapse tabular-nums">
+              <thead className="sticky top-0 z-10 bg-[#E8F7F3] text-[#475569] font-sans font-semibold text-sm border-b border-slate-200">
                 <tr>
-                  <th className="px-4 py-3">Queue # / Token</th>
-                  <th className="px-4 py-3">Booking ID</th>
-                  <th className="px-4 py-3">Farmer</th>
-                  <th className="px-4 py-3">Produce</th>
-                  <th className="px-4 py-3">Check-in Time</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3 text-right">Next Station</th>
+                  <th className="py-3 px-4">Queue # / Token</th>
+                  <th className="py-3 px-4">Booking ID</th>
+                  <th className="py-3 px-4">Farmer</th>
+                  <th className="py-3 px-4">Produce</th>
+                  <th className="py-3 px-4">Check-in Time</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Next Station</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#334155]/60">
+              <tbody className="divide-y divide-slate-200 font-sans text-sm">
                 {arrivals
                   .filter((b) => b.status !== 'BOOKED' && b.status !== 'PENDING')
                   .map((b, idx) => (
-                    <tr key={b.id} className="hover:bg-[#1B2438] transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-950/70 text-emerald-300 border border-emerald-700/50 font-mono font-bold text-xs">
+                    <tr key={b.id} className="hover:bg-slate-100 transition-colors">
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-sans font-semibold text-xs">
                           #{b.queuePosition || idx + 1}
                         </span>
                         {b.queueToken && (
-                          <span className="block text-[10px] font-mono text-slate-400 mt-0.5">
+                          <span className="block text-[11px] font-sans text-slate-500 mt-1">
                             Token: {b.queueToken}
                           </span>
                         )}
                       </td>
 
-                      <td className="px-4 py-3 font-mono font-semibold text-white whitespace-nowrap">
+                      <td className="py-3 px-4 font-sans font-semibold text-sky-600 whitespace-nowrap text-sm">
                         {b.bookingNumber}
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="font-semibold text-white block">{b.farmerName}</span>
-                        <span className="text-[10px] font-mono text-slate-400 block">
-                          {b.farmerCode}
-                        </span>
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <div className="font-semibold font-sans text-[15px] text-slate-900">{b.farmerName}</div>
+                        <div className="text-[12px] leading-[18px] text-slate-500 font-sans">{b.farmerCode}</div>
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-200">
+                      <td className="py-3 px-4 font-sans font-semibold text-slate-700 whitespace-nowrap text-sm">
                         {b.expectedQuantityQuintals} q
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-300 text-[11px]">
+                      <td className="py-3 px-4 whitespace-nowrap font-sans text-slate-600 text-sm">
                         {b.checkInTime ? new Date(b.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Arrived Today'}
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-sky-950/70 text-sky-300 border border-sky-800/80 text-[10px] font-semibold font-mono">
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-sky-50 text-sky-700 border border-sky-200 text-[11px] font-semibold font-sans">
                           {b.status}
                         </span>
                       </td>
 
-                      <td className="px-4 py-3 text-right whitespace-nowrap">
-                        <span className="text-[11px] font-semibold text-amber-400 font-mono">
+                      <td className="py-3 px-4 text-right whitespace-nowrap">
+                        <span className="text-[12px] font-semibold text-amber-600 font-sans">
                           → Weighbridge Desk
                         </span>
                       </td>
@@ -1049,6 +1053,7 @@ function CheckinDashboardContent() {
         )}
       </div>
 
+    </div>
     </div>
   );
 }

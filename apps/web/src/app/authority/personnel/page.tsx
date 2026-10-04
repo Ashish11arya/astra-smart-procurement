@@ -20,6 +20,7 @@ import {
   Power,
 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
+import styles from '../authority-typography.module.css';
 
 interface PersonnelItem {
   id: string;
@@ -184,7 +185,8 @@ export default function AuthorityPersonnelPage() {
   });
 
   return (
-    <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+    <div className={styles.wrapper}>
+      <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* 1. Header Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
@@ -276,7 +278,7 @@ export default function AuthorityPersonnelPage() {
       <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
         <div className="operations-queue-scroll overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="sticky top-0 z-10 bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-[10px]">
+            <thead className="sticky top-0 z-10 bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-xs">
               <tr>
                 <th className="py-3.5 px-4">Officer Mobile</th>
                 <th className="py-3.5 px-4">Role & Stage</th>
@@ -300,7 +302,7 @@ export default function AuthorityPersonnelPage() {
                   <td colSpan={7} className="py-12 text-center text-slate-400">
                     <Users className="w-8 h-8 text-slate-600 mx-auto mb-2" />
                     <p className="font-semibold text-slate-300">No personnel found</p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-xs text-slate-500">
                       Appoint an officer or clear filters to view active roster
                     </p>
                   </td>
@@ -315,7 +317,7 @@ export default function AuthorityPersonnelPage() {
 
                     {/* Role */}
                     <td className="py-3.5 px-4">
-                      <span className="font-mono text-xs font-semibold text-indigo-300 bg-indigo-950/60 border border-indigo-800/60 px-2 py-0.5 rounded">
+                      <span className="text-xs font-semibold text-indigo-300 bg-indigo-950/60 border border-indigo-800/60 px-2 py-0.5 rounded">
                         {item.role}
                       </span>
                     </td>
@@ -334,13 +336,13 @@ export default function AuthorityPersonnelPage() {
                     {/* Assigned Centre */}
                     <td className="py-3.5 px-4">
                       <div className="font-bold text-white text-xs">{item.centre?.name}</div>
-                      <div className="text-[11px] text-slate-400 font-mono">
+                      <div className="text-xs text-slate-400 font-mono">
                         Code: {item.centre?.centreCode}
                       </div>
                     </td>
 
                     {/* Appointed At */}
-                    <td className="py-3.5 px-4 whitespace-nowrap text-slate-400 text-[11px]">
+                    <td className="py-3.5 px-4 whitespace-nowrap text-slate-400 text-xs">
                       {new Date(item.assignedAt).toLocaleDateString('en-IN', {
                         day: 'numeric',
                         month: 'short',
@@ -351,12 +353,12 @@ export default function AuthorityPersonnelPage() {
                     {/* Status */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       {item.isActive ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
                           <CheckCircle2 className="w-3 h-3" />
                           <span>Active</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-700">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-900 text-slate-400 border border-slate-700">
                           <XCircle className="w-3 h-3" />
                           <span>Inactive</span>
                         </span>
@@ -367,7 +369,7 @@ export default function AuthorityPersonnelPage() {
                     <td className="py-3.5 px-4 text-right whitespace-nowrap">
                       <button
                         onClick={() => handleToggleStatus(item.id, item.isActive)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-semibold transition ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold transition ${
                           item.isActive
                             ? 'bg-rose-950/50 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60'
                             : 'bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/60'
@@ -492,5 +494,6 @@ export default function AuthorityPersonnelPage() {
         </div>
       )}
     </main>
+    </div>
   );
 }

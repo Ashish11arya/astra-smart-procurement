@@ -1,0 +1,58 @@
+.wrapper h1,
+.wrapper h2,
+.wrapper h3,
+.wrapper h4,
+.wrapper h5,
+.wrapper h6 {
+  font-family: var(--font-outfit), system-ui, -apple-system, sans-serif !important;
+  letter-spacing: -0.02em !important;
+}
+
+.wrapper h1 {
+  font-weight: 700 !important;
+}
+
+.wrapper h2 {
+  font-weight: 600 !important;
+}
+
+.wrapper h3, 
+.wrapper h4 {
+  font-weight: 500 !important;
+}
+
+.wrapper p,
+.wrapper span,
+.wrapper div,
+.wrapper label,
+.wrapper input,
+.wrapper select,
+.wrapper textarea,
+.wrapper button {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.wrapper .font-mono,
+.wrapper .font-mono * {
+  font-family: var(--font-fira-code), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  letter-spacing: 0em !important;
+}
+
+/* Specific overrides for tracking-tight or other Tailwind classes to ensure they use Outfit if they are large text */
+.wrapper .text-xl,
+.wrapper .text-2xl,
+.wrapper .text-3xl,
+.wrapper .text-4xl {
+  font-family: var(--font-outfit), system-ui, -apple-system, sans-serif !important;
+  letter-spacing: -0.03em !important;
+}
+
+.wrapper button {
+  font-weight: 500 !important;
+}
+
+.wrapper label {
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+}

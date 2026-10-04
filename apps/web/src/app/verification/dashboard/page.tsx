@@ -67,13 +67,13 @@ export default function VerificationDashboardPage() {
   return (
     <>
       {/* 1. Official Header Strip */}
-      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-white rounded-2xl border border-[#DDE8E5] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0">
             <FileCheck className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#0F172A] tracking-tight">
               Farmer Verification Authority
             </h1>
           </div>
@@ -83,7 +83,7 @@ export default function VerificationDashboardPage() {
           <button
             onClick={fetchStats}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#151C2F] border border-[#334155] hover:bg-[#1B2438] text-xs font-semibold text-slate-300 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-[#DDE8E5] hover:bg-slate-50 text-xs font-semibold text-[#526579] transition"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-purple-400 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh Queue</span>
@@ -91,7 +91,7 @@ export default function VerificationDashboardPage() {
 
           <Link
             href="/verification/applications"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-lg shadow-purple-950/50 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#004F49] hover:bg-[#003F3B] text-white text-xs font-bold shadow-md transition"
           >
             <Search className="w-3.5 h-3.5" />
             <span>Open Applications Queue</span>
@@ -100,9 +100,9 @@ export default function VerificationDashboardPage() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-semibold flex items-center justify-between">
           <span>{error}</span>
-          <button onClick={fetchStats} className="underline hover:text-rose-200">
+          <button onClick={fetchStats} className="underline hover:text-rose-700">
             Retry
           </button>
         </div>
@@ -113,10 +113,10 @@ export default function VerificationDashboardPage() {
         {/* Pending Scrutiny */}
         <Link
           href="/verification/applications?status=VERIFICATION_PENDING"
-          className="rounded-xl p-5 border border-amber-500/30 hover:border-amber-400/60 transition-all bg-[#151C2F] hover:bg-[#1B2438] group block shadow-md"
+          className="rounded-xl p-5 border border-[#DDE8E5] hover:border-amber-400/60 transition-all bg-white shadow-sm hover:shadow-md group block shadow-md"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider">
+            <span className="text-[14px] leading-[20px] font-semibold text-[#D97706] uppercase tracking-wider">
               Pending Scrutiny
             </span>
             <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition">
@@ -124,12 +124,12 @@ export default function VerificationDashboardPage() {
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono">
+            <span className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
               {loading ? '—' : stats?.pendingVerifications ?? 0}
             </span>
             <span className="text-xs text-amber-400 font-semibold">Queued</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1 group-hover:text-amber-300 transition">
+          <p className="text-[11px] text-[#526579] mt-2 flex items-center gap-1 group-hover:text-amber-300 transition">
             <span>Process pending submissions</span>
             <ArrowRight className="w-3 h-3" />
           </p>
@@ -138,10 +138,10 @@ export default function VerificationDashboardPage() {
         {/* Verified Farmers */}
         <Link
           href="/verification/applications?status=VERIFIED"
-          className="rounded-xl p-5 border border-emerald-500/30 hover:border-emerald-400/60 transition-all bg-[#151C2F] hover:bg-[#1B2438] group block shadow-md"
+          className="rounded-xl p-5 border border-[#DDE8E5] hover:border-emerald-400/60 transition-all bg-white shadow-sm hover:shadow-md group block shadow-md"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">
+            <span className="text-[14px] leading-[20px] font-semibold text-[#059669] uppercase tracking-wider">
               Verified &amp; Approved
             </span>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition">
@@ -149,12 +149,12 @@ export default function VerificationDashboardPage() {
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono">
+            <span className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
               {loading ? '—' : stats?.verifiedFarmers ?? 0}
             </span>
             <span className="text-xs text-emerald-400 font-semibold">Procurement Active</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1 group-hover:text-emerald-300 transition">
+          <p className="text-[11px] text-[#526579] mt-2 flex items-center gap-1 group-hover:text-emerald-300 transition">
             <span>View approved farmers</span>
             <ArrowRight className="w-3 h-3" />
           </p>
@@ -163,10 +163,10 @@ export default function VerificationDashboardPage() {
         {/* Returned for Correction */}
         <Link
           href="/verification/applications?status=RETURNED_FOR_CORRECTION"
-          className="rounded-xl p-5 border border-orange-500/30 hover:border-orange-400/60 transition-all bg-[#151C2F] hover:bg-[#1B2438] group block shadow-md"
+          className="rounded-xl p-5 border border-[#DDE8E5] hover:border-orange-400/60 transition-all bg-white shadow-sm hover:shadow-md group block shadow-md"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-orange-300 uppercase tracking-wider">
+            <span className="text-[14px] leading-[20px] font-semibold text-[#EA580C] uppercase tracking-wider">
               Returned for Correction
             </span>
             <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 group-hover:scale-110 transition">
@@ -174,12 +174,12 @@ export default function VerificationDashboardPage() {
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono">
+            <span className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
               {loading ? '—' : stats?.returnedApplications ?? 0}
             </span>
             <span className="text-xs text-orange-400 font-semibold">Farmer Action</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1 group-hover:text-orange-300 transition">
+          <p className="text-[11px] text-[#526579] mt-2 flex items-center gap-1 group-hover:text-orange-300 transition">
             <span>Review returned applications</span>
             <ArrowRight className="w-3 h-3" />
           </p>
@@ -188,10 +188,10 @@ export default function VerificationDashboardPage() {
         {/* Rejected Applications */}
         <Link
           href="/verification/applications?status=REJECTED"
-          className="rounded-xl p-5 border border-rose-500/30 hover:border-rose-400/60 transition-all bg-[#151C2F] hover:bg-[#1B2438] group block shadow-md"
+          className="rounded-xl p-5 border border-[#DDE8E5] hover:border-rose-400/60 transition-all bg-white shadow-sm hover:shadow-md group block shadow-md"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-rose-300 uppercase tracking-wider">
+            <span className="text-[14px] leading-[20px] font-semibold text-[#DC2626] uppercase tracking-wider">
               Rejected Applications
             </span>
             <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-110 transition">
@@ -199,12 +199,12 @@ export default function VerificationDashboardPage() {
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono">
+            <span className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
               {loading ? '—' : stats?.rejectedApplications ?? 0}
             </span>
             <span className="text-xs text-rose-400 font-semibold">Closed</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1 group-hover:text-rose-300 transition">
+          <p className="text-[11px] text-[#526579] mt-2 flex items-center gap-1 group-hover:text-rose-300 transition">
             <span>View rejection dossier</span>
             <ArrowRight className="w-3 h-3" />
           </p>
@@ -214,18 +214,18 @@ export default function VerificationDashboardPage() {
       {/* 3. Action Portals & Scrutiny Guidelines */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
         {/* Card 1: Applications Queue */}
-        <div className="rounded-xl p-6 border border-[#334155] bg-[#151C2F] hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4 shadow-md">
+        <div className="rounded-xl p-6 border border-[#DDE8E5] bg-white hover:border-[#004F49]/40 transition-all flex flex-col justify-between space-y-4 shadow-md">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
               <FileCheck className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Full Applications Queue</h2>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              <h2 className="text-lg font-bold text-[#0F172A]">Full Applications Queue</h2>
+              <p className="text-sm text-[#526579] mt-1 leading-relaxed">
                 Filter and inspect farmer registrations across state districts. Access individual dossiers for in-depth scrutiny.
               </p>
             </div>
-            <div className="space-y-1 text-[11px] text-slate-400 pt-2 border-t border-[#334155]">
+            <div className="space-y-1 text-[11px] text-[#526579] pt-2 border-t border-[#E2E8F0]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
                 <span>Bounded table scroll with sticky column headers</span>
@@ -243,7 +243,7 @@ export default function VerificationDashboardPage() {
 
           <Link
             href="/verification/applications"
-            className="w-full h-10 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-md shadow-purple-950/50"
+            className="w-full h-10 rounded-xl bg-[#004F49] hover:bg-[#003F3B] text-white font-bold text-sm flex items-center justify-center gap-2 transition shadow-md"
           >
             <span>Open Applications Queue</span>
             <ArrowRight className="w-4 h-4" />
@@ -251,18 +251,18 @@ export default function VerificationDashboardPage() {
         </div>
 
         {/* Card 2: Verification Audit History */}
-        <div className="rounded-xl p-6 border border-[#334155] bg-[#151C2F] hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4 shadow-md">
+        <div className="rounded-xl p-6 border border-[#DDE8E5] bg-white hover:border-[#004F49]/40 transition-all flex flex-col justify-between space-y-4 shadow-md">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
               <History className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Decision Audit Log</h2>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              <h2 className="text-lg font-bold text-[#0F172A]">Decision Audit Log</h2>
+              <p className="text-sm text-[#526579] mt-1 leading-relaxed">
                 Immutable record of all historical approval, rejection, and return decisions executed by verification officers with timestamps and remarks.
               </p>
             </div>
-            <div className="space-y-1 text-[11px] text-slate-400 pt-2 border-t border-[#334155]">
+            <div className="space-y-1 text-[11px] text-[#526579] pt-2 border-t border-[#E2E8F0]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Non-repudiation officer accountability</span>
@@ -280,7 +280,7 @@ export default function VerificationDashboardPage() {
 
           <Link
             href="/verification/history"
-            className="w-full h-10 rounded-xl bg-[#1B2438] hover:bg-[#232F48] text-white border border-[#334155] font-bold text-xs flex items-center justify-center gap-2 transition"
+            className="w-full h-10 rounded-xl bg-white hover:bg-slate-50 text-[#0F172A] border border-[#DDE8E5] font-bold text-xs flex items-center justify-center gap-2 transition"
           >
             <span>View Audit History</span>
             <ArrowRight className="w-4 h-4" />
@@ -288,18 +288,18 @@ export default function VerificationDashboardPage() {
         </div>
 
         {/* Card 3: 8-Point Scrutiny SOP */}
-        <div className="rounded-xl p-6 border border-[#334155] bg-[#151C2F] flex flex-col justify-between space-y-4 shadow-md">
+        <div className="rounded-xl p-6 border border-[#DDE8E5] bg-white flex flex-col justify-between space-y-4 shadow-md">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Standard Scrutiny Protocol</h2>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              <h2 className="text-lg font-bold text-[#0F172A]">Standard Scrutiny Protocol</h2>
+              <p className="text-sm text-[#526579] mt-1 leading-relaxed">
                 Verification officers must validate each dossier against statutory criteria before taking action:
               </p>
             </div>
-            <ol className="list-decimal pl-4 space-y-1 text-[11px] text-slate-400 pt-1">
+            <ol className="list-decimal pl-4 space-y-1 text-[11px] text-[#526579] pt-1">
               <li>Aadhaar identity &amp; name alignment</li>
               <li>District &amp; revenue village mapping</li>
               <li>Khasra / survey numbers vs. land registry</li>
@@ -309,7 +309,7 @@ export default function VerificationDashboardPage() {
             </ol>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/30 text-[10px] text-purple-300 font-semibold flex items-center gap-2">
+          <div className="p-2.5 rounded-xl bg-cyan-50 border border-cyan-200 text-[11px] text-cyan-700 font-semibold flex items-center gap-2">
             <Lock className="w-3.5 h-3.5 shrink-0" />
             <span>Decisions generate irreversible procurement eligibility.</span>
           </div>

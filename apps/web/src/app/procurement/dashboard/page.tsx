@@ -247,25 +247,29 @@ function ProcurementDashboardContent() {
   };
 
   return (
-    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-100">
+    <div className="w-full flex-1 flex flex-col bg-[#EEFaf7] text-slate-800 relative after:absolute after:top-full after:inset-x-0 after:h-[calc(72px+env(safe-area-inset-bottom))] after:bg-[#EEFaf7] md:after:hidden">
+      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 text-slate-900 flex-1">
       {/* Top Header */}
-      <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+      <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 flex-shrink-0">
             <FileCheck2 className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 Procurement
               </h1>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 font-mono uppercase tracking-wider">
                 MSP ACQUISITION
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              {centreInfo?.name || 'Procurement Depot'} &bull; Official grain acquisition, Minimum Support Price (MSP) calculation, and voucher issuance
-            </p>
+            <div className="text-base font-semibold text-slate-900 mt-1">
+              {centreInfo?.name || 'Muzaffarpur Central Grain Procurement Depot'}
+            </div>
+            <div className="text-sm text-slate-500 mt-0.5">
+              Official grain acquisition, Minimum Support Price (MSP) calculation, and voucher issuance
+            </div>
           </div>
         </div>
 
@@ -273,14 +277,14 @@ function ProcurementDashboardContent() {
           <button
             onClick={() => loadQueue()}
             disabled={loading}
-            className="px-3.5 py-2 rounded-xl border border-[#334155] bg-[#0B1020] hover:bg-[#1B2438] text-slate-200 text-xs font-semibold flex items-center space-x-2 transition"
+            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm font-semibold flex items-center space-x-2 transition"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
             <span>Refresh</span>
           </button>
           <button
             onClick={handleLogout}
-            className="px-3.5 py-2 rounded-xl border border-rose-800/40 bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 text-xs font-semibold flex items-center space-x-2 transition"
+            className="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold flex items-center space-x-2 transition"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -289,35 +293,35 @@ function ProcurementDashboardContent() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#334155] pb-3 text-xs font-semibold overflow-x-auto scrollbar-hide">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setActiveTab('queue')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-base font-semibold transition-all ${
             activeTab === 'queue'
-              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-[#151C2F]'
+              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white'
           }`}
         >
-          <FileCheck2 className="w-4 h-4 text-emerald-400" />
+          <FileCheck2 className="w-5 h-5 text-emerald-600" />
           <span>Procurement Queue ({activeQueue.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('history')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-base font-semibold transition-all ${
             activeTab === 'history'
-              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-[#151C2F]'
+              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white'
           }`}
         >
-          <History className="w-4 h-4 text-emerald-400" />
+          <History className="w-5 h-5 text-emerald-600" />
           <span>Issued Vouchers & Daily History ({processedHistory.length})</span>
         </button>
       </div>
 
       {error && (
-        <div className="p-3.5 rounded-xl border border-rose-800/80 bg-rose-950/40 text-rose-200 text-xs flex items-center space-x-3">
-          <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+        <div className="p-3.5 rounded-xl border border-rose-800/80 bg-rose-50 text-rose-700 text-xs flex items-center space-x-3">
+          <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
@@ -330,24 +334,24 @@ function ProcurementDashboardContent() {
           {/* Left Column: Quality-Certified Lots Awaiting Procurement Order */}
           <div className="lg:col-span-5 space-y-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between px-1 shrink-0">
-              <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
-                <Clock className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="flex items-center space-x-2 text-[18px] leading-[26px] font-semibold text-slate-900 font-sans">
+                <Clock className="w-5 h-5 text-emerald-600" />
                 <span>Ready for Purchase Voucher</span>
               </div>
-              <span className="text-[11px] px-2.5 py-0.5 rounded bg-[#151C2F] text-emerald-300 border border-[#334155] font-mono font-semibold">
+              <span className="text-[12px] leading-[18px] font-semibold px-2.5 py-0.5 rounded bg-white text-emerald-600 border border-slate-200 font-mono">
                 {activeQueue.length} certified
               </span>
             </div>
 
             {loading && activeQueue.length === 0 ? (
-              <div className="p-8 text-center bg-[#151C2F] rounded-2xl border border-[#334155] text-slate-400 text-xs">
+              <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
                 Loading certified farmer lots...
               </div>
             ) : activeQueue.length === 0 ? (
-              <div className="p-10 text-center bg-[#151C2F] rounded-2xl border border-[#334155] text-slate-400 space-y-2">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-                <p className="text-xs font-semibold text-slate-200">Procurement Queue Clear</p>
-                <p className="text-[11px] text-slate-500 max-w-xs mx-auto">All quality-tested grain lots have been procured and vouchers issued.</p>
+              <div className="p-10 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 space-y-2">
+                <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+                <p className="text-[18px] leading-[26px] font-semibold font-sans text-slate-900">Procurement Queue Clear</p>
+                <p className="text-[16px] leading-[24px] font-normal font-sans text-slate-500 max-w-xs mx-auto">All quality-tested grain lots have been procured and vouchers issued.</p>
               </div>
             ) : (
               <div className="space-y-3 pr-1 operations-queue-scroll min-h-0">
@@ -360,29 +364,29 @@ function ProcurementDashboardContent() {
                       className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                         isSelected
                           ? 'border-emerald-500/80 bg-emerald-950/20 shadow-md ring-1 ring-emerald-500/30'
-                          : 'border-[#334155] bg-[#151C2F] hover:bg-[#1B2438] hover:border-slate-600'
+                          : 'border-slate-200 bg-white hover:bg-slate-100 hover:border-slate-600'
                       }`}
                     >
                       <div className="flex items-start justify-between">
                         <div>
-                          <span className="text-[11px] font-mono font-bold text-emerald-400">
+                          <span className="text-[11px] font-mono font-bold text-emerald-600">
                             #{item.bookingNumber}
                           </span>
-                          <h3 className="text-sm font-bold text-white mt-0.5">{item.farmerName}</h3>
-                          <p className="text-xs text-slate-400 font-mono">
+                          <h3 className="text-sm font-bold text-slate-900 mt-0.5">{item.farmerName}</h3>
+                          <p className="text-xs text-slate-500 font-mono">
                             ID: {item.farmerCode} &bull; {item.farmerMobile ? item.farmerMobile.slice(-4).padStart(10, 'X') : 'XXXX'}
                           </p>
                         </div>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-900/50 text-emerald-300 border border-emerald-700/50 uppercase tracking-wide font-mono">
-                          {item.qualityGrade ? item.qualityGrade.replace(/_/g, ' ') : 'CERTIFIED'}
+                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#059669] text-white font-sans inline-block">
+                          {item.qualityGrade ? item.qualityGrade.replace(/_/g, ' ') : (item.quality?.grade ? item.quality.grade.replace(/_/g, ' ') : 'Grade A')}
                         </span>
                       </div>
 
-                      <div className="mt-3 pt-2.5 border-t border-[#334155]/80 flex items-center justify-between text-xs">
-                        <span className="text-slate-400">Moisture: <strong className="text-slate-200 font-mono">{item.moisturePercent || '13.5'}%</strong></span>
+                      <div className="mt-3 pt-2.5 border-t border-slate-200/80 flex items-center justify-between text-xs">
+                        <span className="text-slate-500">Moisture: <strong className="text-slate-700 font-mono">{item.moisturePercent || '13.5'}%</strong></span>
                         <div className="text-right">
-                          <span className="text-[10px] text-slate-400 block uppercase font-mono">Accepted Weight</span>
-                          <span className="font-mono font-bold text-emerald-400 text-xs">
+                          <span className="text-[10px] text-slate-500 block uppercase font-mono">Accepted Weight</span>
+                          <span className="font-mono font-bold text-emerald-600 text-xs">
                             {item.finalWeightQuintals} Qtl
                           </span>
                         </div>
@@ -399,40 +403,40 @@ function ProcurementDashboardContent() {
             {selectedBooking ? (
               <form
                 onSubmit={handleSubmitProcurement}
-                className="bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-6 space-y-5 shadow-xl"
+                className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-5 shadow-xl"
               >
                 {/* Farmer & Lot Overview */}
-                <div className="border-b border-[#334155] pb-4">
-                  <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                <div className="border-b border-slate-200 pb-4">
+                  <span className="text-xs font-mono text-emerald-600 font-bold uppercase tracking-wider">
                     Official Procurement File #{selectedBooking.bookingNumber}
                   </span>
                   <div className="flex items-start justify-between flex-wrap gap-2 mt-1">
                     <div>
-                      <h2 className="text-lg font-bold text-white">
+                      <h2 className="text-lg font-bold text-slate-900">
                         {selectedBooking.farmerName}
                       </h2>
-                      <p className="text-xs text-slate-400 mt-0.5 font-mono">
-                        Farmer ID: <strong className="text-slate-200">{selectedBooking.farmerCode}</strong> &bull; Commodity: <strong className="text-slate-200">{selectedBooking.commodityName}</strong>
+                      <p className="text-xs text-slate-500 mt-0.5 font-mono">
+                        Farmer ID: <strong className="text-slate-700">{selectedBooking.farmerCode}</strong> &bull; Commodity: <strong className="text-slate-700">{selectedBooking.commodityName}</strong>
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] text-slate-400 uppercase font-mono block">Certified Quality</span>
-                      <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-700/60 uppercase">
-                        {selectedBooking.qualityGrade ? selectedBooking.qualityGrade.replace(/_/g, ' ') : 'Grade A'}
+                      <span className="text-[10px] text-slate-500 uppercase font-mono block">Certified Quality</span>
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#059669] text-white font-sans inline-block">
+                        {selectedBooking.qualityGrade ? selectedBooking.qualityGrade.replace(/_/g, ' ') : (selectedBooking.quality?.grade ? selectedBooking.quality.grade.replace(/_/g, ' ') : 'Grade A')}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Section 9: Complete Multi-Stage Processing Timeline */}
-                <div className="p-3.5 rounded-xl bg-[#0B1020] border border-[#334155] space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                     Verified Multi-Stage Audit Trail
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                     <div>
                       <span className="text-[10px] text-slate-500 uppercase block">1. Check-in</span>
-                      <span className="font-mono text-slate-200 font-semibold text-xs">
+                      <span className="font-mono text-slate-700 font-semibold text-xs">
                         {selectedBooking.checkInTime
                           ? new Date(selectedBooking.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                           : '08:12 AM'}
@@ -441,27 +445,27 @@ function ProcurementDashboardContent() {
 
                     <div>
                       <span className="text-[10px] text-slate-500 uppercase block">2. Weighment</span>
-                      <span className="font-mono text-slate-200 font-semibold text-xs">
+                      <span className="font-mono text-slate-700 font-semibold text-xs">
                         {selectedBooking.weighment?.weighedAt
                           ? new Date(selectedBooking.weighment.weighedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                           : '08:24 AM'}{' '}
-                        <strong className="text-emerald-400 font-normal">({selectedBooking.finalWeightQuintals} Qtl)</strong>
+                        <strong className="text-emerald-600 font-normal">({selectedBooking.finalWeightQuintals} Qtl)</strong>
                       </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] text-slate-500 uppercase block">3. Quality Test</span>
-                      <span className="font-mono text-slate-200 font-semibold text-xs">
+                      <span className="font-mono text-slate-700 font-semibold text-xs">
                         {selectedBooking.quality?.assessedAt
                           ? new Date(selectedBooking.quality.assessedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                           : '08:34 AM'}{' '}
-                        <strong className="text-teal-400 font-normal">({selectedBooking.qualityGrade ? selectedBooking.qualityGrade.slice(0, 7) : 'A'})</strong>
+                        <strong className="text-teal-600 font-normal">({selectedBooking.qualityGrade ? selectedBooking.qualityGrade.slice(0, 7) : 'A'})</strong>
                       </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] text-slate-500 uppercase block">4. Decision</span>
-                      <span className="font-mono text-amber-400 font-bold text-xs">
+                      <span className="font-mono text-amber-600 font-bold text-xs">
                         Pending Voucher
                       </span>
                     </div>
@@ -473,7 +477,7 @@ function ProcurementDashboardContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {/* Accepted Quantity */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-300">
+                      <label className="text-xs font-semibold text-slate-600">
                         Accepted Quantity (Quintals) *
                       </label>
                       <input
@@ -483,15 +487,15 @@ function ProcurementDashboardContent() {
                         required
                         value={purchasedQuantity}
                         onChange={(e) => setPurchasedQuantity(e.target.value)}
-                        className="w-full bg-[#0B1020] border border-[#334155] rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500 font-bold"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs focus:outline-none focus:border-emerald-500 font-bold"
                       />
                     </div>
 
                     {/* MSP Rate */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
+                      <label className="text-xs font-semibold text-slate-600 flex items-center justify-between">
                         <span>MSP Rate (₹/Qtl) *</span>
-                        <span className="text-[10px] text-emerald-400 font-mono">GOVT MSP</span>
+                        <span className="text-[10px] text-emerald-600 font-mono">GOVT MSP</span>
                       </label>
                       <input
                         type="number"
@@ -499,13 +503,13 @@ function ProcurementDashboardContent() {
                         required
                         value={ratePerQuintal}
                         onChange={(e) => setRatePerQuintal(e.target.value)}
-                        className="w-full bg-[#0B1020] border border-[#334155] rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500 font-bold"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs focus:outline-none focus:border-emerald-500 font-bold"
                       />
                     </div>
 
                     {/* Deductions */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-300">
+                      <label className="text-xs font-semibold text-slate-600">
                         Quality Deductions (₹)
                       </label>
                       <input
@@ -514,30 +518,30 @@ function ProcurementDashboardContent() {
                         min="0"
                         value={deductionsAmount}
                         onChange={(e) => setDeductionsAmount(e.target.value)}
-                        className="w-full bg-[#0B1020] border border-[#334155] rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                   </div>
 
                   {/* Financial Summary Card */}
-                  <div className="p-4 rounded-xl bg-[#0B1020] border border-emerald-500/40 flex items-center justify-between">
+                  <div className="p-4 rounded-xl bg-slate-50 border border-emerald-500/40 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-400 block font-mono">Total Verified Payout</span>
-                      <span className="text-xs text-slate-300 font-mono">
+                      <span className="text-[10px] text-slate-500 block font-mono">Total Verified Payout</span>
+                      <span className="text-xs text-slate-600 font-mono">
                         {qty} Qtl &times; ₹{rate}/Qtl {deductions > 0 ? `- ₹${deductions}` : ''}
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-3xl sm:text-4xl font-bold text-emerald-400 tabular-nums tracking-tight">
+                      <span className="text-3xl sm:text-4xl font-bold text-emerald-600 tabular-nums tracking-tight">
                         ₹{netPayable.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] text-emerald-400 block font-semibold uppercase">Direct DBT Transfer</span>
+                      <span className="text-[10px] text-emerald-600 block font-semibold uppercase">Direct DBT Transfer</span>
                     </div>
                   </div>
 
                   {/* Procurement Notes */}
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-300">
+                    <label className="text-xs font-semibold text-slate-600">
                       Procurement Order Remarks (Optional)
                     </label>
                     <textarea
@@ -545,7 +549,7 @@ function ProcurementDashboardContent() {
                       value={remarks}
                       onChange={(e) => setRemarks(e.target.value)}
                       placeholder="Enter purchase voucher reference, storage stack allocation, or bagging notes..."
-                      className="w-full bg-[#0B1020] border border-[#334155] rounded-xl px-3.5 py-2 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-xs placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
@@ -556,7 +560,7 @@ function ProcurementDashboardContent() {
                     type="submit"
                     disabled={submitting}
                     onClick={() => setDecision('ACCEPTED')}
-                    className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md flex items-center justify-center space-x-2 transition disabled:opacity-50"
+                    className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-semibold text-sm shadow-md flex items-center justify-center space-x-2 transition disabled:opacity-50"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span>
@@ -575,17 +579,17 @@ function ProcurementDashboardContent() {
                         handleSubmitProcurement({ preventDefault: () => {} } as any);
                       }
                     }}
-                    className="px-4 py-3 rounded-xl border border-rose-800/60 bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 font-semibold text-xs transition"
+                    className="px-4 py-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-sm transition"
                   >
                     Reject Lot
                   </button>
                 </div>
               </form>
             ) : (
-              <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-12 text-center text-slate-400 space-y-2">
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500 space-y-2">
                 <FileCheck2 className="w-10 h-10 text-slate-600 mx-auto" />
-                <h3 className="text-sm font-bold text-slate-200">No Lot Selected</h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                <h3 className="text-[18px] leading-[26px] font-semibold font-sans text-slate-900">No Lot Selected</h3>
+                <p className="text-[16px] leading-[24px] font-normal font-sans text-slate-500 max-w-sm mx-auto">
                   Select a certified grain lot from the left queue to compute MSP totals and issue the purchase voucher.
                 </p>
               </div>
@@ -600,24 +604,26 @@ function ProcurementDashboardContent() {
       {activeTab === 'history' && (
         <div className="space-y-5">
           {/* Filter Bar */}
-          <div className="bg-[#151C2F] rounded-xl border border-[#334155] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-semibold text-slate-300">Select Date:</span>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="bg-[#0B1020] border border-[#334155] rounded-xl px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
-                />
+              <div className="flex items-center gap-3">
+                <span className="text-base font-medium text-slate-600">Select Date:</span>
+                <div className="relative flex items-center">
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="bg-slate-50 border border-slate-300 rounded-xl pl-3 pr-10 py-2 text-base font-medium text-slate-900 font-sans focus:outline-none focus:ring-2 focus:ring-[#0F766E]/50 focus:border-[#0F766E] transition-all [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:top-0 [&::-webkit-calendar-picker-indicator]:w-12 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:z-20 relative"
+                  />
+                  <Calendar className="w-5 h-5 text-[#0F766E] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+                </div>
               </div>
 
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setSelectedDate(todayStr)}
-                  className={`px-2.5 py-1 rounded text-xs font-semibold ${
-                    selectedDate === todayStr ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-[#0B1020] text-slate-400 hover:text-white border border-[#334155]'
+                  className={`px-3 py-1.5 rounded text-sm font-medium ${
+                    selectedDate === todayStr ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/40' : 'bg-slate-50 text-slate-500 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
                   Today
@@ -628,7 +634,7 @@ function ProcurementDashboardContent() {
                     y.setDate(y.getDate() - 1);
                     setSelectedDate(y.toISOString().split('T')[0]);
                   }}
-                  className="px-2.5 py-1 rounded text-xs font-semibold bg-[#0B1020] text-slate-400 hover:text-white border border-[#334155]"
+                  className="px-3 py-1.5 rounded text-sm font-medium bg-slate-50 text-slate-500 hover:text-slate-900 border border-slate-200"
                 >
                   Yesterday
                 </button>
@@ -636,42 +642,43 @@ function ProcurementDashboardContent() {
             </div>
 
             <div className="relative w-full sm:min-w-[240px] sm:w-auto">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
               <input
                 type="text"
                 placeholder="Search Farmer, ID, Booking..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0B1020] border border-[#334155] rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
               />
             </div>
           </div>
 
           {/* Table */}
-          <div className="min-w-0 w-full bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-lg">
-            <div className="p-4 sm:p-5 border-b border-[#334155] flex items-center justify-between">
+          <div className="min-w-0 w-full bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg">
+            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-white">Daily Issued Purchase Vouchers ({processedHistory.length})</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h3 className="text-[18px] leading-[26px] font-semibold text-slate-900">Daily Issued Purchase Vouchers ({processedHistory.length})</h3>
+                <p className="text-base font-medium text-slate-500 mt-0.5">
                   Official procurement records and payments for {selectedDate}
                 </p>
               </div>
             </div>
 
             {processedHistory.length === 0 ? (
-              <div className="p-12 text-center text-slate-400 space-y-2">
+              <div className="p-12 text-center text-slate-500 space-y-2">
                 <FileCheck2 className="w-8 h-8 text-slate-600 mx-auto" />
-                <p className="text-xs font-semibold text-slate-300">No Vouchers Found</p>
+                <p className="text-xs font-semibold text-slate-600">No Vouchers Found</p>
                 <p className="text-[11px] text-slate-500">No purchase vouchers were issued for {selectedDate}.</p>
               </div>
             ) : (
-              <div className="operations-queue-scroll overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse tabular-nums">
-                  <thead className="sticky top-0 z-10 bg-[#0F172A] text-slate-400 font-mono uppercase tracking-wider text-[10px] border-b border-[#334155]">
+              <div className="operations-queue-scroll overflow-x-auto overflow-y-auto max-h-[60vh] md:max-h-[500px]">
+                <table className="w-full min-w-max text-left border-collapse tabular-nums">
+                  <thead className="sticky top-0 z-10 bg-[#E8F7F3] text-[#475569] font-sans font-semibold text-sm border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">Booking Number</th>
                       <th className="py-3 px-4">Farmer Details</th>
                       <th className="py-3 px-4">Commodity</th>
+                      <th className="py-3 px-4">Quality Grade</th>
                       <th className="py-3 px-4">Accepted Qtl</th>
                       <th className="py-3 px-4">Rate (₹/Qtl)</th>
                       <th className="py-3 px-4">Total Amount (₹)</th>
@@ -680,42 +687,47 @@ function ProcurementDashboardContent() {
                       <th className="py-3 px-4 text-right">Official Voucher</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#334155]/60 font-sans">
+                  <tbody className="divide-y divide-slate-200 font-sans text-sm">
                     {processedHistory.map((item) => (
-                      <tr key={item.id} className="hover:bg-[#1B2438] transition-colors">
-                        <td className="py-3 px-4 font-mono font-semibold text-emerald-400 whitespace-nowrap">
+                      <tr key={item.id} className="hover:bg-slate-100 transition-colors">
+                        <td className="py-3 px-4 font-sans font-semibold text-[#059669] whitespace-nowrap text-sm">
                           #{item.bookingNumber}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
-                          <div className="font-semibold text-white">{item.farmerName}</div>
-                          <div className="text-[10px] text-slate-400 font-mono">{item.farmerCode}</div>
+                          <div className="font-semibold font-sans text-[15px] text-slate-900">{item.farmerName}</div>
+                          <div className="text-[12px] leading-[18px] text-slate-500 font-sans">{item.farmerCode}</div>
                         </td>
-                        <td className="py-3 px-4 text-slate-300 font-medium whitespace-nowrap">
+                        <td className="py-3 px-4 text-slate-600 font-medium whitespace-nowrap text-sm">
                           {item.commodityName}
                         </td>
-                        <td className="py-3 px-4 font-mono font-bold text-emerald-400 whitespace-nowrap">
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#059669] text-white font-sans inline-block">
+                            {item.qualityGrade ? item.qualityGrade.replace(/_/g, ' ') : (item.quality?.grade ? item.quality.grade.replace(/_/g, ' ') : 'Grade A')}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 font-sans font-semibold text-[#059669] whitespace-nowrap text-sm">
                           {item.procurement?.acceptedQuantityQuintals ?? item.finalWeightQuintals} Qtl
                         </td>
-                        <td className="py-3 px-4 font-mono text-slate-300 whitespace-nowrap">
+                        <td className="py-3 px-4 font-sans text-slate-600 whitespace-nowrap text-sm">
                           ₹{item.procurement?.ratePerQuintal ?? 2325}
                         </td>
-                        <td className="py-3 px-4 font-mono font-bold text-emerald-400 text-xs whitespace-nowrap">
+                        <td className="py-3 px-4 font-sans font-semibold text-[#059669] whitespace-nowrap text-sm">
                           ₹{(item.procurement?.totalAmount ?? (item.finalWeightQuintals * 2325)).toLocaleString('en-IN')}
                         </td>
-                        <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
+                        <td className="py-3 px-4 font-sans text-slate-500 whitespace-nowrap text-sm">
                           {item.procurement?.decidedAt
                             ? new Date(item.procurement.decidedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                             : '08:47 AM'}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider font-mono ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold font-sans ${
                               item.status === 'COMPLETED'
-                                ? 'bg-cyan-950 text-cyan-300 border border-cyan-700/60'
-                                : 'bg-amber-950 text-amber-300 border border-amber-700/60'
+                                ? 'bg-[#059669] text-white'
+                                : 'bg-amber-100 text-amber-800'
                             }`}
                           >
-                            {item.status === 'COMPLETED' ? 'Settled (DBT)' : 'Payment Pending'}
+                            {item.status === 'COMPLETED' ? 'SETTLED (DBT)' : 'PENDING'}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-right whitespace-nowrap">
@@ -746,10 +758,10 @@ function ProcurementDashboardContent() {
                                 transactionRef: item.payment?.transactionRef || `ASTRA-DBT-${item.bookingNumber.slice(-6)}`,
                               });
                             }}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs transition shadow-sm"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-emerald-500/40 bg-emerald-50 hover:bg-emerald-500/20 text-emerald-600 font-semibold text-sm transition shadow-sm"
                             title="Print Official Purchase Voucher"
                           >
-                            <Printer className="w-3.5 h-3.5" />
+                            <Printer className="w-4 h-4" />
                             <span>Print Voucher</span>
                           </button>
                         </td>
@@ -769,6 +781,7 @@ function ProcurementDashboardContent() {
         onClose={() => setSelectedVoucherForPrint(null)}
         voucher={selectedVoucherForPrint}
       />
+    </div>
     </div>
   );
 }
