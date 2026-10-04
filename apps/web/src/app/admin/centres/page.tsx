@@ -20,6 +20,9 @@ import {
   Check,
   Ban,
   Activity,
+  Eye,
+  X,
+  Copy,
 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
 
@@ -60,6 +63,53 @@ interface AuditLog {
     role: string;
   };
   createdAt: string;
+  raw?: any;
+}
+
+function formatAuditDetails(details: any) {
+  if (!details || typeof details !== 'object' || Object.keys(details).length === 0) {
+    return '—';
+  }
+
+  const { reason, ...rest } = details;
+  const elements = [];
+
+  if (reason) {
+    elements.push(
+      <div key="reason">
+        <span className="font-semibold text-slate-300">Reason:</span> {reason}
+      </div>
+    );
+  }
+
+  const ignoreKeys = ['password', 'token', 'secret', 'otp'];
+  for (const [key, value] of Object.entries(rest)) {
+    if (value === undefined || value === null || value === '') continue;
+    if (typeof value === 'object' && Object.keys(value).length === 0) continue;
+    if (ignoreKeys.some(ik => key.toLowerCase().includes(ik))) continue;
+
+    const titleKey = key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase())
+      .trim();
+
+    let displayValue = String(value);
+    if (typeof value === 'object') {
+      displayValue = JSON.stringify(value);
+    }
+
+    elements.push(
+      <div key={key}>
+        <span className="font-semibold text-slate-300">{titleKey}:</span> {displayValue}
+      </div>
+    );
+  }
+
+  if (elements.length === 0) {
+    return '—';
+  }
+
+  return <div className="space-y-0.5 whitespace-normal leading-snug">{elements}</div>;
 }
 
 export default function AdminCentresPage() {
@@ -74,6 +124,7 @@ export default function AdminCentresPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'PENDING'>('ALL');
+  const [selectedAuditLog, setSelectedAuditLog] = useState<AuditLog | null>(null);
 
   // New Centre Form State
   const [formCentreCode, setFormCentreCode] = useState('');
@@ -121,8 +172,24 @@ export default function AdminCentresPage() {
 
   const loadAuditLogs = async () => {
     try {
-      const logs = await apiRequest<AuditLog[]>('/admin/audit-logs');
-      setAuditLogs(logs || []);
+      const rawLogs = await apiRequest<any[]>('/admin/audit-logs');
+      const mappedLogs: AuditLog[] = (rawLogs || []).map((log: any) => ({
+        id: log.id,
+        action: log.eventType || 'UNKNOWN',
+        entityType: log.centreId ? 'CENTRE' : (log.bookingId ? 'BOOKING' : 'SYSTEM'),
+        entityId: log.centre?.centreCode || log.centre?.name || log.centreId || log.booking?.bookingNumber || log.bookingId || '-',
+        details: {
+          ...(log.reason ? { reason: log.reason } : {}),
+          ...(log.newState || {})
+        },
+        user: {
+          mobile: log.actorId,
+          role: log.actorRole,
+        },
+        createdAt: log.createdAt,
+        raw: log,
+      }));
+      setAuditLogs(mappedLogs);
     } catch (err) {
       console.error(err);
     }
@@ -779,6 +846,7 @@ export default function AdminCentresPage() {
                     <th className="px-3.5 py-3">Entity</th>
                     <th className="px-3.5 py-3">User Role</th>
                     <th className="px-3.5 py-3">Details</th>
+                    <th className="px-3.5 py-3 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/80 font-mono text-slate-300">
@@ -807,13 +875,163 @@ export default function AdminCentresPage() {
                           {log.user?.mobile}
                         </span>
                       </td>
-                      <td className="px-3.5 py-3 text-slate-400 font-sans text-[11px] max-w-xs truncate">
-                        {JSON.stringify(log.details || {})}
+                      <td className="px-3.5 py-3 text-slate-400 font-sans text-[11px] max-w-xs align-top">
+                        {formatAuditDetails(log.details)}
+                      </td>
+                      <td className="px-3.5 py-3 align-top text-right">
+                        <button
+                          onClick={() => setSelectedAuditLog(log)}
+                          className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-emerald-400 transition-colors"
+                          title="View Deep Details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* DEEP DETAIL MODAL */}
+        {selectedAuditLog && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+              <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-slate-900/50">
+                <div>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <History className="w-5 h-5 text-emerald-400" />
+                    Audit Event Details
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1 font-mono">
+                    ID: {selectedAuditLog.id}
+                    <button onClick={() => navigator.clipboard.writeText(selectedAuditLog.id)} className="ml-2 text-emerald-400 hover:text-emerald-300">
+                      <Copy className="w-3 h-3 inline" />
+                    </button>
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedAuditLog(null)}
+                  className="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-6 overflow-y-auto space-y-8 flex-1">
+                
+                {/* EVENT INFORMATION */}
+                <div>
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Event Information</h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-800/30 p-4 rounded-2xl border border-slate-800/60">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Action</span>
+                      <span className="text-sm font-bold text-emerald-400">{selectedAuditLog.action}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Timestamp</span>
+                      <span className="text-sm font-semibold text-slate-200">
+                        {new Date(selectedAuditLog.createdAt).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Actor Role</span>
+                      <span className="text-sm font-semibold text-slate-200">{selectedAuditLog.user?.role || 'SYSTEM'}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Actor ID</span>
+                      <span className="text-sm font-semibold text-slate-200 break-all">{selectedAuditLog.user?.mobile || '—'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* IDENTIFIER INFORMATION */}
+                <div>
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Identifier Information</h4>
+                  <div className="bg-slate-800/30 p-4 rounded-2xl border border-slate-800/60 space-y-3 text-sm">
+                    {/* Render different identifiers depending on entityType and raw data */}
+                    {Object.entries({
+                      'Entity Type': selectedAuditLog.entityType,
+                      'Entity ID': selectedAuditLog.entityId,
+                      'Farmer ID': selectedAuditLog.raw?.farmerId,
+                      'Farmer Code': selectedAuditLog.raw?.farmer?.farmerCode,
+                      'Registration Number': selectedAuditLog.raw?.farmer?.registrationNumber,
+                      'Booking ID': selectedAuditLog.raw?.bookingId,
+                      'Booking Number': selectedAuditLog.raw?.booking?.bookingNumber,
+                      'Centre ID': selectedAuditLog.raw?.centreId,
+                      'Centre Code': selectedAuditLog.raw?.centre?.centreCode,
+                      'Personnel ID': selectedAuditLog.raw?.personnelId,
+                      'Payment ID': selectedAuditLog.raw?.paymentId,
+                      'Transaction Reference': selectedAuditLog.raw?.transactionRef || selectedAuditLog.raw?.details?.transactionRef,
+                    }).map(([label, val]) => {
+                      if (!val || val === '-') return null;
+                      return (
+                        <div key={label} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-b border-slate-800/50 last:border-0">
+                          <span className="text-slate-400 w-48 font-semibold">{label}</span>
+                          <span className="text-slate-200 font-mono flex items-center gap-2 break-all">
+                            {val}
+                            {String(val).length > 8 && (
+                              <button onClick={() => navigator.clipboard.writeText(String(val))} className="text-slate-500 hover:text-emerald-400" title="Copy">
+                                <Copy className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* REASON / REMARKS */}
+                {selectedAuditLog.raw?.reason && (
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Reason / Remarks</h4>
+                    <div className="bg-slate-800/30 p-4 rounded-2xl border border-slate-800/60 text-sm text-slate-300 leading-relaxed">
+                      {selectedAuditLog.raw.reason}
+                    </div>
+                  </div>
+                )}
+
+                {/* OLD STATE / NEW STATE */}
+                {(selectedAuditLog.raw?.oldState || selectedAuditLog.raw?.newState) && (
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">State Changes</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {selectedAuditLog.raw?.oldState && Object.keys(selectedAuditLog.raw.oldState).length > 0 && (
+                        <div className="bg-slate-800/30 p-4 rounded-2xl border border-rose-900/30">
+                          <h5 className="text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Before
+                          </h5>
+                          <div className="text-sm">
+                            {formatAuditDetails(selectedAuditLog.raw.oldState)}
+                          </div>
+                        </div>
+                      )}
+                      {selectedAuditLog.raw?.newState && Object.keys(selectedAuditLog.raw.newState).length > 0 && (
+                        <div className="bg-slate-800/30 p-4 rounded-2xl border border-emerald-900/30">
+                          <h5 className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> After
+                          </h5>
+                          <div className="text-sm">
+                            {formatAuditDetails(selectedAuditLog.raw.newState)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+              </div>
+              <div className="p-5 border-t border-slate-800 bg-slate-900/50 flex justify-end">
+                <button
+                  onClick={() => setSelectedAuditLog(null)}
+                  className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-semibold transition"
+                >
+                  Close Details
+                </button>
+              </div>
             </div>
           </div>
         )}

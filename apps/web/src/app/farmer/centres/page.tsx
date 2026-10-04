@@ -20,6 +20,7 @@ import {
 import { apiRequest } from '@/lib/api';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
+import { AppBackground } from '@/components/common/AppBackground';
 
 // Dynamically import Leaflet map with SSR disabled
 const CentreMap = dynamic(() => import('@/components/centre/CentreMap'), {
@@ -167,8 +168,10 @@ export default function CentresDiscoveryPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen w-full">
-      <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+    <>
+      <AppBackground />
+      <div className="bg-transparent min-h-screen w-full">
+        <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-emerald-100">
         <div>
@@ -441,7 +444,8 @@ export default function CentresDiscoveryPage() {
           </div>
         </div>
       </div>
+      </div>
     </div>
-    </div>
+    </>
   );
 }

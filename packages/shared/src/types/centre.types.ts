@@ -356,6 +356,9 @@ export interface FarmerDailyCapacityDto {
   dailyBookingCapacityQuintals: number; // Backward compatibility alias
   minimumBookingQuantityQuintals: number;
   bookedTodayQuintals: number;
+  totalSeasonBooked?: number;
+  remainingSeason?: number;
+  isRestrictedBySeason?: boolean;
   remainingCapacityQuintals: number;
   centreTotalRemainingQuintals?: number;
   sessionRemainingQuintals?: number;

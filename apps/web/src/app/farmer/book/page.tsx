@@ -181,7 +181,9 @@ function generate7DaysStartingToday(
 ): DayAvailability[] {
   const todayStr = getTodayIstString();
   const [ty, tm, td] = todayStr.split('-').map(Number);
-  const baseDate = new Date(ty, tm - 1, td);
+  
+  // Create a Date object safely locked to noon to avoid boundary shifts when doing date math
+  const baseDate = new Date(ty, tm - 1, td, 12, 0, 0);
 
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const operatingDaysStr = (centre?.operatingDays || 'Monday - Saturday').toLowerCase();
@@ -313,6 +315,7 @@ function FarmerBookingContent() {
 
   // Submission State
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const isSubmittingRef = useRef<boolean>(false);
   const [confirmedBooking, setConfirmedBooking] = useState<ConfirmedBooking | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -334,7 +337,7 @@ function FarmerBookingContent() {
         setLoadingCentre(false);
       })
       .catch((err) => {
-        console.error('Failed to load centre:', err);
+        console.error('Failed to load centre:', err instanceof Error ? err.message : err);
         setLoadingCentre(false);
       });
   }, [centreId]);
@@ -343,17 +346,28 @@ function FarmerBookingContent() {
   useEffect(() => {
     if (!centreId) return;
     const targetDate = bookingDate || getTodayIstString();
+    
+    let isMounted = true;
     setLoadingCapacity(true);
+    setCapacityInfo(null); // Clear previous date's capacity to avoid stale UI state
+
     apiRequest<any>(`/bookings/capacity?centreId=${centreId}&date=${targetDate}`)
       .then((cap) => {
+        if (!isMounted) return;
         setCapacityInfo(cap);
       })
       .catch((err) => {
+        if (!isMounted) return;
         console.warn('Could not load date-specific capacity info:', err);
       })
       .finally(() => {
+        if (!isMounted) return;
         setLoadingCapacity(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [centreId, bookingDate]);
 
   // Handle Slot Selection from Calendar
@@ -362,6 +376,8 @@ function FarmerBookingContent() {
     setSession(selectedSession);
     setSlotSelected(true);
     setSubmitError(null);
+    setCapacityInfo(null);
+    setEstimate(null);
 
     // Smooth scroll to form section
     setTimeout(() => {
@@ -403,11 +419,14 @@ function FarmerBookingContent() {
 
   // Handle Booking Confirmation with Idempotency
   const handleConfirmBooking = async () => {
-    if (!estimate || !estimate.isFeasible) return;
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    
     setSubmitting(true);
     setSubmitError(null);
 
-    const idempotencyKey = `ASTRA-IDEMP-${centreId}-${bookingDate}-${session}-${Date.now()}`;
+    // Date.now() ensures unique key; isSubmittingRef prevents double-clicks from firing twice
+    const idempotencyKey = `ASTRA-IDEMP-${user?.id}-${centreId}-${bookingDate}-${session}-${Date.now()}`;
 
     try {
       const res = await apiRequest<ConfirmedBooking>('/bookings', {
@@ -429,6 +448,7 @@ function FarmerBookingContent() {
     } catch (err: any) {
       setSubmitError(err.message || 'Booking confirmation failed. Please try again.');
     } finally {
+      isSubmittingRef.current = false;
       setSubmitting(false);
     }
   };
@@ -611,54 +631,39 @@ function FarmerBookingContent() {
   const qtyPercentage = Math.min(100, Math.round((parsedQty / centreHeadDailyLimit) * 100));
 
   return (
-    <div className="w-full min-w-0 max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-      {/* Top Navigation Strip */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/farmer/centres"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#94A3B8] hover:text-emerald-400 transition-colors py-1"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{lang === 'hi' ? 'खरीद केंद्र सूची पर वापस जाएं' : 'Back to Verified Depots'}</span>
-        </Link>
-        <span className="text-xs text-[#64748B] font-mono hidden sm:inline">
-          Astra Procurement • Kharif & Rabi 2026-27
-        </span>
-      </div>
+    <div className="min-h-screen bg-transparent font-sans pb-12">
+      <div className="w-full mx-auto max-w-[1200px] px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
 
       {/* ========================================================================= */}
       {/* 1. CENTRE HERO CARD (CLEAN OFFICIAL GOV CARD)                             */}
       {/* ========================================================================= */}
       {centre && (
-        <div className="bg-[#151C2F] rounded-2xl border border-[#334155] overflow-hidden shadow-xl">
-          {/* Top Emerald Accent Bar */}
-          <div className="h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600" />
-
-          <div className="p-5 sm:p-7 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 bg-emerald-950/60 text-emerald-300 rounded-full text-xs font-bold tracking-wide border border-emerald-700/60 flex items-center gap-1.5 shadow-sm">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="px-3 py-1.5 bg-emerald-50 text-emerald-800 rounded-full text-[11px] sm:text-xs font-bold tracking-wide border border-emerald-200 flex items-center gap-1.5 shadow-sm">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   <span>{lang === 'hi' ? 'सरकारी अधिकृत खरीद केंद्र' : 'Government Authorised Depot'}</span>
                 </span>
-                <span className="text-xs font-semibold text-[#94A3B8] bg-[#0B1020] border border-[#334155] px-2.5 py-0.5 rounded-full">
-                  {lang === 'hi' ? 'कोड' : 'Code'}: <b className="text-[#F8FAFC] font-mono">{centre.centreCode}</b>
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
+                  {lang === 'hi' ? 'कोड' : 'Code'}: <b className="text-slate-900 font-mono ml-0.5">{centre.centreCode}</b>
                 </span>
               </div>
 
               {centre.agency && (
-                <span className="text-xs font-bold text-amber-300 bg-amber-950/60 border border-amber-700/60 px-2.5 py-0.5 rounded-lg">
+                <span className="text-[11px] sm:text-xs font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm">
                   {centre.agency}
                 </span>
               )}
             </div>
 
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#F8FAFC] tracking-tight">
+            <div className="pt-1 pb-2">
+              <h1 className="text-3xl sm:text-[36px] lg:text-[40px] leading-tight font-extrabold text-slate-900 tracking-tight">
                 {centre.name}
               </h1>
-              <p className="text-xs sm:text-sm text-[#94A3B8] mt-1.5 flex items-start gap-1.5">
-                <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <p className="text-base sm:text-lg text-slate-600 font-medium mt-3 flex items-start gap-2">
+                <MapPin className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                 <span>
                   {centre.address}, {centre.districtName}, {centre.stateName}
                 </span>
@@ -666,38 +671,38 @@ function FarmerBookingContent() {
             </div>
 
             {/* Quick Metadata Chips */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 border-t border-[#334155] text-xs">
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#0B1020] border border-[#334155]">
-                <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-100">
+              <div className="flex items-center gap-3.5 p-4 rounded-xl bg-slate-50/80 border border-slate-200 shadow-sm transition-colors hover:bg-slate-50">
+                <Clock className="w-6 h-6 text-emerald-600 shrink-0" />
                 <div>
-                  <span className="text-[#94A3B8] text-[10px] block uppercase font-bold tracking-wider">
+                  <span className="text-slate-500 text-[11px] block uppercase font-bold tracking-wider mb-1">
                     {lang === 'hi' ? 'कार्य दिवस व समय' : 'Depot Timings'}
                   </span>
-                  <span className="font-semibold text-[#F8FAFC]">
+                  <span className="font-bold text-slate-900 text-base">
                     {centre.operatingHoursStart || '08:00'} – {centre.operatingHoursEnd || '18:00'}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#0B1020] border border-[#334155]">
-                <Package className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-3.5 p-4 rounded-xl bg-slate-50/80 border border-slate-200 shadow-sm transition-colors hover:bg-slate-50">
+                <Package className="w-6 h-6 text-emerald-600 shrink-0" />
                 <div>
-                  <span className="text-[#94A3B8] text-[10px] block uppercase font-bold tracking-wider">
-                    {lang === 'hi' ? 'केंद्र प्रमुख दैनिक सीमा' : 'Centre Head Daily Limit'}
+                  <span className="text-slate-500 text-[11px] block uppercase font-bold tracking-wider mb-1">
+                    {lang === 'hi' ? 'केंद्र प्रमुख दैनिक सीमा' : 'Daily Limit'}
                   </span>
-                  <span className="font-semibold text-[#F8FAFC]">
+                  <span className="font-bold text-slate-900 text-base">
                     {centreHeadDailyLimit} {lang === 'hi' ? 'क्विंटल' : 'Quintals'}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#0B1020] border border-[#334155]">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-3.5 p-4 rounded-xl bg-slate-50/80 border border-slate-200 shadow-sm transition-colors hover:bg-slate-50">
+                <Phone className="w-6 h-6 text-emerald-600 shrink-0" />
                 <div>
-                  <span className="text-[#94A3B8] text-[10px] block uppercase font-bold tracking-wider">
+                  <span className="text-slate-500 text-[11px] block uppercase font-bold tracking-wider mb-1">
                     {lang === 'hi' ? 'सहायता केंद्र' : 'Depot Desk'}
                   </span>
-                  <span className="font-semibold text-[#F8FAFC] font-mono">
+                  <span className="font-bold text-slate-900 font-mono text-base">
                     {centre.contactPhone || '1800-180-1551'}
                   </span>
                 </div>
@@ -710,18 +715,18 @@ function FarmerBookingContent() {
       {/* ========================================================================= */}
       {/* 2. UPCOMING 7-DAY CAPACITY CALENDAR WITH ENHANCED CARDS                   */}
       {/* ========================================================================= */}
-      <div className="bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-7 space-y-5 shadow-xl">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-sm">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-[#334155] pb-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-5">
           <div>
-            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
-              <CalendarDays className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-bold uppercase tracking-wider mb-1.5">
+              <CalendarDays className="w-4 h-4" />
               <span>{lang === 'hi' ? '7-दिवसीय रीयल-टाइम क्षमता कैलेंडर' : 'Live 7-Day Capacity Calendar'}</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#F8FAFC]">
+            <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900">
               {lang === 'hi' ? '1. खरीद तिथि और सत्र चुनें' : '1. Select Procurement Date & Session'}
             </h2>
-            <p className="text-xs text-[#94A3B8] mt-0.5">
+            <p className="text-sm text-slate-500 mt-1">
               {lang === 'hi'
                 ? 'खुले प्रातः या दोपहर स्लॉट पर क्लिक करके चुनें। कम भीड़ वाले स्लॉट में सीधी तौल सुनिश्चित होती है।'
                 : 'Choose an open Morning or Afternoon slot. Low-traffic slots minimize waiting time at weighbridges.'}
@@ -729,19 +734,19 @@ function FarmerBookingContent() {
           </div>
 
           {/* Clean Integrated Congestion Legend */}
-          <div className="inline-flex items-center flex-wrap gap-2.5 p-2 rounded-xl bg-[#0B1020] border border-[#334155] text-[11px] self-start md:self-auto">
-            <span className="text-[#94A3B8] font-bold uppercase tracking-wider text-[10px] pl-1">
+          <div className="inline-flex items-center flex-wrap gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px] self-start md:self-auto">
+            <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px] pl-1">
               {lang === 'hi' ? 'भीड़ स्तर' : 'Traffic'}:
             </span>
-            <span className="inline-flex items-center gap-1 font-semibold text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-700/60">
+            <span className="inline-flex items-center gap-1 font-semibold text-emerald-700 bg-emerald-100/50 px-2.5 py-1 rounded-full border border-emerald-200">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               {lang === 'hi' ? 'कम भीड़' : 'Low Traffic'}
             </span>
-            <span className="inline-flex items-center gap-1 font-semibold text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-700/60">
+            <span className="inline-flex items-center gap-1 font-semibold text-amber-700 bg-amber-100/50 px-2.5 py-1 rounded-full border border-amber-200">
               <span className="w-2 h-2 rounded-full bg-amber-500"></span>
               {lang === 'hi' ? 'मध्यम' : 'Moderate'}
             </span>
-            <span className="inline-flex items-center gap-1 font-semibold text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-700/60">
+            <span className="inline-flex items-center gap-1 font-semibold text-rose-700 bg-rose-100/50 px-2.5 py-1 rounded-full border border-rose-200">
               <span className="w-2 h-2 rounded-full bg-rose-500"></span>
               {lang === 'hi' ? 'अधिक भीड़' : 'High'}
             </span>
@@ -749,7 +754,7 @@ function FarmerBookingContent() {
         </div>
 
         {/* 7-Day Calendar Deck */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+        <div className="flex overflow-x-auto gap-4 pb-4 snap-x [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-slate-100">
           {availability7Days.map((day) => {
             const isOperating = day.isOperatingDay;
             const isMorningSelected = bookingDate === day.date && session === 'MORNING';
@@ -757,6 +762,12 @@ function FarmerBookingContent() {
             const hasSelectionInDay = isMorningSelected || isAfternoonSelected;
 
             const dateInfo = formatDayCard(day.date, lang);
+
+            const getLightCongestionClass = (level: string) => {
+              if (level === 'low') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+              if (level === 'moderate') return 'bg-amber-50 text-amber-700 border-amber-200';
+              return 'bg-rose-50 text-rose-700 border-rose-200';
+            };
 
             const morningCongestion = getCongestionInfo(
               day.morning.remainingCapacityQuintals,
@@ -770,43 +781,43 @@ function FarmerBookingContent() {
             return (
               <div
                 key={day.date}
-                className={`rounded-2xl border transition-all duration-150 flex flex-col overflow-hidden ${
+                className={`flex-none w-[85%] min-w-[260px] sm:w-[270px] lg:w-[285px] shrink-0 snap-start rounded-xl border transition-all duration-150 flex flex-col overflow-hidden ${
                   !isOperating
-                    ? 'bg-[#0B1020]/60 border-[#334155]/60 opacity-60'
+                    ? 'bg-slate-50/50 border-slate-200 opacity-70'
                     : hasSelectionInDay
-                    ? 'bg-emerald-950/30 border-emerald-500 ring-2 ring-emerald-500/30 shadow-lg'
-                    : 'bg-[#0B1020] border-[#334155] hover:border-slate-500'
+                    ? 'bg-white border-emerald-500 ring-1 ring-emerald-500 shadow-md'
+                    : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
                 }`}
               >
                 {/* Day Header */}
                 <div
-                  className={`px-3.5 py-2.5 flex items-center justify-between border-b ${
+                  className={`px-4 py-3 flex items-center justify-between border-b ${
                     hasSelectionInDay
-                      ? 'bg-emerald-900/40 border-emerald-700/50 text-emerald-200'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                       : !isOperating
-                      ? 'bg-[#0F172A] border-[#334155] text-[#64748B]'
-                      : 'bg-[#0F172A] border-[#334155] text-[#CBD5E1]'
+                      ? 'bg-slate-100/50 border-slate-200 text-slate-500'
+                      : 'bg-slate-50 border-slate-200 text-slate-700'
                   }`}
                 >
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-base font-extrabold font-mono text-[#F8FAFC]">
+                    <span className="text-xl font-bold font-mono">
                       {dateInfo.dayNum}
                     </span>
-                    <span className="text-xs font-bold uppercase text-[#CBD5E1]">
+                    <span className="text-sm font-bold uppercase">
                       {dateInfo.monthShort}
                     </span>
-                    <span className="text-xs text-[#94A3B8] font-medium">
+                    <span className="text-xs font-medium opacity-80">
                       ({dateInfo.dayShort})
                     </span>
                   </div>
 
                   {!isOperating ? (
-                    <span className="px-2 py-0.5 bg-[#1E293B] text-[#94A3B8] text-[10px] font-bold rounded-md flex items-center gap-1 border border-[#334155]">
-                      <Lock className="w-2.5 h-2.5" />
+                    <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
+                      <Lock className="w-3 h-3" />
                       {lang === 'hi' ? 'अवकाश' : 'CLOSED'}
                     </span>
                   ) : (
-                    <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       {lang === 'hi' ? 'खुला है' : 'Open'}
                     </span>
@@ -814,52 +825,49 @@ function FarmerBookingContent() {
                 </div>
 
                 {/* Day Body & Slots */}
-                <div className="p-3 flex-1 flex flex-col justify-between">
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   {!isOperating ? (
-                    <div className="py-7 text-center space-y-1">
-                      <Lock className="w-5 h-5 text-[#64748B] mx-auto" />
-                      <div className="text-xs font-semibold text-[#94A3B8]">
+                    <div className="py-8 text-center space-y-2">
+                      <Lock className="w-6 h-6 text-slate-300 mx-auto" />
+                      <div className="text-sm font-semibold text-slate-500">
                         {lang === 'hi' ? 'साप्ताहिक अवकाश' : 'Depot Closed'}
-                      </div>
-                      <div className="text-[10px] text-[#64748B]">
-                        {lang === 'hi' ? 'इस दिन खरीद कार्य बंद रहता है' : 'No procurement scheduled'}
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {/* Morning Slot Button */}
                       <button
                         type="button"
                         disabled={!day.morning.available || day.morning.remainingCapacityQuintals <= 0}
                         onClick={() => handleSelectSlot(day.date, 'MORNING')}
-                        className={`w-full p-2.5 rounded-xl border text-left transition-all ${
+                        className={`w-full p-3.5 rounded-lg border text-left transition-all ${
                           isMorningSelected
-                            ? 'bg-emerald-700 border-emerald-600 text-white shadow-md'
+                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
                             : day.morning.available
-                            ? 'bg-[#151C2F] hover:bg-[#1E293B] border-[#334155] text-[#F8FAFC]'
-                            : 'bg-[#0B1020] border-[#334155]/60 text-[#64748B] cursor-not-allowed opacity-50'
+                            ? 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                            : 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
                         }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 font-bold text-xs">
-                            <Sun className={`w-3.5 h-3.5 ${isMorningSelected ? 'text-amber-200' : 'text-amber-400'}`} />
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2 font-bold text-sm">
+                            <Sun className={`w-4 h-4 ${isMorningSelected ? 'text-amber-300' : 'text-amber-500'}`} />
                             <span>{lang === 'hi' ? 'प्रातः' : 'Morning'}</span>
                           </div>
                           {isMorningSelected ? (
-                            <span className="px-2 py-0.5 bg-emerald-800 text-emerald-100 text-[10px] font-bold rounded-md flex items-center gap-1 border border-emerald-600">
+                            <span className="px-2 py-1 bg-emerald-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
                               <Check className="w-3 h-3 stroke-[3]" />
                               {lang === 'hi' ? 'चयनित' : 'Selected'}
                             </span>
                           ) : (
-                            <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded border ${morningCongestion.badgeClass}`}>
+                            <span className={`px-2 py-1 text-[10px] font-bold rounded border ${getLightCongestionClass(morningCongestion.level)}`}>
                               {lang === 'hi' ? morningCongestion.labelHi : morningCongestion.labelEn}
                             </span>
                           )}
                         </div>
 
-                        <div className={`flex items-center justify-between text-[11px] mt-2 pt-1.5 border-t ${isMorningSelected ? 'border-emerald-600 text-emerald-100' : 'border-[#334155] text-[#94A3B8]'}`}>
-                          <span>08:00 – 13:00</span>
-                          <span className={`font-bold font-mono ${isMorningSelected ? 'text-white' : 'text-[#F8FAFC]'}`}>
+                        <div className={`flex items-center justify-between text-xs pt-2 mt-1.5 border-t ${isMorningSelected ? 'border-emerald-500/50 text-emerald-100' : 'border-slate-100 text-slate-500'}`}>
+                          <span className="font-medium">08:00 – 13:00</span>
+                          <span className={`font-semibold font-mono ${isMorningSelected ? 'text-white' : 'text-slate-800'}`}>
                             {day.morning.remainingCapacityQuintals} q {lang === 'hi' ? 'शेष' : 'left'}
                           </span>
                         </div>
@@ -870,34 +878,34 @@ function FarmerBookingContent() {
                         type="button"
                         disabled={!day.afternoon.available || day.afternoon.remainingCapacityQuintals <= 0}
                         onClick={() => handleSelectSlot(day.date, 'AFTERNOON')}
-                        className={`w-full p-2.5 rounded-xl border text-left transition-all ${
+                        className={`w-full p-3.5 rounded-lg border text-left transition-all ${
                           isAfternoonSelected
-                            ? 'bg-emerald-700 border-emerald-600 text-white shadow-md'
+                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
                             : day.afternoon.available
-                            ? 'bg-[#151C2F] hover:bg-[#1E293B] border-[#334155] text-[#F8FAFC]'
-                            : 'bg-[#0B1020] border-[#334155]/60 text-[#64748B] cursor-not-allowed opacity-50'
+                            ? 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                            : 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
                         }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 font-bold text-xs">
-                            <Sunset className={`w-3.5 h-3.5 ${isAfternoonSelected ? 'text-amber-200' : 'text-amber-400'}`} />
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2 font-bold text-sm">
+                            <Sunset className={`w-4 h-4 ${isAfternoonSelected ? 'text-amber-300' : 'text-amber-500'}`} />
                             <span>{lang === 'hi' ? 'दोपहर' : 'Afternoon'}</span>
                           </div>
                           {isAfternoonSelected ? (
-                            <span className="px-2 py-0.5 bg-emerald-800 text-emerald-100 text-[10px] font-bold rounded-md flex items-center gap-1 border border-emerald-600">
+                            <span className="px-2 py-1 bg-emerald-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
                               <Check className="w-3 h-3 stroke-[3]" />
                               {lang === 'hi' ? 'चयनित' : 'Selected'}
                             </span>
                           ) : (
-                            <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded border ${afternoonCongestion.badgeClass}`}>
+                            <span className={`px-2 py-1 text-[10px] font-bold rounded border ${getLightCongestionClass(afternoonCongestion.level)}`}>
                               {lang === 'hi' ? afternoonCongestion.labelHi : afternoonCongestion.labelEn}
                             </span>
                           )}
                         </div>
 
-                        <div className={`flex items-center justify-between text-[11px] mt-2 pt-1.5 border-t ${isAfternoonSelected ? 'border-emerald-600 text-emerald-100' : 'border-[#334155] text-[#94A3B8]'}`}>
-                          <span>13:00 – 17:00</span>
-                          <span className={`font-bold font-mono ${isAfternoonSelected ? 'text-white' : 'text-[#F8FAFC]'}`}>
+                        <div className={`flex items-center justify-between text-xs pt-2 mt-1.5 border-t ${isAfternoonSelected ? 'border-emerald-500/50 text-emerald-100' : 'border-slate-100 text-slate-500'}`}>
+                          <span className="font-medium">13:00 – 17:00</span>
+                          <span className={`font-semibold font-mono ${isAfternoonSelected ? 'text-white' : 'text-slate-800'}`}>
                             {day.afternoon.remainingCapacityQuintals} q {lang === 'hi' ? 'शेष' : 'left'}
                           </span>
                         </div>
@@ -914,29 +922,29 @@ function FarmerBookingContent() {
       {/* ========================================================================= */}
       {/* 3. INTERACTIVE INLINE BOOKING FORM REVEAL                                  */}
       {/* ========================================================================= */}
-      <div ref={formRef} className="bg-[#151C2F] rounded-2xl border border-[#334155] p-5 sm:p-7 space-y-6 shadow-xl">
+      <div ref={formRef} className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-8 shadow-sm">
         {submitError && (
-          <div className="p-4 bg-rose-950/60 border border-rose-800/60 rounded-2xl text-xs text-rose-200 flex items-start gap-2.5">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+          <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-800 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
             <span className="font-medium">{submitError}</span>
           </div>
         )}
 
         {/* Selected Slot Prominent Badge */}
         {slotSelected && selectedDayObj && selectedDayFormatted && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-950/40 border border-emerald-700/60 text-[#F8FAFC] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-sm">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-[#0B1020] border border-emerald-700/60 flex items-center justify-center font-bold text-amber-400 shrink-0 shadow-sm">
-                {session === 'MORNING' ? <Sun className="w-6 h-6" /> : <Sunset className="w-6 h-6" />}
+          <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-white border border-emerald-200 flex items-center justify-center font-bold text-amber-500 shrink-0 shadow-sm">
+                {session === 'MORNING' ? <Sun className="w-7 h-7" /> : <Sunset className="w-7 h-7" />}
               </div>
               <div>
-                <span className="text-[10px] sm:text-[11px] text-emerald-400 font-bold uppercase tracking-wider block">
+                <span className="text-xs text-emerald-700 font-bold uppercase tracking-wider block mb-1">
                   {lang === 'hi' ? 'वर्तमान में चयनित खरीद स्लॉट' : 'SELECTED ARRIVAL SLOT'}
                 </span>
-                <div className="text-base sm:text-lg font-extrabold text-[#F8FAFC] mt-0.5">
+                <div className="text-lg sm:text-[22px] font-bold text-slate-900 mt-0.5 leading-tight">
                   {selectedDayFormatted.dayFull}, {selectedDayFormatted.dayNum} {selectedDayFormatted.monthFull} {selectedDayFormatted.year}
                 </div>
-                <div className="text-xs text-[#CBD5E1] font-medium">
+                <div className="text-sm text-slate-600 font-medium mt-1">
                   {session === 'MORNING'
                     ? lang === 'hi'
                       ? 'प्रातः सत्र (08:00 AM – 01:00 PM)'
@@ -949,12 +957,13 @@ function FarmerBookingContent() {
             </div>
 
             {selectedCongestion && (
-              <div className="flex sm:flex-col sm:items-end gap-1.5 self-start sm:self-center">
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-[#0B1020] border border-[#334155] text-[#CBD5E1] flex items-center gap-1.5 shadow-sm">
-                  <span className={`w-2 h-2 rounded-full ${selectedCongestion.dotColor}`}></span>
+              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1.5 self-start sm:self-center mt-2 sm:mt-0">
+                <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-white border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                  <span className={`w-2 h-2 rounded-full ${selectedCongestion.level === 'low' ? 'bg-emerald-500' : selectedCongestion.level === 'moderate' ? 'bg-amber-500' : 'bg-rose-500'}`}></span>
                   {lang === 'hi' ? selectedCongestion.labelHi : selectedCongestion.labelEn}
                 </span>
-                <span className="text-[10px] text-emerald-400 hidden sm:inline font-medium">
+                <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5" />
                   {lang === 'hi' ? 'त्वरित गेट क्लीयरेंस' : 'Fast Gate Clearance'}
                 </span>
               </div>
@@ -963,14 +972,14 @@ function FarmerBookingContent() {
         )}
 
         {!slotSelected && (
-          <div className="p-8 rounded-2xl bg-[#0B1020] border border-[#334155] text-center space-y-2">
-            <Calendar className="w-8 h-8 text-emerald-400 mx-auto" />
-            <p className="text-sm font-bold text-[#F8FAFC]">
+          <div className="p-10 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-3">
+            <Calendar className="w-10 h-10 text-emerald-500 mx-auto" />
+            <p className="text-base font-bold text-slate-900">
               {lang === 'hi'
                 ? '👆 कृपया ऊपर कैलेंडर में से एक उपलब्ध सत्र स्लॉट चुनें'
                 : '👆 Please select an available slot from the calendar above'}
             </p>
-            <p className="text-xs text-[#94A3B8] max-w-sm mx-auto">
+            <p className="text-sm text-slate-500 max-w-md mx-auto">
               {lang === 'hi'
                 ? 'स्लॉट चुनते ही मात्रा और वाहन विवरण प्रविष्ट करने का फॉर्म यहाँ खुल जाएगा।'
                 : 'Selecting a slot reveals the produce quantity and vehicle details directly below.'}
@@ -980,29 +989,29 @@ function FarmerBookingContent() {
 
         {/* Form Fields: Only active when slot is selected */}
         {slotSelected && (
-          <div className="space-y-6 pt-1">
+          <div className="space-y-8 pt-2">
             {/* Step 2: Quantity Input with Presets & Quota Bar */}
-            <div className="space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+            <div className="p-6 sm:p-8 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
                 <div>
-                  <label className="block text-xs font-extrabold text-[#F8FAFC] uppercase tracking-wider">
+                  <h3 className="text-lg font-bold text-slate-900">
                     {lang === 'hi' ? '2. अपेक्षित फसल मात्रा' : '2. Expected Produce Quantity'}
-                  </label>
-                  <span className="text-[11px] text-[#94A3B8]">
+                  </h3>
+                  <span className="text-sm text-slate-500 block mt-1">
                     {lang === 'hi'
                       ? 'तौल और गेट आगमन विंडो आवंटित करने के लिए मात्रा दर्ज करें'
                       : 'Specify produce quantity to calculate unload duration and pacing'}
                   </span>
                 </div>
-                <span className="text-xs text-[#94A3B8] bg-[#0B1020] border border-[#334155] px-2.5 py-1 rounded-lg self-start sm:self-auto font-medium">
+                <span className="text-xs text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg font-medium self-start sm:self-auto">
                   {lang === 'hi' ? 'केंद्र प्रमुख दैनिक सीमा' : 'Max Limit'}:{' '}
-                  <b className="text-[#F8FAFC] font-bold">{centreHeadDailyLimit} {lang === 'hi' ? 'क्विंटल' : 'quintals'}</b>
+                  <b className="text-slate-900 font-bold">{centreHeadDailyLimit} {lang === 'hi' ? 'क्विंटल' : 'quintals'}</b>
                 </span>
               </div>
 
-              {/* Quick Preset Buttons (Intelligently fit Centre Head Limit) */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mr-1">
+              {/* Quick Preset Buttons */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1">
                   {lang === 'hi' ? 'त्वरित चयन:' : 'Quick Select:'}
                 </span>
                 {(centreHeadDailyLimit <= 50
@@ -1017,10 +1026,10 @@ function FarmerBookingContent() {
                       key={presetVal}
                       type="button"
                       onClick={() => setQuantity(presetVal.toString())}
-                      className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                      className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${
                         quantity === presetVal.toString()
-                          ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
-                          : 'bg-[#0B1020] hover:bg-[#1E293B] border-[#334155] text-[#CBD5E1]'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                          : 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
                       }`}
                     >
                       {presetVal} {lang === 'hi' ? 'क्विंटल' : 'Qtl'}
@@ -1029,7 +1038,7 @@ function FarmerBookingContent() {
               </div>
 
               {/* Input Box */}
-              <div className="relative">
+              <div className="relative w-full">
                 <input
                   type="number"
                   min="1"
@@ -1039,17 +1048,17 @@ function FarmerBookingContent() {
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   placeholder="e.g. 50"
-                  className="w-full text-lg font-bold rounded-xl border border-[#334155] bg-[#0B1020] py-3.5 pl-4 pr-36 text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono shadow-inner"
+                  className="w-full text-xl font-bold rounded-xl border border-slate-300 bg-white py-3 pl-4 pr-36 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-mono shadow-sm transition-all"
                 />
-                <div className="absolute right-3 top-2.5 px-2.5 py-1 rounded-lg bg-[#151C2F] border border-[#334155] text-xs font-extrabold text-[#CBD5E1] uppercase tracking-wider">
-                  QUINTAL (क्विंटल)
+                <div className="absolute right-2.5 top-2.5 px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs font-extrabold text-slate-600 uppercase tracking-wider">
+                  QUINTAL
                 </div>
               </div>
 
               {/* Warning if input exceeds Centre Head limit */}
               {parsedQty > centreHeadDailyLimit && (
-                <div className="text-[11px] text-rose-200 bg-rose-950/60 border border-rose-800/60 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                  <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 px-4 py-2.5 rounded-xl flex items-center gap-2 font-medium">
+                  <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
                   <span>
                     {lang === 'hi'
                       ? `दर्ज की गई मात्रा (${parsedQty} q) केंद्र प्रमुख द्वारा निर्धारित दैनिक सीमा (${centreHeadDailyLimit} q) से अधिक है।`
@@ -1058,33 +1067,42 @@ function FarmerBookingContent() {
                 </div>
               )}
 
-              {/* Notice if farmer already booked quantity on this date */}
-              {capacityInfo?.bookedTodayQuintals > 0 && (
-                <div className="text-[11px] text-amber-200 bg-amber-950/60 border border-amber-800/60 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                  <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              {/* Notice if farmer already booked quantity on this date or season */}
+              {capacityInfo?.isRestrictedBySeason && capacityInfo?.totalSeasonBooked > 0 ? (
+                <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl flex items-center gap-2 font-medium">
+                  <Info className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>
+                    {lang === 'hi'
+                      ? `आप इस सीज़न में पहले ही ${capacityInfo.totalSeasonBooked} क्विंटल बुक कर चुके हैं (शेष स्वीकार्य: ${capacityInfo.remainingSeason} q)।`
+                      : `You have already booked ${capacityInfo.totalSeasonBooked} q this season (Remaining permissible: ${capacityInfo.remainingSeason} q).`}
+                  </span>
+                </div>
+              ) : capacityInfo?.bookedTodayQuintals > 0 ? (
+                <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl flex items-center gap-2 font-medium">
+                  <Info className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>
                     {lang === 'hi'
                       ? `आप इस तारीख पर पहले ही ${capacityInfo.bookedTodayQuintals} क्विंटल बुक कर चुके हैं (शेष स्वीकार्य: ${capacityInfo.remainingCapacityQuintals} q)।`
                       : `You have already booked ${capacityInfo.bookedTodayQuintals} q on this date (Remaining permissible: ${capacityInfo.remainingCapacityQuintals} q).`}
                   </span>
                 </div>
-              )}
+              ) : null}
 
               {/* Visual Quota Progress Bar */}
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-[11px] text-[#94A3B8] font-medium">
+              <div className="space-y-2 w-full">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-semibold uppercase tracking-wider">
                   <span>
-                    {lang === 'hi' ? 'दैनिक कोटा उपयोग' : 'Booking Quota Usage'}:{' '}
-                    <b className="text-[#F8FAFC]">{parsedQty} / {centreHeadDailyLimit} Qtl</b>
+                    {lang === 'hi' ? 'दैनिक कोटा उपयोग' : 'Quota Usage'}:{' '}
+                    <b className="text-slate-700">{parsedQty} / {centreHeadDailyLimit} Qtl</b>
                   </span>
-                  <span className={parsedQty > centreHeadDailyLimit ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold'}>
+                  <span className={parsedQty > centreHeadDailyLimit ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold'}>
                     {qtyPercentage}%
                   </span>
                 </div>
-                <div className="w-full h-2 bg-[#0B1020] rounded-full overflow-hidden border border-[#334155]">
+                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${
-                      parsedQty > centreHeadDailyLimit ? 'bg-rose-500' : 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                      parsedQty > centreHeadDailyLimit ? 'bg-rose-500' : 'bg-emerald-500'
                     }`}
                     style={{ width: `${Math.min(100, qtyPercentage)}%` }}
                   />
@@ -1093,37 +1111,37 @@ function FarmerBookingContent() {
             </div>
 
             {/* Step 3: Transport & Vehicle Details (Optional) */}
-            <div className="space-y-3 pt-3 border-t border-[#334155]">
+            <div className="space-y-4 pt-6 border-t border-slate-200">
               <div>
-                <label className="block text-xs font-extrabold text-[#F8FAFC] uppercase tracking-wider">
+                <h3 className="text-lg font-bold text-slate-900">
                   {lang === 'hi' ? '3. परिवहन एवं वाहन विवरण (वैकल्पिक)' : '3. Transport & Vehicle Details (Optional)'}
-                </label>
-                <span className="text-[11px] text-[#94A3B8]">
+                </h3>
+                <span className="text-sm text-slate-500 mt-1 block">
                   {lang === 'hi'
                     ? 'गेट और यार्ड में वाहन पार्किंग तथा प्रवेश व्यवस्था के लिए'
                     : 'Helps the depot team coordinate gate entry and yard unloading'}
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#CBD5E1] mb-1">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                     {lang === 'hi' ? 'वाहन का प्रकार' : 'Vehicle Type'}
                   </label>
                   <select
                     value={vehicleType}
                     onChange={(e) => setVehicleType(e.target.value)}
-                    className="w-full text-xs rounded-xl border border-[#334155] py-2.5 px-3 bg-[#0B1020] text-[#F8FAFC] focus:outline-none focus:border-emerald-500 font-medium shadow-inner"
+                    className="w-full text-sm rounded-xl border border-slate-300 py-3 px-3.5 bg-white text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-sm"
                   >
-                    <option value="Tractor Trolley" className="bg-[#0F172A] text-[#F8FAFC]">Tractor Trolley (ट्रैक्टर ट्रॉली)</option>
-                    <option value="Mini Truck / Pick-up" className="bg-[#0F172A] text-[#F8FAFC]">Mini Truck / Pick-up (छोटा हाथी/पिकअप)</option>
-                    <option value="Commercial Lorry" className="bg-[#0F172A] text-[#F8FAFC]">Commercial Lorry (ट्रक/लॉरी)</option>
-                    <option value="Animal Cart / Traditional" className="bg-[#0F172A] text-[#F8FAFC]">Animal Cart / Traditional (बैलगाड़ी/अन्य)</option>
+                    <option value="Tractor Trolley">Tractor Trolley (ट्रैक्टर ट्रॉली)</option>
+                    <option value="Mini Truck / Pick-up">Mini Truck / Pick-up (छोटा हाथी/पिकअप)</option>
+                    <option value="Commercial Lorry">Commercial Lorry (ट्रक/लॉरी)</option>
+                    <option value="Animal Cart / Traditional">Animal Cart / Traditional (बैलगाड़ी/अन्य)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#CBD5E1] mb-1">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                     {lang === 'hi' ? 'वाहन संख्या' : 'Vehicle Registration No.'}
                   </label>
                   <input
@@ -1131,12 +1149,12 @@ function FarmerBookingContent() {
                     value={vehicleNumber}
                     onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
                     placeholder="e.g. BR-06-GA-1234"
-                    className="w-full text-xs rounded-xl border border-[#334155] bg-[#0B1020] py-2.5 px-3 text-[#F8FAFC] placeholder-[#64748B] uppercase font-mono font-bold focus:outline-none focus:border-emerald-500 shadow-inner"
+                    className="w-full text-sm rounded-xl border border-slate-300 bg-white py-3 px-3.5 text-slate-900 placeholder-slate-400 uppercase font-mono font-bold focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#CBD5E1] mb-1">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                     {lang === 'hi' ? 'चालक / सहयोगी का नाम' : 'Driver / Transporter'}
                   </label>
                   <input
@@ -1144,7 +1162,7 @@ function FarmerBookingContent() {
                     value={driverName}
                     onChange={(e) => setDriverName(e.target.value)}
                     placeholder="e.g. Driver Name"
-                    className="w-full text-xs rounded-xl border border-[#334155] bg-[#0B1020] py-2.5 px-3 text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:border-emerald-500 shadow-inner"
+                    className="w-full text-sm rounded-xl border border-slate-300 bg-white py-3 px-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-sm"
                   />
                 </div>
               </div>
@@ -1184,14 +1202,14 @@ function FarmerBookingContent() {
               const isExceedingDailyLimit = parsedQty > centreHeadDailyLimit;
 
               return (
-                <div className="p-5 rounded-2xl border border-[#334155] bg-[#0B1020] space-y-4">
+                <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50 space-y-5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-[#F8FAFC] uppercase tracking-wider flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <span className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-emerald-600" />
                       <span>{lang === 'hi' ? 'Astra स्वचालित आगमन विंडो एवं समय अनुमान' : 'Astra Smart Arrival Window'}</span>
                     </span>
                     {estimating && (
-                      <span className="text-[11px] text-emerald-400 font-semibold animate-pulse flex items-center gap-1">
+                      <span className="text-xs text-emerald-600 font-bold animate-pulse flex items-center gap-1.5 bg-emerald-100 px-3 py-1 rounded-full">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                         {lang === 'hi' ? 'सत्र क्षमता गणना जारी...' : 'Evaluating capacity...'}
                       </span>
@@ -1200,14 +1218,14 @@ function FarmerBookingContent() {
 
                   {/* Helpful Farmer Profile Prompt if missing */}
                   {isProfileMissing ? (
-                    <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-800/60 text-left space-y-3">
+                    <div className="p-5 rounded-xl bg-amber-50 border border-amber-200 text-left space-y-3 shadow-sm">
                       <div className="flex items-start gap-3">
-                        <UserCheck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                        <UserCheck className="w-6 h-6 text-amber-500 shrink-0 mt-0.5" />
                         <div>
-                          <div className="text-xs font-bold text-amber-300">
+                          <div className="text-sm font-bold text-amber-900">
                             {lang === 'hi' ? 'किसान प्रोफ़ाइल पंजीकरण आवश्यक है' : 'Farmer Registration Required'}
                           </div>
-                          <p className="text-xs text-amber-200/90 mt-0.5 leading-relaxed">
+                          <p className="text-sm text-amber-800 mt-1 leading-relaxed">
                             {lang === 'hi'
                               ? 'सरकारी खरीद आगमन टोकन सुरक्षित करने के लिए आपके खाते में किसान प्रोफ़ाइल और भूमि रिकॉर्ड का सत्यापन आवश्यक है।'
                               : 'To reserve an official procurement arrival window and generate your gate token, your farmer profile must be linked to this account.'}
@@ -1215,24 +1233,24 @@ function FarmerBookingContent() {
                         </div>
                       </div>
 
-                      <div className="pt-1 flex flex-wrap items-center gap-3">
+                      <div className="pt-2 flex flex-wrap items-center gap-4">
                         <Link
                           href="/farmer/register"
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg text-xs font-bold shadow-md transition-colors"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-sm transition-colors"
                         >
                           <span>{lang === 'hi' ? 'किसान पंजीकरण पूर्ण करें' : 'Complete Farmer Registration'}</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-4 h-4" />
                         </Link>
-                        <span className="text-[11px] text-amber-300 font-medium">
+                        <span className="text-xs text-amber-700 font-semibold">
                           {lang === 'hi' ? 'MSP पात्रता और प्रत्यक्ष बैंक हस्तांतरण (DBT) सुरक्षित करता है' : 'Ensures direct DBT bank payment and MSP entitlement'}
                         </span>
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {isSessionFull ? (
-                        <div className="p-3.5 rounded-xl bg-amber-950/60 border border-amber-800/60 text-amber-200 text-xs flex items-center gap-2">
-                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium flex items-center gap-2.5">
+                          <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
                           <span>
                             {lang === 'hi'
                               ? 'इस सत्र की कुल क्षमता पूर्ण हो चुकी है। कृपया दोपहर सत्र या अन्य तारीख चुनें।'
@@ -1240,8 +1258,8 @@ function FarmerBookingContent() {
                           </span>
                         </div>
                       ) : isExceedingCapacity ? (
-                        <div className="p-3.5 rounded-xl bg-rose-950/60 border border-rose-800/60 text-rose-200 text-xs flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium flex items-center gap-2.5">
+                          <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
                           <span>
                             {lang === 'hi'
                               ? `अपेक्षित मात्रा (${parsedQty} q) सत्र में उपलब्ध शेष क्षमता (${selectedSessionData?.remainingCapacityQuintals} q) से अधिक है।`
@@ -1250,36 +1268,36 @@ function FarmerBookingContent() {
                         </div>
                       ) : null}
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-[#151C2F] rounded-xl border border-[#334155] shadow-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
                         <div>
-                          <div className="text-[11px] text-[#94A3B8] font-bold uppercase tracking-wider">
+                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">
                             {lang === 'hi' ? 'आवंटित 15-मिनट आगमन विंडो' : 'Allocated 15-Min Gate Window'}
                           </div>
-                          <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-0.5">
+                          <div className="text-[28px] sm:text-[32px] font-black text-emerald-600 font-mono leading-none">
                             {assignedWindowStart} – {assignedWindowEnd}
                           </div>
-                          <div className="text-[10px] text-[#64748B] mt-0.5">
+                          <div className="text-xs text-slate-500 mt-2 font-medium">
                             {lang === 'hi' ? 'इस समय पर गेट पर रिपोर्ट करें' : 'Report at procurement gate within this window'}
                           </div>
                         </div>
 
-                        <div className="sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-[#334155]">
-                          <div className="text-[11px] text-[#94A3B8] font-bold uppercase tracking-wider">
+                        <div className="sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-200">
+                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">
                             {lang === 'hi' ? 'अनुमानित प्रक्रिया अवधि' : 'Estimated Depot Duration'}
                           </div>
-                          <div className="text-xl sm:text-2xl font-black text-[#F8FAFC] mt-0.5">
+                          <div className="text-2xl sm:text-[28px] font-black text-slate-900 leading-none">
                             ~{expectedDurationMinutes} {lang === 'hi' ? 'मिनट' : 'Minutes'}
                           </div>
-                          <div className="text-[10px] text-[#64748B] mt-0.5">
+                          <div className="text-xs text-slate-500 mt-2 font-medium">
                             {lang === 'hi' ? 'गेट इन → तौल → नमूना जांच → गेट आउट' : 'Gate In → Weighbridge → Quality → Gate Out'}
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between text-[11px] text-[#94A3B8] px-1 pt-1">
+                      <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 px-1 pt-1 font-medium">
                         <span>
                           {lang === 'hi' ? 'सत्र में शेष क्षमता' : 'Remaining Session Capacity'}:{' '}
-                          <b className="text-[#F8FAFC] font-bold">
+                          <b className="text-slate-900 font-bold text-sm">
                             {estimate?.remainingSessionCapacityQuintals !== undefined &&
                             estimate.remainingSessionCapacityQuintals !== null &&
                             estimate.isFeasible
@@ -1290,8 +1308,8 @@ function FarmerBookingContent() {
                             q
                           </b>
                         </span>
-                        <span className="text-emerald-400 font-bold flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-600 font-bold flex items-center gap-1.5">
+                          <CheckCircle2 className="w-4 h-4" />
                           {lang === 'hi' ? 'काउण्टर पेसिंग द्वारा सत्यापित' : 'Pacing constraints verified'}
                         </span>
                       </div>
@@ -1302,8 +1320,8 @@ function FarmerBookingContent() {
             })()}
 
             {/* Step 5: Final Confirmation Action */}
-            <div className="pt-3 border-t border-[#334155] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="text-xs text-[#94A3B8] max-w-sm">
+            <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="text-sm text-slate-600 max-w-md font-medium leading-relaxed">
                 {lang === 'hi'
                   ? 'पुष्टि करने पर आपका आगमन समय सीधे खरीद केंद्र के गेट डेस्क के साथ सुरक्षित हो जाएगा और डिजिटल पास जारी होगा।'
                   : 'By confirming, you reserve this physical arrival window under government procurement rules. Instant digital pass will be issued.'}
@@ -1318,9 +1336,9 @@ function FarmerBookingContent() {
                   submitting
                 }
                 onClick={handleConfirmBooking}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-teal-700 disabled:from-[#1E293B] disabled:to-[#1E293B] disabled:text-[#64748B] disabled:border disabled:border-[#334155] disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-md transition-all active:scale-[0.99]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-xl text-base font-bold shadow-md transition-all active:scale-[0.99]"
               >
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-5 h-5" />
                 <span>
                   {submitting
                     ? lang === 'hi'
@@ -1330,12 +1348,13 @@ function FarmerBookingContent() {
                       ? 'खरीद यात्रा स्लॉट सुरक्षित करें'
                       : 'Confirm Procurement Visit'}
                 </span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

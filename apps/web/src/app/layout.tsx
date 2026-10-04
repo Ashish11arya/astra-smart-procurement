@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`antialiased overflow-x-hidden bg-white text-slate-900 min-h-screen flex flex-col selection:bg-indigo-900 selection:text-indigo-100 ${inter.variable} font-sans`} suppressHydrationWarning>
+      <body className={`antialiased overflow-x-hidden bg-[#0B1020] text-[#F8FAFC] min-h-screen flex flex-col selection:bg-indigo-900 selection:text-indigo-100 ${inter.variable} font-sans`} suppressHydrationWarning>
         <LanguageProvider>
           <AuthProvider>
             <Suspense fallback={null}>

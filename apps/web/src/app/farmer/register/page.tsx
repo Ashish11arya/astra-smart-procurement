@@ -708,18 +708,18 @@ function FarmerRegistrationContent() {
   // VIEW: 6-STEP WIZARD FORM
   // ==========================================================================
   return (
-    <main className="min-h-screen overflow-x-hidden w-full relative flex items-center justify-center p-4">
+    <main className="min-h-screen overflow-x-hidden w-full relative flex flex-col justify-start pt-6 pb-12 sm:pt-12 px-4">
       {/* Background with explicit opacity matching exactly the reference image */}
       <div 
-        className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat fixed"
         style={{
           backgroundImage: "url('/farmer-registration-bg-landscape.jpg')",
           opacity: 0.9,
         }}
       />
-      <div className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-black/10" />
+      <div className="absolute inset-0 z-0 bg-black/10 fixed" />
 
-      <div className="relative z-10 w-full max-w-[800px] mx-auto text-[#062D3D] my-8">
+      <div className="relative z-10 w-full max-w-[1000px] mx-auto text-[#062D3D] mb-8">
         {/* Wizard Header & Progress Bar */}
         <div className="mb-0 bg-white p-6 rounded-[24px] rounded-b-none border border-slate-200 shadow-sm relative z-10">
           <div className="flex items-center justify-between mb-4">
@@ -759,7 +759,7 @@ function FarmerRegistrationContent() {
         )}
 
         {/* Form Card */}
-        <div className="bg-[#F8FAFC] rounded-[24px] rounded-t-none border border-slate-200 shadow-xl p-6 sm:p-8 pt-6 relative z-0">
+        <div className="bg-white rounded-[24px] rounded-t-none border border-slate-200 shadow-xl p-6 sm:p-8 pt-6 relative z-0">
         {/* ============================================================ */}
         {/* STEP 1: PERSONAL DETAILS                                     */}
         {/* ============================================================ */}
@@ -772,10 +772,10 @@ function FarmerRegistrationContent() {
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Full Name */}
               <div>
-                <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                   {t.fullName} <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -785,13 +785,13 @@ function FarmerRegistrationContent() {
                   value={personal.fullName}
                   onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })}
                   placeholder={t.fullNamePlaceholder}
-                  className="w-full px-4 py-3.5 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[16px] transition shadow-sm"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
                 />
               </div>
 
               {/* Father / Husband Name */}
               <div>
-                <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                   {t.fatherSpouseName} <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -801,49 +801,48 @@ function FarmerRegistrationContent() {
                   value={personal.fatherOrSpouseName}
                   onChange={(e) => setPersonal({ ...personal, fatherOrSpouseName: e.target.value })}
                   placeholder={t.fatherSpousePlaceholder}
-                  className="w-full px-4 py-3.5 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[16px] transition shadow-sm"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
                 />
               </div>
 
-              {/* Gender & Category */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.gender}
-                  </label>
-                  <select
-                    value={personal.gender}
-                    onChange={(e) => setPersonal({ ...personal, gender: e.target.value as Gender })}
-                    className="w-full px-4 py-3.5 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[16px] transition shadow-sm"
-                  >
-                    <option value={Gender.MALE} className="bg-[#F8FAFC] text-[#062D3D]">{t.male}</option>
-                    <option value={Gender.FEMALE} className="bg-[#F8FAFC] text-[#062D3D]">{t.female}</option>
-                    <option value={Gender.OTHER} className="bg-[#F8FAFC] text-[#062D3D]">{t.other}</option>
-                  </select>
-                </div>
+              {/* Gender */}
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.gender}
+                </label>
+                <select
+                  value={personal.gender}
+                  onChange={(e) => setPersonal({ ...personal, gender: e.target.value as Gender })}
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
+                >
+                  <option value={Gender.MALE} className="bg-[#F8FAFC] text-[#062D3D]">{t.male}</option>
+                  <option value={Gender.FEMALE} className="bg-[#F8FAFC] text-[#062D3D]">{t.female}</option>
+                  <option value={Gender.OTHER} className="bg-[#F8FAFC] text-[#062D3D]">{t.other}</option>
+                </select>
+              </div>
 
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.category}
-                  </label>
-                  <select
-                    value={personal.category}
-                    onChange={(e) =>
-                      setPersonal({ ...personal, category: e.target.value as FarmerCategory })
-                    }
-                    className="w-full px-4 py-3.5 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[16px] transition shadow-sm"
-                  >
-                    <option value={FarmerCategory.OBC} className="bg-[#F8FAFC] text-[#062D3D]">{t.obc}</option>
-                    <option value={FarmerCategory.GENERAL} className="bg-[#F8FAFC] text-[#062D3D]">{t.gen}</option>
-                    <option value={FarmerCategory.SC} className="bg-[#F8FAFC] text-[#062D3D]">{t.sc}</option>
-                    <option value={FarmerCategory.ST} className="bg-[#F8FAFC] text-[#062D3D]">{t.st}</option>
-                  </select>
-                </div>
+              {/* Category */}
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.category}
+                </label>
+                <select
+                  value={personal.category}
+                  onChange={(e) =>
+                    setPersonal({ ...personal, category: e.target.value as FarmerCategory })
+                  }
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
+                >
+                  <option value={FarmerCategory.OBC} className="bg-[#F8FAFC] text-[#062D3D]">{t.obc}</option>
+                  <option value={FarmerCategory.GENERAL} className="bg-[#F8FAFC] text-[#062D3D]">{t.gen}</option>
+                  <option value={FarmerCategory.SC} className="bg-[#F8FAFC] text-[#062D3D]">{t.sc}</option>
+                  <option value={FarmerCategory.ST} className="bg-[#F8FAFC] text-[#062D3D]">{t.st}</option>
+                </select>
               </div>
 
               {/* Mobile Number & OTP Verification */}
               {isMobileVerified ? (
-                <div>
+                <div className="md:col-span-2">
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-semibold text-[#64748B]">
                       {t.mobileLabel} <span className="text-rose-500">*</span>
@@ -871,9 +870,9 @@ function FarmerRegistrationContent() {
                   </div>
                 </div>
               ) : (
-                <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 space-y-4">
+                <div className="md:col-span-2 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 space-y-4">
                   <div>
-                    <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
+                    <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                       {t.mobileLabel} <span className="text-rose-500">*</span>
                       <span className="text-slate-500 font-normal ml-1.5">
                         ({locale === 'hi' ? 'सत्यापन हेतु ओटीपी भेजा जाएगा' : 'Required for official OTP verification'})
@@ -967,7 +966,7 @@ function FarmerRegistrationContent() {
                   {otpSent && !isMobileVerified && (
                     <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 animate-in fade-in">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-200">
+                        <span className="text-xs font-bold text-slate-700">
                           {locale === 'hi' ? '6-अंकीय ओटीपी दर्ज करें' : 'Enter 6-Digit OTP'}
                         </span>
                         <span className="text-[11px] text-slate-500 font-mono font-bold">
@@ -975,44 +974,46 @@ function FarmerRegistrationContent() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between gap-1.5 sm:gap-2">
-                        {otpDigits.map((digit, idx) => (
-                          <input
-                            key={idx}
-                            ref={(el) => {
-                              otpInputRefs.current[idx] = el;
-                            }}
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            maxLength={6}
-                            value={digit}
-                            onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
-                            onKeyDown={(e) => handleOtpDigitKeyDown(idx, e)}
-                            className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 bg-white text-[#062D3D] font-mono transition"
-                            aria-label={`Digit ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {devOtp && (
-                        <div className="p-2.5 rounded-xl bg-white border border-slate-300 flex items-center justify-between gap-2 animate-in fade-in shadow-sm">
-                          <span className="text-[11px] text-black font-mono">
-                            Dev OTP: <strong className="text-black text-xs font-bold">{devOtp}</strong>
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const digits = devOtp.split('').slice(0, 6);
-                              setOtpDigits(digits);
-                              handleVerifyOtp(devOtp);
-                            }}
-                            className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-[#062D3D] font-bold rounded-lg text-[11px] transition shadow-sm"
-                          >
-                            {locale === 'hi' ? 'स्वतः भरें और सत्यापित करें' : 'Auto-fill & Verify'}
-                          </button>
+                      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                        <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+                          {otpDigits.map((digit, idx) => (
+                            <input
+                              key={idx}
+                              ref={(el) => {
+                                otpInputRefs.current[idx] = el;
+                              }}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              maxLength={6}
+                              value={digit}
+                              onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
+                              onKeyDown={(e) => handleOtpDigitKeyDown(idx, e)}
+                              className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 bg-white text-[#062D3D] font-mono transition"
+                              aria-label={`Digit ${idx + 1}`}
+                            />
+                          ))}
                         </div>
-                      )}
+
+                        {devOtp && (
+                          <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3 animate-in fade-in shrink-0">
+                            <span className="text-[11px] text-slate-600 font-mono whitespace-nowrap">
+                              Dev OTP: <strong className="text-slate-900 text-xs font-bold">{devOtp}</strong>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const digits = devOtp.split('').slice(0, 6);
+                                setOtpDigits(digits);
+                                handleVerifyOtp(devOtp);
+                              }}
+                              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-[#062D3D] border border-slate-300 font-bold rounded-lg text-[11px] whitespace-nowrap transition shadow-sm"
+                            >
+                              {locale === 'hi' ? 'स्वतः भरें और सत्यापित करें' : 'Auto-fill & Verify'}
+                            </button>
+                          </div>
+                        )}
+                      </div>
 
                       <button
                         type="button"
@@ -1034,15 +1035,7 @@ function FarmerRegistrationContent() {
                 </div>
               )}
 
-              {/* Aadhaar / MSP Notice */}
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm text-xs text-black flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-[#0BAA72] shrink-0 mt-0.5" />
-                <span className="leading-relaxed">
-                  {locale === 'hi'
-                    ? 'आपके पंजीकरण विवरण आधिकारिक भूमि एवं बैंक रिकॉर्ड से सुरक्षित रूप से सत्यापित किए जाते हैं ताकि न्यूनतम समर्थन मूल्य (MSP) का सीधा डीबीटी भुगतान सुनिश्चित हो सके।'
-                    : 'Your registration details are securely verified against government land and banking records to ensure direct Minimum Support Price (MSP) payments.'}
-                </span>
-              </div>
+
             </div>
           </div>
         )}
@@ -1057,10 +1050,10 @@ function FarmerRegistrationContent() {
               <p className="text-[13px] text-slate-500 mt-0.5">{t.addressSubtitle}</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* District */}
               <div>
-                <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                   {t.district} <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -1076,7 +1069,7 @@ function FarmerRegistrationContent() {
                       village: '',
                     });
                   }}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-medium text-sm transition"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
                 >
                   <option value="" className="bg-[#F8FAFC] text-slate-500">-- {t.selectDistrict} --</option>
                   {DISTRICT_LIST.map((dist) => (
@@ -1087,62 +1080,61 @@ function FarmerRegistrationContent() {
                 </select>
               </div>
 
-              {/* Block & Panchayat */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.block} <span className="text-rose-500">*</span>
-                  </label>
-                  <select
-                    required
-                    disabled={!address.district}
-                    value={address.block}
-                    onChange={(e) => {
-                      const blk = e.target.value;
-                      setAddress({
-                        ...address,
-                        block: blk,
-                        panchayat: '',
-                        village: '',
-                      });
-                    }}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-medium text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <option value="" className="bg-[#F8FAFC] text-slate-500">-- {t.selectBlock} --</option>
-                    {getBlocks(address.district).map((blk) => (
-                      <option key={blk} value={blk} className="bg-[#F8FAFC] text-[#062D3D]">
-                        {blk}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {/* Block */}
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.block} <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  required
+                  disabled={!address.district}
+                  value={address.block}
+                  onChange={(e) => {
+                    const blk = e.target.value;
+                    setAddress({
+                      ...address,
+                      block: blk,
+                      panchayat: '',
+                      village: '',
+                    });
+                  }}
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <option value="" className="bg-[#F8FAFC] text-slate-500">-- {t.selectBlock} --</option>
+                  {getBlocks(address.district).map((blk) => (
+                    <option key={blk} value={blk} className="bg-[#F8FAFC] text-[#062D3D]">
+                      {blk}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.panchayat}
-                  </label>
-                  <select
-                    disabled={!address.block}
-                    value={address.panchayat}
-                    onChange={(e) => {
-                      const pan = e.target.value;
-                      setAddress({ ...address, panchayat: pan, village: '' });
-                    }}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-medium text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <option value="" className="bg-[#F8FAFC] text-slate-500">-- {t.selectPanchayat} --</option>
-                    {getPanchayats(address.district, address.block).map((pan) => (
-                      <option key={pan} value={pan} className="bg-[#F8FAFC] text-[#062D3D]">
-                        {pan}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {/* Panchayat */}
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.panchayat}
+                </label>
+                <select
+                  disabled={!address.block}
+                  value={address.panchayat}
+                  onChange={(e) => {
+                    const pan = e.target.value;
+                    setAddress({ ...address, panchayat: pan, village: '' });
+                  }}
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <option value="" className="bg-[#F8FAFC] text-slate-500">-- {t.selectPanchayat} --</option>
+                  {getPanchayats(address.district, address.block).map((pan) => (
+                    <option key={pan} value={pan} className="bg-[#F8FAFC] text-[#062D3D]">
+                      {pan}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Revenue Village */}
               <div>
-                <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                   {t.village} <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -1150,7 +1142,7 @@ function FarmerRegistrationContent() {
                   disabled={!address.panchayat}
                   value={address.village}
                   onChange={(e) => setAddress({ ...address, village: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-medium text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <option value="" className="bg-[#F8FAFC] text-slate-500">-- {t.selectVillage} --</option>
                   {getVillages(address.district, address.block, address.panchayat).map((vil) => (
@@ -1161,37 +1153,36 @@ function FarmerRegistrationContent() {
                 </select>
               </div>
 
-              {/* PIN Code & House / Address Line */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.pincode} <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={6}
-                    required
-                    value={address.pincode}
-                    onChange={(e) =>
-                      setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '') })
-                    }
-                    placeholder={t.pincodePlaceholder}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] font-mono placeholder-slate-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-medium text-sm transition"
-                  />
-                </div>
+              {/* PIN Code */}
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.pincode} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  required
+                  value={address.pincode}
+                  onChange={(e) =>
+                    setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '') })
+                  }
+                  placeholder={t.pincodePlaceholder}
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] font-mono transition shadow-sm"
+                />
+              </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.addressLine}
-                  </label>
-                  <input
-                    type="text"
-                    value={address.addressLine}
-                    onChange={(e) => setAddress({ ...address, addressLine: e.target.value })}
-                    placeholder={t.addressPlaceholder}
-                    className="w-full px-4 py-3 rounded-[12px] border border-slate-200 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[15px] transition shadow-sm"
-                  />
-                </div>
+              {/* Address Line */}
+              <div className="md:col-span-2">
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.addressLine}
+                </label>
+                <input
+                  type="text"
+                  value={address.addressLine}
+                  onChange={(e) => setAddress({ ...address, addressLine: e.target.value })}
+                  placeholder={t.addressPlaceholder}
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
+                />
               </div>
             </div>
           </div>
@@ -1239,9 +1230,9 @@ function FarmerRegistrationContent() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                         {t.khasraNumber} <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -1254,12 +1245,12 @@ function FarmerRegistrationContent() {
                           setLandParcels(updated);
                         }}
                         placeholder={t.khasraPlaceholder}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-[#062D3D] font-mono placeholder-slate-400 focus:border-emerald-500 font-medium text-xs transition"
+                        className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] font-mono transition shadow-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                         {t.areaAcres} <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -1274,12 +1265,12 @@ function FarmerRegistrationContent() {
                           setLandParcels(updated);
                         }}
                         placeholder={t.areaPlaceholder}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-[#062D3D] font-mono placeholder-slate-400 focus:border-emerald-500 font-medium text-xs transition"
+                        className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] font-mono transition shadow-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                         {t.ownershipType}
                       </label>
                       <select
@@ -1289,7 +1280,7 @@ function FarmerRegistrationContent() {
                           updated[idx].ownershipType = e.target.value as LandOwnershipType;
                           setLandParcels(updated);
                         }}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-[#062D3D] focus:border-emerald-500 font-medium text-xs transition"
+                        className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
                       >
                         <option value={LandOwnershipType.OWNER} className="bg-[#F8FAFC] text-[#062D3D]">{t.owner}</option>
                         <option value={LandOwnershipType.TENANT} className="bg-[#F8FAFC] text-[#062D3D]">{t.tenant}</option>
@@ -1313,9 +1304,9 @@ function FarmerRegistrationContent() {
               <p className="text-[13px] text-slate-500 mt-0.5">{t.bankSubtitle}</p>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="md:col-span-2">
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                   {t.accountHolderName} <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -1324,80 +1315,76 @@ function FarmerRegistrationContent() {
                   value={bank.accountHolderName}
                   onChange={(e) => setBank({ ...bank, accountHolderName: e.target.value })}
                   placeholder="e.g. Ramesh Kumar Sharma"
-                  className="w-full px-4 py-3 rounded-[12px] border border-slate-200 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[15px] transition shadow-sm"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.bankName}
-                  </label>
-                  <input
-                    type="text"
-                    value={bank.bankName}
-                    onChange={(e) => setBank({ ...bank, bankName: e.target.value })}
-                    placeholder="e.g. State Bank of India"
-                    className="w-full px-4 py-3 rounded-[12px] border border-slate-200 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[600] text-[15px] transition shadow-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.ifscCode} <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={11}
-                    value={bank.ifscCode}
-                    onChange={(e) => setBank({ ...bank, ifscCode: e.target.value.toUpperCase() })}
-                    placeholder={t.ifscPlaceholder}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#0BAA72] placeholder-slate-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono font-bold text-sm tracking-wider uppercase transition"
-                  />
-                </div>
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.bankName}
+                </label>
+                <input
+                  type="text"
+                  value={bank.bankName}
+                  onChange={(e) => setBank({ ...bank, bankName: e.target.value })}
+                  placeholder="e.g. State Bank of India"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] transition shadow-sm"
+                />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.accountNumber} <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={bank.accountNumber}
-                    onChange={(e) => setBank({ ...bank, accountNumber: e.target.value.replace(/\D/g, '') })}
-                    placeholder="Enter Account Number"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] placeholder-slate-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono font-bold text-sm transition"
-                  />
-                </div>
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.ifscCode} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  maxLength={11}
+                  value={bank.ifscCode}
+                  onChange={(e) => setBank({ ...bank, ifscCode: e.target.value.toUpperCase() })}
+                  placeholder={t.ifscPlaceholder}
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#0BAA72] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] font-mono tracking-wider uppercase transition shadow-sm"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-[13px] font-[700] text-[#062D3D] mb-1.5">
-                    {t.confirmAccountNumber} <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={bank.confirmAccountNumber}
-                    onChange={(e) =>
-                      setBank({ ...bank, confirmAccountNumber: e.target.value.replace(/\D/g, '') })
-                    }
-                    placeholder="Re-enter Account Number"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#062D3D] placeholder-slate-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono font-bold text-sm transition"
-                  />
-                </div>
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.accountNumber} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={bank.accountNumber}
+                  onChange={(e) => setBank({ ...bank, accountNumber: e.target.value.replace(/\D/g, '') })}
+                  placeholder="Enter Account Number"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] font-mono transition shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
+                  {t.confirmAccountNumber} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={bank.confirmAccountNumber}
+                  onChange={(e) =>
+                    setBank({ ...bank, confirmAccountNumber: e.target.value.replace(/\D/g, '') })
+                  }
+                  placeholder="Re-enter Account Number"
+                  className="w-full px-4 py-3 rounded-[12px] border border-slate-300 bg-white text-[#062D3D] placeholder-slate-400 focus:border-[#0BAA72] focus:ring-1 focus:ring-[#0BAA72]/20 font-[400] text-[16px] font-mono transition shadow-sm"
+                />
               </div>
 
               {bank.confirmAccountNumber && bank.accountNumber !== bank.confirmAccountNumber && (
-                <div className="text-xs text-rose-500 font-bold flex items-center gap-1.5 p-3 rounded-xl bg-rose-950/30 border border-rose-800/40">
+                <div className="md:col-span-2 text-[13px] text-rose-500 font-semibold flex items-center gap-1.5 p-3 rounded-xl bg-rose-50 border border-rose-200">
                   <AlertCircle className="w-4 h-4 text-rose-500" />
                   <span>{t.accountMismatch}</span>
                 </div>
               )}
 
-              <div className="p-3.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-700 font-medium leading-relaxed">
+              <div className="md:col-span-2 p-3.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-700 font-medium leading-relaxed">
                 {t.bankDisclaimer}
               </div>
             </div>

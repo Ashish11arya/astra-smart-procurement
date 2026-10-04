@@ -162,13 +162,13 @@ export class BookingService {
       const { startOfDay, endOfDay, canonicalDateStr } = parseIstDateRange(dto.bookingDate);
 
       const rollingDates = this.schedulingService.getRolling7Dates();
-      const isValidDate = rollingDates.some((d) => formatIstDateStr(d) === canonicalDateStr);
+      const isValidDate = rollingDates.some((d) => d.canonicalDateStr === canonicalDateStr);
 
       if (!isValidDate) {
         throw new BadRequestException('Selected date is outside the active 7-day booking window.');
       }
 
-      if (!this.schedulingService.isOperatingDay(startOfDay, centre.operatingDays)) {
+      if (!this.schedulingService.isOperatingDay(canonicalDateStr, centre.operatingDays)) {
         throw new BadRequestException(`Centre does not operate on this day (${centre.operatingDays}).`);
       }
 
@@ -187,9 +187,15 @@ export class BookingService {
       }
 
       if (dto.expectedQuantityQuintals > capacity.remainingCapacityQuintals) {
-        throw new BadRequestException(
-          `You can book only ${capacity.remainingCapacityQuintals.toFixed(1)} q more for this date at this centre.`,
-        );
+        if ((capacity as any).isRestrictedBySeason) {
+          throw new BadRequestException(
+            `You can book only ${(capacity as any).remainingSeason.toFixed(1)} q more for this season. Your overall seasonal quota (${(capacity as any).policy?.defaultEligibleQuotaQuintals} q) restricts further bookings.`
+          );
+        } else {
+          throw new BadRequestException(
+            `You can book only ${capacity.remainingCapacityQuintals.toFixed(1)} q more for this date at this centre.`,
+          );
+        }
       }
 
       // 4. Revalidate centre physical session capacity

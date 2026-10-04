@@ -382,3 +382,79 @@ input, select, textarea {
 .farmer-queue-scroll::-webkit-scrollbar-thumb:hover {
   background: #6EE7B7;
 }
+
+/* Application Mint Background Wrapper */
+.astra-app-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-color: #F3FAF7; /* Soft mint base */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Subtle decorative shape 1 */
+.astra-app-background .shape-1 {
+  position: absolute;
+  top: -15%;
+  right: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(227, 245, 238, 0.7) 0%, rgba(239, 250, 247, 0) 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+/* Subtle decorative shape 2 */
+.astra-app-background .shape-2 {
+  position: absolute;
+  bottom: -20%;
+  left: -15%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(227, 245, 238, 0.6) 0%, rgba(239, 250, 247, 0) 70%);
+  border-radius: 50%;
+  filter: blur(50px);
+}
+
+
+
+/* Application Mint Background Wrapper */
+.astra-app-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-color: #F3FAF7; /* Soft mint base */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Subtle decorative shape 1 */
+.astra-app-background .shape-1 {
+  position: absolute;
+  top: -15%;
+  right: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(227, 245, 238, 0.7) 0%, rgba(239, 250, 247, 0) 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+/* Subtle decorative shape 2 */
+.astra-app-background .shape-2 {
+  position: absolute;
+  bottom: -20%;
+  left: -15%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(227, 245, 238, 0.6) 0%, rgba(239, 250, 247, 0) 70%);
+  border-radius: 50%;
+  filter: blur(50px);
+}

@@ -58,15 +58,14 @@ export function BookingPassModal({ isOpen, onClose, booking, lang = 'en' }: Prop
       aria-labelledby="booking-pass-dialog-title"
       className="fixed inset-0 z-[100] w-screen h-screen overflow-y-auto print:static print:inset-auto print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:m-0"
     >
-      {/* 1. Viewport-level solid dark backdrop: covers 100% of viewport and intercepts outside clicks */}
+      {/* 1. Viewport-level soft translucent backdrop: covers 100% of viewport and intercepts outside clicks */}
       <div
-        className="fixed inset-0 z-10 w-screen h-screen bg-[#070A13] cursor-pointer"
+        className="fixed inset-0 z-10 w-screen h-screen bg-white/75 backdrop-blur-md cursor-pointer print:hidden"
         style={{
           position: 'fixed',
           inset: 0,
           width: '100vw',
           height: '100vh',
-          backgroundColor: '#070A13',
         }}
         onClick={onClose}
         aria-hidden="true"
@@ -79,7 +78,7 @@ export function BookingPassModal({ isOpen, onClose, booking, lang = 'en' }: Prop
           <button
             type="button"
             onClick={onClose}
-            className="print:hidden absolute top-3.5 right-3.5 z-20 p-2 text-slate-300 hover:text-white bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition shadow-lg"
+            className="print:hidden absolute top-3.5 right-3.5 z-20 p-2 text-slate-400 hover:text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition shadow-sm"
             aria-label="Close booking pass"
           >
             <X className="w-5 h-5" />

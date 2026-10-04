@@ -3,6 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { RouteGuard } from '@/components/auth/RouteGuard';
+import { AppBackground } from '@/components/common/AppBackground';
 
 export default function FarmerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,12 +15,17 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
     pathname === '/farmer/centres';
 
   if (isPublicRoute) {
-    return <>{children}</>;
+    return (
+      <div className="text-slate-900">
+        {children}
+      </div>
+    );
   }
 
   return (
     <RouteGuard allowedRoles={['FARMER']} loginRedirect="/farmer/login">
-      <div className="min-h-screen bg-white w-full">
+      <AppBackground />
+      <div className="min-h-screen bg-transparent w-full text-slate-900">
         {children}
       </div>
     </RouteGuard>

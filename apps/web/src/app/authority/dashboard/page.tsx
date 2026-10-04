@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
 import { AuthorityDashboardStatsDto } from '@astra/shared';
+import styles from '../authority-typography.module.css';
 
 export default function AuthorityDashboardPage() {
   const router = useRouter();
@@ -59,11 +60,12 @@ export default function AuthorityDashboardPage() {
   }, [fetchStats]);
 
   return (
-    <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 text-[#F8FAFC]">
+    <div className={styles.wrapper}>
+      <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 text-[#F8FAFC]">
       {/* 1. Official Header Strip */}
       <div className="rounded-xl border border-[#334155] bg-[#151C2F] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 tracking-wide font-mono uppercase">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 tracking-wide uppercase">
             <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
             <span>State & District Procurement Authority Desk</span>
           </div>
@@ -109,7 +111,7 @@ export default function AuthorityDashboardPage() {
         {/* Pending Verifications */}
         <div className="rounded-xl p-4 border border-[#334155] bg-[#151C2F] shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               Pending Verifications
             </span>
             <div className="w-7 h-7 rounded-lg bg-amber-950/80 border border-amber-800/80 flex items-center justify-center text-amber-400">
@@ -122,7 +124,7 @@ export default function AuthorityDashboardPage() {
             </span>
             <span className="text-xs text-amber-400 font-semibold">Under Scrutiny</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-2">
+          <p className="text-xs text-[#94A3B8] mt-2">
             Assigned to Verification Authority
           </p>
         </div>
@@ -130,7 +132,7 @@ export default function AuthorityDashboardPage() {
         {/* Verified Farmers */}
         <div className="rounded-xl p-4 border border-[#334155] bg-[#151C2F] shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
               Verified Farmers
             </span>
             <div className="w-7 h-7 rounded-lg bg-emerald-950/80 border border-emerald-800/80 flex items-center justify-center text-emerald-400">
@@ -143,7 +145,7 @@ export default function AuthorityDashboardPage() {
             </span>
             <span className="text-xs text-emerald-400 font-semibold">Procurement Eligible</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-2">
+          <p className="text-xs text-[#94A3B8] mt-2">
             Approved by designated scrutiny officers
           </p>
         </div>
@@ -151,7 +153,7 @@ export default function AuthorityDashboardPage() {
         {/* Returned for Correction */}
         <div className="rounded-xl p-4 border border-[#334155] bg-[#151C2F] shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-orange-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
               Returned Applications
             </span>
             <div className="w-7 h-7 rounded-lg bg-orange-950/80 border border-orange-800/80 flex items-center justify-center text-orange-400">
@@ -164,7 +166,7 @@ export default function AuthorityDashboardPage() {
             </span>
             <span className="text-xs text-orange-400 font-semibold">Action Required</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-2">
+          <p className="text-xs text-[#94A3B8] mt-2">
             Awaiting farmer document resubmission
           </p>
         </div>
@@ -172,7 +174,7 @@ export default function AuthorityDashboardPage() {
         {/* Depots & Personnel */}
         <div className="rounded-xl p-4 border border-[#334155] bg-[#151C2F] shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
               Centres & Personnel
             </span>
             <div className="w-7 h-7 rounded-lg bg-indigo-950/80 border border-indigo-800/80 flex items-center justify-center text-indigo-400">
@@ -181,13 +183,13 @@ export default function AuthorityDashboardPage() {
           </div>
           <div className="mt-2 grid grid-cols-2 gap-2 pt-1 border-t border-[#242E42]">
             <div>
-              <span className="text-[10px] text-[#94A3B8] block uppercase">Active Depots</span>
+              <span className="text-xs text-[#94A3B8] block uppercase">Active Depots</span>
               <span className="text-2xl font-black text-[#F8FAFC] font-mono">
                 {loading ? '—' : stats?.activeCentres ?? 0}
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-[#94A3B8] block uppercase">Staff Roster</span>
+              <span className="text-xs text-[#94A3B8] block uppercase">Staff Roster</span>
               <span className="text-2xl font-black text-indigo-300 font-mono">
                 {loading ? '—' : stats?.totalPersonnel ?? 0}
               </span>
@@ -195,7 +197,7 @@ export default function AuthorityDashboardPage() {
           </div>
           <Link
             href="/authority/personnel"
-            className="text-[11px] text-indigo-300 mt-2 flex items-center gap-1 hover:text-indigo-200"
+            className="text-xs text-indigo-300 mt-2 flex items-center gap-1 hover:text-indigo-200"
           >
             <span>Manage personnel assignments</span>
             <ArrowRight className="w-3 h-3" />
@@ -212,7 +214,7 @@ export default function AuthorityDashboardPage() {
               <FileText className="w-4 h-4" />
             </div>
             <div>
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950 text-purple-300 border border-purple-800 mb-1.5 font-mono">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-purple-950 text-purple-300 border border-purple-800 mb-1.5">
                 <span>INDEPENDENT AUTHORITY</span>
               </div>
               <h2 className="text-base font-bold text-[#F8FAFC]">Farmer Verification Department</h2>
@@ -220,7 +222,7 @@ export default function AuthorityDashboardPage() {
                 Farmer registration scrutiny, land boundary cross-referencing, and approval/return/rejection decisions are executed by the appointed Farmer Verification Authority.
               </p>
             </div>
-            <div className="space-y-1 text-[11px] text-[#94A3B8] pt-2 border-t border-[#242E42]">
+            <div className="space-y-1 text-xs text-[#94A3B8] pt-2 border-t border-[#242E42]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
                 <span>Appointed & Authorized by State Authority</span>
@@ -257,7 +259,7 @@ export default function AuthorityDashboardPage() {
                 Assign and govern centre personnel access across departments (Food & Civil Supplies, Mandi Board, Warehousing). Toggle active status and enforce least-privilege RBAC.
               </p>
             </div>
-            <div className="space-y-1 text-[11px] text-[#94A3B8] pt-2 border-t border-[#242E42]">
+            <div className="space-y-1 text-xs text-[#94A3B8] pt-2 border-t border-[#242E42]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Centre-level isolation & boundary checks</span>
@@ -294,7 +296,7 @@ export default function AuthorityDashboardPage() {
                 Review operational status of registered grain procurement centres, weighbridge IoT calibrations, daily quota allocations, and physical inspection reports.
               </p>
             </div>
-            <div className="space-y-1 text-[11px] text-[#94A3B8] pt-2 border-t border-[#242E42]">
+            <div className="space-y-1 text-xs text-[#94A3B8] pt-2 border-t border-[#242E42]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Live centre operational readiness</span>
@@ -325,11 +327,12 @@ export default function AuthorityDashboardPage() {
         <Lock className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <span className="font-bold text-[#CBD5E1]">Production Governance & Concurrency Guarantee:</span>
-          <p className="leading-relaxed text-[11px]">
+          <p className="leading-relaxed text-xs">
             All administrative decisions (Approve, Reject, Return) are executed within atomic database transactions with concurrency checks. An application cannot be reviewed simultaneously by multiple officers. All approvals generate immutable audit logs with officer IDs and timestamps.
           </p>
         </div>
       </div>
     </main>
+    </div>
   );
 }
