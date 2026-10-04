@@ -719,7 +719,7 @@ function FarmerRegistrationContent() {
       />
       <div className="absolute inset-0 z-0 bg-black/10 fixed" />
 
-      <div className="relative z-10 w-full max-w-[800px] mx-auto text-[#062D3D] mb-8">
+      <div className="relative z-10 w-full max-w-[1000px] mx-auto text-[#062D3D] mb-8">
         {/* Wizard Header & Progress Bar */}
         <div className="mb-0 bg-white p-6 rounded-[24px] rounded-b-none border border-slate-200 shadow-sm relative z-10">
           <div className="flex items-center justify-between mb-4">
@@ -966,7 +966,7 @@ function FarmerRegistrationContent() {
                   {otpSent && !isMobileVerified && (
                     <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 animate-in fade-in">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-200">
+                        <span className="text-xs font-bold text-slate-700">
                           {locale === 'hi' ? '6-अंकीय ओटीपी दर्ज करें' : 'Enter 6-Digit OTP'}
                         </span>
                         <span className="text-[11px] text-slate-500 font-mono font-bold">
@@ -974,44 +974,46 @@ function FarmerRegistrationContent() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between gap-1.5 sm:gap-2">
-                        {otpDigits.map((digit, idx) => (
-                          <input
-                            key={idx}
-                            ref={(el) => {
-                              otpInputRefs.current[idx] = el;
-                            }}
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            maxLength={6}
-                            value={digit}
-                            onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
-                            onKeyDown={(e) => handleOtpDigitKeyDown(idx, e)}
-                            className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 bg-white text-[#062D3D] font-mono transition"
-                            aria-label={`Digit ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {devOtp && (
-                        <div className="p-2.5 rounded-xl bg-white border border-slate-300 flex items-center justify-between gap-2 animate-in fade-in shadow-sm">
-                          <span className="text-[11px] text-black font-mono">
-                            Dev OTP: <strong className="text-black text-xs font-bold">{devOtp}</strong>
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const digits = devOtp.split('').slice(0, 6);
-                              setOtpDigits(digits);
-                              handleVerifyOtp(devOtp);
-                            }}
-                            className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-[#062D3D] font-bold rounded-lg text-[11px] transition shadow-sm"
-                          >
-                            {locale === 'hi' ? 'स्वतः भरें और सत्यापित करें' : 'Auto-fill & Verify'}
-                          </button>
+                      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                        <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+                          {otpDigits.map((digit, idx) => (
+                            <input
+                              key={idx}
+                              ref={(el) => {
+                                otpInputRefs.current[idx] = el;
+                              }}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              maxLength={6}
+                              value={digit}
+                              onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
+                              onKeyDown={(e) => handleOtpDigitKeyDown(idx, e)}
+                              className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 bg-white text-[#062D3D] font-mono transition"
+                              aria-label={`Digit ${idx + 1}`}
+                            />
+                          ))}
                         </div>
-                      )}
+
+                        {devOtp && (
+                          <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3 animate-in fade-in shrink-0">
+                            <span className="text-[11px] text-slate-600 font-mono whitespace-nowrap">
+                              Dev OTP: <strong className="text-slate-900 text-xs font-bold">{devOtp}</strong>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const digits = devOtp.split('').slice(0, 6);
+                                setOtpDigits(digits);
+                                handleVerifyOtp(devOtp);
+                              }}
+                              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-[#062D3D] border border-slate-300 font-bold rounded-lg text-[11px] whitespace-nowrap transition shadow-sm"
+                            >
+                              {locale === 'hi' ? 'स्वतः भरें और सत्यापित करें' : 'Auto-fill & Verify'}
+                            </button>
+                          </div>
+                        )}
+                      </div>
 
                       <button
                         type="button"
@@ -1033,15 +1035,7 @@ function FarmerRegistrationContent() {
                 </div>
               )}
 
-              {/* Aadhaar / MSP Notice */}
-              <div className="md:col-span-2 p-4 rounded-2xl bg-[#EAF7F2] border border-[#A6E3CB] shadow-sm text-[13px] text-[#0BAA72] flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-[#0BAA72] shrink-0 mt-0.5" />
-                <span className="leading-relaxed font-medium">
-                  {locale === 'hi'
-                    ? 'आपके पंजीकरण विवरण आधिकारिक भूमि एवं बैंक रिकॉर्ड से सुरक्षित रूप से सत्यापित किए जाते हैं ताकि न्यूनतम समर्थन मूल्य (MSP) का सीधा डीबीटी भुगतान सुनिश्चित हो सके।'
-                    : 'Your registration details are securely verified against government land and banking records to ensure direct Minimum Support Price (MSP) payments.'}
-                </span>
-              </div>
+
             </div>
           </div>
         )}
@@ -1178,7 +1172,7 @@ function FarmerRegistrationContent() {
               </div>
 
               {/* Address Line */}
-              <div>
+              <div className="md:col-span-2">
                 <label className="block text-[14px] font-[600] text-[#062D3D] mb-1.5">
                   {t.addressLine}
                 </label>

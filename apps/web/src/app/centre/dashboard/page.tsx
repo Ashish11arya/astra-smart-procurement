@@ -922,7 +922,7 @@ function CentreDashboardContent() {
                   Government Maximum Ceiling
                 </span>
                 <div className="text-[24px] leading-[32px] font-bold text-amber-600 font-sans mt-1">
-                  {capacityConfig?.governmentMaximumPerFarmerQuintals ?? 250.0}{' '}
+                  {capacityConfig?.governmentMaximumPerFarmerQuintals ?? 1000.0}{' '}
                   <span className="text-[14px] leading-[20px] font-medium text-slate-500 font-sans">qtl / farmer / day</span>
                 </div>
                 <p className="text-[12px] leading-[18px] text-slate-500 mt-1 block font-sans">Strict statutory ceiling across all procurement centres</p>
@@ -967,9 +967,9 @@ function CentreDashboardContent() {
                 Centre Operational Capacity & Farmer Booking Policy
               </h4>
               <p className="text-[14px] leading-[20px] text-slate-500 mt-1">
-                Adjust the maximum quantity an individual farmer can book per day at this centre, and session throughput limits.
+                Adjust the maximum quantity an individual farmer can book per day at this centre.
                 <strong className="text-amber-600 ml-1 font-semibold">
-                  Note: Values above {capacityConfig?.governmentMaximumPerFarmerQuintals ?? 250.0} qtl are rejected automatically by backend security.
+                  Note: Values above 1000 QTL per farmer per day are rejected automatically by backend security.
                 </strong>
               </p>
             </div>
@@ -986,7 +986,7 @@ function CentreDashboardContent() {
                       type="number"
                       step="0.5"
                       min={inputMinBooking || 10}
-                      max={capacityConfig?.governmentMaximumPerFarmerQuintals || 250}
+                      max={capacityConfig?.governmentMaximumPerFarmerQuintals || 1000}
                       value={inputDailyLimit}
                       onChange={(e) => setInputDailyLimit(parseFloat(e.target.value) || 0)}
                       required
@@ -995,7 +995,7 @@ function CentreDashboardContent() {
                     <span className="absolute right-4 top-3.5 text-[14px] leading-[20px] font-medium text-slate-500 font-sans">QTL / DAY</span>
                   </div>
                   <p className="text-[12px] leading-[18px] text-slate-500 font-sans mt-1 block">
-                    Maximum quantity a single farmer may book at this centre per day. Must be between {inputMinBooking || 10} and {capacityConfig?.governmentMaximumPerFarmerQuintals || 250} qtl.
+                    Maximum quantity a single farmer may book at this centre per day. Must be between {inputMinBooking || 10} and {capacityConfig?.governmentMaximumPerFarmerQuintals || 1000} qtl.
                   </p>
                 </div>
 

@@ -133,11 +133,11 @@ export default function FarmerLoginPage() {
   };
 
   return (
-    <main className="flex-1 flex relative w-full bg-transparent min-h-screen py-10">
+    <main className="flex-1 flex relative w-full bg-transparent py-10">
       {/* Background Image */}
       <div 
         className="absolute top-0 left-0 right-0 -bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/farmer-login-bg-new.jpg')" }}
+        style={{ backgroundImage: "url('/farmer-sunrise.jpg')" }}
       />
       
       <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-2 lg:py-4 flex flex-col lg:flex-row items-center justify-center lg:justify-end gap-10 relative z-10 h-full">

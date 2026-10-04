@@ -24,7 +24,7 @@ export class GovernmentConfigService {
   getPolicy(cropName?: string): GovernmentProcurementPolicy {
     const govMax = process.env.GOVERNMENT_MAX_PER_FARMER_QTL
       ? parseFloat(process.env.GOVERNMENT_MAX_PER_FARMER_QTL)
-      : 250.0;
+      : 1000.0;
 
     const defaultCentreCap = process.env.GOVERNMENT_DAILY_BOOKING_CAPACITY_QTL
       ? parseFloat(process.env.GOVERNMENT_DAILY_BOOKING_CAPACITY_QTL)
@@ -38,7 +38,7 @@ export class GovernmentConfigService {
       season: process.env.GOVERNMENT_ACTIVE_SEASON || 'Kharif 2026',
       crop: cropName || process.env.GOVERNMENT_DEFAULT_CROP || 'Paddy',
       farmerCategory: 'Rayit',
-      governmentMaximumPerFarmerQuintals: isNaN(govMax) ? 250.0 : govMax,
+      governmentMaximumPerFarmerQuintals: isNaN(govMax) ? 1000.0 : govMax,
       defaultCentreDailyFarmerLimit: isNaN(defaultCentreCap) ? 50.0 : defaultCentreCap,
       dailyBookingCapacityQuintals: isNaN(defaultCentreCap) ? 50.0 : defaultCentreCap,
       minimumBookingQuantityQuintals: isNaN(minQty) ? 10.0 : minQty,
