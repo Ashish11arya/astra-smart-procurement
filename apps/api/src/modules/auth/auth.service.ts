@@ -260,7 +260,16 @@ export class AuthService {
       await redis.del(`otp:attempts:${mobile}`);
       await redis.del(`otp:cooldown:${mobile}`);
     } else {
-      this.logger.warn('Redis offline; skipping Redis validation in fallback mode');
+      const isDevBypass = this.otpMode === 'development' && (otp === '123456' || otp === '654321');
+      if (isDevBypass) {
+        this.logger.warn('Redis offline; using development OTP bypass');
+      } else {
+        this.logger.error('Redis offline; failing closed for secure OTP validation');
+        throw new HttpException(
+          'Authentication service unavailable',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
 
     // 1. Resolve User record

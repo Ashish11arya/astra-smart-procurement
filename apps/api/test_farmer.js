@@ -1,1 +1,0 @@
-const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); async function main() { const farmer = await prisma.farmer.findFirst({ where: { id: '6d44663c-1ba3-4b42-912e-c26deb5a6da6' }, include: { registrations: { include: { landParcels: true } } } }); console.log(JSON.stringify(farmer, null, 2)); } main().finally(() => prisma.$disconnect());

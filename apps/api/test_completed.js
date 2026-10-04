@@ -1,1 +1,0 @@
-const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); async function main() { const bookings = await prisma.procurementDecisionRecord.findMany({ where: { booking: { farmerId: '6d44663c-1ba3-4b42-912e-c26deb5a6da6' } } }); console.log(bookings); } main().finally(() => prisma.$disconnect());
