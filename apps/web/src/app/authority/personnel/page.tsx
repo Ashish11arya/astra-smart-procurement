@@ -188,42 +188,48 @@ export default function AuthorityPersonnelPage() {
     <div className={styles.wrapper}>
       <main className="min-h-[85vh] p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* 1. Header Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-        <div>
-          <Link
-            href="/authority/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-indigo-300 transition mb-2"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Authority Dashboard</span>
-          </Link>
+      <div className="mb-6">
+        <Link
+          href="/authority/dashboard"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#94A3B8] hover:text-indigo-300 transition mb-4"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Authority Dashboard</span>
+        </Link>
+        
+        <div className="rounded-2xl border border-[#334155] bg-[#151C2F] p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-5 shadow-sm">
+          <div className="flex items-start sm:items-center gap-4 sm:gap-5">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-indigo-950/80 border border-indigo-800/80 flex items-center justify-center text-indigo-400 shadow-inner">
+              <Users className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-[#F8FAFC] tracking-tight">
+                Centre Personnel & Departmental Roster
+              </h1>
+              <p className="text-base font-medium text-[#94A3B8] mt-1.5">
+                Govern field procurement officers, role boundaries, and active terminal authorizations.
+              </p>
+            </div>
+          </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
-            <Users className="w-7 h-7 text-indigo-400" />
-            <span>Centre Personnel & Departmental Roster</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Govern field procurement officers, role boundaries, and active terminal authorizations.
-          </p>
-        </div>
+          <div className="flex items-center gap-3 self-start lg:self-center shrink-0 mt-2 lg:mt-0">
+            <button
+              onClick={fetchData}
+              disabled={loading}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1E293B] border border-[#334155] hover:bg-[#334155] text-sm font-semibold text-[#CBD5E1] hover:text-[#F8FAFC] transition shadow-xs"
+            >
+              <RefreshCw className={`w-4 h-4 text-indigo-400 ${loading ? 'animate-spin' : ''}`} />
+              <span>Refresh</span>
+            </button>
 
-        <div className="flex items-center gap-2 self-start sm:self-center">
-          <button
-            onClick={fetchData}
-            disabled={loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-semibold text-slate-300 transition"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-indigo-400 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
-          </button>
-
-          <button
-            onClick={() => setAssignModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-950 transition active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Appoint Officer</span>
-          </button>
+            <button
+              onClick={() => setAssignModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-sm font-semibold shadow-xs transition"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Appoint Officer</span>
+            </button>
+          </div>
         </div>
       </div>
 
